@@ -33,42 +33,90 @@ export class GameBoardComponent {
   card1 : Card = { //these 2 need to move to individual card component eventually and be made dynamic
     id: 1,
     name: "Maxxor",
-    attack: 10,
+    hp: 10,
+    max_hp: 10,
+    mugic_counter: 3,
+    tribe: '',
+    class: '',
+    abilities: {},
+    elements: {},
+    stats: {},
+    card: '',
     picture: "./assets/pictures/Maxxor_Picture.png",
     player: 1
   };
   card2 : Card = {
     id: 2,
     name: "Chaor",
-    attack: 10,
+    hp: 10,
+    max_hp: 10,
+    mugic_counter: 3,
+    tribe: '',
+    class: '',
+    abilities: {},
+    elements: {},
+    stats: {},
+    card: '',
     picture: "./assets/pictures/Chaor_Picture.png",
     player: 2
   };
   card3 : Card = { //these 2 need to move to individual card component eventually and be made dynamic
     id: 3,
     name: "Vidav",
-    attack: 10,
+    hp: 10,
+    max_hp: 10,
+    mugic_counter: 3,
+    tribe: '',
+    class: '',
+    abilities: {},
+    elements: {},
+    stats: {},
+    card: '',
     picture: "./assets/pictures/Vidav_Picture.png",
     player: 1
   };
   card4 : Card = {
     id: 4,
     name: "H'earing",
-    attack: 10,
+    hp: 10,
+    max_hp: 10,
+    mugic_counter: 3,
+    tribe: '',
+    class: '',
+    abilities: {},
+    elements: {},
+    stats: {},
+    card: '',
     picture: "./assets/pictures/H'earing_Picture.png",
     player: 2
   };
   card5 : Card = {
     id: 5,
     name: "Dractyl",
-    attack: 10,
+    hp: 10,
+    max_hp: 10,
+    mugic_counter: 3,
+    tribe: '',
+    class: '',
+    abilities: {},
+    elements: {},
+    stats: {},
+    card: '',
     picture: "./assets/pictures/Dractyl_Picture.png",
     player: 1
   };
   card6 : Card = {
     id: 6,
     name: "Pyrithion",
-    attack: 10,
+    hp: 10,
+    max_hp: 10,
+    mugic_counter: 3,
+    tribe: '',
+    class: '',
+    abilities: {},
+    elements: {},
+    stats: {},
+    card: '',
     picture: "./assets/pictures/Pyrithion_Picture.png",
     player: 2
   };
@@ -158,34 +206,40 @@ cards: Card[][][] = [ //All cards
     
 
     const dialogRef = this.dialog.open(DialogComponent, {
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      height: '100%',
+      width: '100%',
       data: { //Maybe don't need this anymore since I'm using service
         defender : event.container.data,
         attacker : event.previousContainer.data
-      }
+      },
     });
 
     dialogRef.afterClosed().subscribe(result => { //don't fully understand how this works really, ask Alan
 
-
-
-      transferArrayItem( //transfer loser
-        this.battleService.getBattleResult() ? event.container.data : event.previousContainer.data ,
-        this.discard,
-        event.previousIndex,
-        event.currentIndex
-      );
-
-      if (this.battleService.getBattleResult()){
-        transferArrayItem( //transfer winner
-          event.previousContainer.data,
-          event.container.data,        
+      
+      if (result.battleOccurred){ // Good place for observer if battle happened maybe?
+        transferArrayItem( //transfer loser
+          this.battleService.getBattleResult() ? event.container.data : event.previousContainer.data ,
+          this.discard,
           event.previousIndex,
-          event.currentIndex
+          this.discard.length + 1
         );
-      }
-
-      this.battleService.resetWinner();
-      this.battleService.resetLoser();
+  
+        if (this.battleService.getBattleResult()){
+          transferArrayItem( //transfer winner
+            event.previousContainer.data,
+            event.container.data,        
+            event.previousIndex,
+            event.currentIndex
+          );
+        }
+  
+        this.battleService.resetWinner();
+        this.battleService.resetLoser();
+      } 
+      
     })
   }
 

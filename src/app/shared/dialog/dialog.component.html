@@ -1,22 +1,46 @@
-<h2 mat-dialog-title class="title">
-  Battle
-</h2>
-<mat-dialog-content class="mat-typography body">
-  <p>Who wins the bout?</p>
-  <div class="player1">
-    <p>
-      On Attack: {{attacker.name}}
-    </p>
-     <img class="card-image" [src]="attacker.picture">
-  </div>
-  <div class="player2">
-    <p>
-      On defence: {{defender.name}}
-    </p>
-    <img class="card-image" [src]="defender.picture">
+<div mat-dialog-title class="body">
+  <h2>Battle</h2><br>
+  <p>Player {{currentPlayerTurn()}}'s' Turn</p>
+</div>
+<mat-dialog-content class="mat-typography">
+  <div class="cardzone">
+    <div class="player1">
+      <p>
+        Mugic
+        <br>
+        {{attacker.mugic_counter}}
+      </p>
+    </div>
+    <div class="player1">
+      <p>
+        Attacker
+        <br>
+        {{attacker.name}}
+        <br>
+        HP : {{attacker.hp}}
+      </p>
+      <img class="card-image" [src]="attacker.picture">
+    </div>
+    <div class="player2">
+      <p>
+        Defender
+        <br>
+        {{defender.name}}
+        <br>
+        HP : {{defender.hp}}
+      </p>
+      <img class="card-image" [src]="defender.picture">
+    </div>
+    <div class="player2">
+      <p>
+        Mugic
+        <br>
+        {{defender.mugic_counter}}
+      </p>
+    </div>
   </div>
 </mat-dialog-content>
-<mat-dialog-actions align="end" class="actions">
-  <button class="player1" mat-button mat-dialog-close (click)="AttackWon()">{{attacker.name}}</button>
-  <button class="player2" mat-button mat-dialog-close (click)="DefenceWon()">{{defender.name}}</button>
-</mat-dialog-actions>
+<!-- <mat-dialog-actions align="end" class="actions"> -->
+  <!-- <button class="player1" mat-button mat-dialog-close (click)="AttackWon()">{{attacker.name}}</button>
+  <button class="player2" mat-button mat-dialog-close (click)="DefenceWon()">{{defender.name}}</button> -->
+<!-- </mat-dialog-actions> -->
