@@ -1,0 +1,32 @@
+.title {
+    text-align: center;
+}
+
+.body {
+    text-align: center;
+    display: inline;
+}
+
+.player1 {
+    float: left;
+    margin-right: 50px;
+    margin-left: 10px;
+}
+
+.player2 {
+    float: right;
+    margin-left: 50px;
+    margin-right: 10px;
+}
+
+.card-image {
+    width: 150px;
+    height: 125px;
+    opacity: 100%;
+    border-radius: 4px;
+  }
+
+.actions {
+    text-align: center;
+    display: inline;
+}

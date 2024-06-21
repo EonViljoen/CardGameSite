@@ -1,0 +1,54 @@
+<div class="example-boundary" cdkDropListGroup>
+  <div class="left-side-container">
+    @for (card of cards[0]; track card) {
+      <div 
+        cdkDropList
+        class="example-list-left"
+        [cdkDropListData]="card"
+        (cdkDropListDropped)="drop($event)"
+        >
+        @for (item of card; track item) {
+          <mat-card class="example-box" cdkDragBoundary=".example-boundary" cdkDrag  >
+            <img mat-card-image class="card-image" [src]="item.picture">
+          </mat-card>
+        }
+      </div>
+     }
+  </div>
+  <div class="right-side-container">
+    @for (card of cards[1]; track card) {
+      <div 
+        cdkDropList
+        class="example-list-right"
+        [cdkDropListData]="card"
+        (cdkDropListDropped)="drop($event)"
+        >
+        @for (item of card; track item) {
+          <mat-card class="example-box" cdkDragBoundary=".example-boundary" cdkDrag  >
+            <img mat-card-image class="card-image" [src]="item.picture">
+          </mat-card>
+        }
+      </div>
+     }
+  </div>
+</div>
+<div class="bottom-row">
+    <div class="discard" cdkDropList
+      [cdkDropListData]="discard"
+    >
+    @for (item of discard; track item) {
+      <mat-card class="example-box" cdkDragBoundary=".example-boundary" cdkDrag>
+        <img mat-card-image class="card-image" [src]="item.picture">
+      </mat-card>
+    }
+    </div>
+    <div class="recycle">
+      <p>recycle-pile</p>
+    </div>
+    <div class="hand">
+      <p>hand</p>
+    </div>
+    <div class="draw">
+      <p>draw-pile</p>
+    </div>
+</div>
