@@ -8,8 +8,8 @@ export interface Card {
     mugic_counter: number;
     tribe: string;
     class: string;
-    stats: {};
-    elements: {};
-    abilities: {};
+    stats: { [key: string]: number };
+    elements: { [key: string]: boolean };
+    abilities: { [key: number]: string };
     player: number;
 }

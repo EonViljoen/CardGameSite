@@ -16,9 +16,14 @@ export class BattleService {
         mugic_counter: 0,
         class: '',
         tribe: '',
-        abilities: {},
+        stats: {
+            'courage': 0,
+            'power': 0,
+            'speed': 0,
+            'wisdowm': 0,
+        },
         elements: {},
-        stats: {},
+        abilities: {},
         player: 0
     };
     defender: Card = {
@@ -33,9 +38,16 @@ export class BattleService {
         tribe: '',
         abilities: {},
         elements: {},
-        stats: {},
+        stats: {
+            'courage': 0,
+            'power': 0,
+            'speed': 0,
+            'wisdowm': 0,
+        },
         player: 0
     }; 
+
+    // playersTurn: number = 0;
 
     attackingCard: Card[] = [];
     defendingCard: Card[] = [];
@@ -135,17 +147,13 @@ export class BattleService {
     }
 
     setWinner(winner: Card){
-        // console.log('set winner in service called');
-        // console.log(this.winner());
-        this.winner.set(winner); // doesn't seem to work how I think it works
-        // console.log('set winner in service being exited');
+        this.winner.set(winner);
     }
 
     setLoser(loser: Card
         // , whoLost: string
     ){
         this.loser.set(loser);
-        // this.loserCard.set(whoLost);
     }
 
     setAttackingCard(card: Card[]){

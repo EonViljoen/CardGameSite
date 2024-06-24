@@ -31,7 +31,7 @@
         }
       </p>
       @for (ability of object2Array(attacker.abilities); track ability) {
-        <button mat-button (click)="useAbility(ability.value, attacker)">
+        <button mat-button (click)="useAbility(ability.value, attacker)" [disabled]="attacker.player == currentPlayerTurn() ? false : true">
         {{ability.value}}
         </button>
       } 
@@ -56,7 +56,7 @@
         }
       </p>
       @for (ability of object2Array(defender.abilities); track ability) {
-        <button mat-button (click)="useAbility(ability.value, defender)">
+        <button mat-button (click)="useAbility(ability.value, defender)" [disabled]="defender.player == currentPlayerTurn() ? false : true">
         {{ability.value}}
         </button>
       } 

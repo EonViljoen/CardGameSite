@@ -28,11 +28,14 @@ export class DialogComponent { //this should probably be change to battle dialog
   {
     this.attacker = this.battleService.getAttacker();
     this.defender = this.battleService.getDefender();
-    
+
+    this.currentPlayerTurn.set(
+      this.attacker.stats['speed'] > this.defender.stats['speed'] ? this.attacker.player : this.defender.player 
+    );    
   }
 
   ngOnInit() {
-    this.dialogRef.updateSize('80%', '80%');
+    this.dialogRef.updateSize('80%', '80%'); 
 }
 
   // AttackWon() { 
@@ -52,6 +55,7 @@ export class DialogComponent { //this should probably be change to battle dialog
   //       battleOccurred: true
   //     })
   //   }
+
 
     BattleResults(winner: Card, loser: Card){
       // let winner = player.id === this.attacker.id ? this.attacker : this.defender
@@ -103,6 +107,8 @@ export class DialogComponent { //this should probably be change to battle dialog
           user.mugic_counter -= 1;
         }
       }
+
+      this.currentPlayerTurn.set(target.player)
 
       // ability 
       // 0 - action

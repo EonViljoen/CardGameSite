@@ -53,7 +53,7 @@ export class GameBoardComponent {
       'courage': 100,
       'power': 100,
       'wisdom': 80,
-      'speed': 50,
+      'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
     },
     card: '',
     picture: "./assets/pictures/Maxxor_Picture.png",
@@ -81,7 +81,7 @@ export class GameBoardComponent {
       'courage': 100,
       'power': 100,
       'wisdom': 80,
-      'speed': 50,
+      'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
     },
     card: '',
     picture: "./assets/pictures/Chaor_Picture.png",
@@ -109,7 +109,7 @@ export class GameBoardComponent {
       'courage': 100,
       'power': 100,
       'wisdom': 80,
-      'speed': 50,
+      'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
     },
     card: '',
     picture: "./assets/pictures/Vidav_Picture.png",
@@ -137,7 +137,7 @@ export class GameBoardComponent {
       'courage': 100,
       'power': 100,
       'wisdom': 80,
-      'speed': 50,
+      'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
     },
     card: '',
     picture: "./assets/pictures/H'earing_Picture.png",
@@ -165,7 +165,7 @@ export class GameBoardComponent {
       'courage': 100,
       'power': 100,
       'wisdom': 80,
-      'speed': 50,
+      'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
     },
     card: '',
     picture: "./assets/pictures/Dractyl_Picture.png",
@@ -193,7 +193,7 @@ export class GameBoardComponent {
       'courage': 100,
       'power': 100,
       'wisdom': 80,
-      'speed': 50,
+      'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
     },
     card: '',
     picture: "./assets/pictures/Pyrithion_Picture.png",
@@ -304,20 +304,19 @@ cards: Card[][][] = [ //All cards
       
       if (result.battleOccurred){ // Good place for observer if battle happened maybe?
         transferArrayItem( //transfer loser
-          this.battleService.getBattleResult() ? event.container.data : event.previousContainer.data ,
+          result.loser.id === event.container.data.at(0)?.id ? event.container.data : event.previousContainer.data ,
           this.discard,
           event.previousIndex,
           this.discard.length + 1
         );
-  
-        if (this.battleService.getBattleResult()){
+
           transferArrayItem( //transfer winner
             event.previousContainer.data,
             event.container.data,        
             event.previousIndex,
             event.currentIndex
           );
-        }
+        
   
         this.battleService.resetWinner();
         this.battleService.resetLoser();
