@@ -48,7 +48,13 @@
     <div class="hand">
       <p>hand</p>
     </div>
-    <div class="draw">
-      <p>draw-pile</p>
+    <div class="draw" cdkDropList
+    [cdkDropListData]="draw"
+    >
+    @for (item of draw; track item) {
+      <mat-card class="example-box" cdkDragBoundary=".example-boundary" cdkDrag>
+        <img mat-card-image class="card-image draw-card" src="./assets/logo.png">
+      </mat-card>
+    }
     </div>
 </div>

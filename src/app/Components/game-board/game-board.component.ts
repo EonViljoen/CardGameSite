@@ -8,6 +8,7 @@ import { DialogComponent } from '../../shared/dialog/dialog.component';
 import { BattleService } from '../../shared/services/battle.service';
 import { Game } from '../../Interfaces/game';
 import { Player } from '../../Interfaces/player';
+import { v4 as uuidv4 } from 'uuid';
 
 
 @Component({
@@ -31,91 +32,169 @@ export class GameBoardComponent {
 
 
   card1 : Card = { //these 2 need to move to individual card component eventually and be made dynamic
-    id: 1,
+    id: uuidv4(),
     name: "Maxxor",
-    hp: 10,
-    max_hp: 10,
+    hp: 100,
+    max_hp: 100,
     mugic_counter: 3,
     tribe: '',
     class: '',
-    abilities: {},
-    elements: {},
-    stats: {},
+    abilities: {
+      0: 'Attack | 50 | x',
+      1: 'Mugic Heal |  x | 1',
+    },
+    elements: {
+      'fire': true,
+      'earth' : true,
+      'water' : true,
+      'air' : true,
+    },
+    stats: {
+      'courage': 100,
+      'power': 100,
+      'wisdom': 80,
+      'speed': 50,
+    },
     card: '',
     picture: "./assets/pictures/Maxxor_Picture.png",
     player: 1
   };
   card2 : Card = {
-    id: 2,
+    id: uuidv4(),
     name: "Chaor",
-    hp: 10,
-    max_hp: 10,
+    hp: 100,
+    max_hp: 100,
     mugic_counter: 3,
     tribe: '',
     class: '',
-    abilities: {},
-    elements: {},
-    stats: {},
+    abilities: {
+      0: 'Attack | 50 | x',
+      1: 'Mugic Heal |  x | 1',
+    },
+    elements: {
+      'fire': true,
+      'earth' : true,
+      'water' : true,
+      'air' : true,
+    },
+    stats: {
+      'courage': 100,
+      'power': 100,
+      'wisdom': 80,
+      'speed': 50,
+    },
     card: '',
     picture: "./assets/pictures/Chaor_Picture.png",
     player: 2
   };
   card3 : Card = { //these 2 need to move to individual card component eventually and be made dynamic
-    id: 3,
+    id: uuidv4(),
     name: "Vidav",
-    hp: 10,
-    max_hp: 10,
+    hp: 100,
+    max_hp: 100,
     mugic_counter: 3,
     tribe: '',
     class: '',
-    abilities: {},
-    elements: {},
-    stats: {},
+    abilities: {
+      0: 'Attack | 50 | x',
+      1: 'Mugic Heal |  x | 1',
+    },
+    elements: {
+      'fire': true,
+      'earth' : true,
+      'water' : true,
+      'air' : true,
+    },
+    stats: {
+      'courage': 100,
+      'power': 100,
+      'wisdom': 80,
+      'speed': 50,
+    },
     card: '',
     picture: "./assets/pictures/Vidav_Picture.png",
     player: 1
   };
   card4 : Card = {
-    id: 4,
+    id: uuidv4(),
     name: "H'earing",
-    hp: 10,
-    max_hp: 10,
+    hp: 100,
+    max_hp: 100,
     mugic_counter: 3,
     tribe: '',
     class: '',
-    abilities: {},
-    elements: {},
-    stats: {},
+    abilities: {
+      0: 'Attack | 50 | x',
+      1: 'Mugic Heal |  x | 1',
+    },
+    elements: {
+      'fire': true,
+      'earth' : true,
+      'water' : true,
+      'air' : true,
+    },
+    stats: {
+      'courage': 100,
+      'power': 100,
+      'wisdom': 80,
+      'speed': 50,
+    },
     card: '',
     picture: "./assets/pictures/H'earing_Picture.png",
     player: 2
   };
   card5 : Card = {
-    id: 5,
+    id: uuidv4(),
     name: "Dractyl",
-    hp: 10,
-    max_hp: 10,
+    hp: 100,
+    max_hp: 100,
     mugic_counter: 3,
     tribe: '',
     class: '',
-    abilities: {},
-    elements: {},
-    stats: {},
+    abilities: {
+      0: 'Attack | 50 | x',
+      1: 'Mugic Heal |  x | 1',
+    },
+    elements: {
+      'fire': true,
+      'earth' : true,
+      'water' : true,
+      'air' : true,
+    },
+    stats: {
+      'courage': 100,
+      'power': 100,
+      'wisdom': 80,
+      'speed': 50,
+    },
     card: '',
     picture: "./assets/pictures/Dractyl_Picture.png",
     player: 1
   };
   card6 : Card = {
-    id: 6,
+    id: uuidv4(),
     name: "Pyrithion",
-    hp: 10,
-    max_hp: 10,
+    hp: 100,
+    max_hp: 100,
     mugic_counter: 3,
     tribe: '',
     class: '',
-    abilities: {},
-    elements: {},
-    stats: {},
+    abilities: {
+      0: 'Attack | 50 | x',
+      1: 'Mugic Heal |  x | 1',
+    },
+    elements: {
+      'fire': true,
+      'earth' : true,
+      'water' : true,
+      'air' : true,
+    },
+    stats: {
+      'courage': 100,
+      'power': 100,
+      'wisdom': 80,
+      'speed': 50,
+    },
     card: '',
     picture: "./assets/pictures/Pyrithion_Picture.png",
     player: 2
@@ -160,6 +239,9 @@ cards: Card[][][] = [ //All cards
 ]
 
   discard : Card[] = [];
+  draw: number[] = [
+    1,2,3
+  ];
   // hand1 : Card[] = [];
   // hand2 : Card[] = [];
   // player1 : Player = {}
@@ -181,8 +263,9 @@ cards: Card[][][] = [ //All cards
   }
 
   drop(event: CdkDragDrop<Card[]>) {
-    if (event.container.data.length){
-      if (event.container.data.at(0)?.id !== event.item.dropContainer.data.at(0).id && event.container.data.at(0)?.player !== event.item.dropContainer.data.at(0).player){ // they fight, loser moves to discard pile and winner takes that spot
+    if (event.container.data.length){// they fight, loser moves to discard pile and winner takes that spot
+      if (event.container.data.at(0)?.id !== event.item.dropContainer.data.at(0).id && //check that it's not the same spot
+      event.container.data.at(0)?.player !== event.item.dropContainer.data.at(0).player){ //check that it's not the same team
         this.openDialog(event);
       }
     }
@@ -206,7 +289,7 @@ cards: Card[][][] = [ //All cards
     
 
     const dialogRef = this.dialog.open(DialogComponent, {
-      maxWidth: '100vw',
+      maxWidth: '100vw', //review these 4 to see which is actually needed
       maxHeight: '100vh',
       height: '100%',
       width: '100%',

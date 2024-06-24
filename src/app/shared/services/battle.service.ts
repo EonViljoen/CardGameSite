@@ -7,7 +7,7 @@ import { Card } from '../../Interfaces/card';
 
 export class BattleService {
     attacker: Card = {
-        id: 0,
+        id: '',
         name: '',
         picture: '',
         card: '',
@@ -22,7 +22,7 @@ export class BattleService {
         player: 0
     };
     defender: Card = {
-        id: 0,
+        id: '',
         name: '',
         picture: '',
         card: '',
@@ -41,7 +41,7 @@ export class BattleService {
     defendingCard: Card[] = [];
 
     winner = signal<Card>({
-        id: 0,
+        id: '',
         name: '',
         picture: '',
         card: '',
@@ -59,7 +59,7 @@ export class BattleService {
     // also lok at using this for health points
 
     loser = signal<Card>({
-        id: 0,
+        id: '',
         name: '',
         picture: '',
         card: '',
@@ -74,7 +74,7 @@ export class BattleService {
         player: 0
     }); //need to research signal more
 
-    loserCard = signal<string>(''); //Check if this is even needed
+    // loserCard = signal<string>(''); //Check if this is even needed
 
     successfulAttack = signal<boolean>(false);
 
@@ -122,13 +122,13 @@ export class BattleService {
         return this.winner();
     }
 
-    getLoser(){
-        return this.loser();
-    }
+    // getLoser(){
+    //     return this.loser();
+    // }
 
-    getLoserIndicator(){
-        return this.loserCard();
-    }
+    // getLoserIndicator(){
+    //     return this.loserCard();
+    // }
 
     getBattleResult(){
         return this.successfulAttack();
@@ -141,9 +141,11 @@ export class BattleService {
         // console.log('set winner in service being exited');
     }
 
-    setLoser(loser: Card, whoLost: string){
+    setLoser(loser: Card
+        // , whoLost: string
+    ){
         this.loser.set(loser);
-        this.loserCard.set(whoLost);
+        // this.loserCard.set(whoLost);
     }
 
     setAttackingCard(card: Card[]){
@@ -160,7 +162,7 @@ export class BattleService {
 
     resetWinner(){
         this.winner.set({
-            id: 0,
+            id: '',
             name: '',
             picture: '',
             card: '',
@@ -178,7 +180,7 @@ export class BattleService {
 
     resetLoser(){
         this.loser.set({
-            id: 0,
+            id: '',
             name: '',
             picture: '',
             card: '',

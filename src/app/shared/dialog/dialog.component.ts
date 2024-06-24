@@ -21,6 +21,7 @@ export class DialogComponent { //this should probably be change to battle dialog
   readonly attacker : Card;
   readonly defender : Card;
   currentPlayerTurn = signal<number>(1);
+
   // winner = signal;
   
   constructor()
@@ -34,22 +35,78 @@ export class DialogComponent { //this should probably be change to battle dialog
     this.dialogRef.updateSize('80%', '80%');
 }
 
-  AttackWon() { 
-    this.battleService.setWinner(this.battleService.getAttacker());
-    this.battleService.setLoser(this.battleService.getDefender(), 'Defence');
-    this.battleService.setSuccessfulAttack(true);
-    this.dialogRef.close({
-      battleOccurred: true
-    })
+  // AttackWon() { 
+  //     this.battleService.setWinner(this.battleService.getAttacker());
+  //     this.battleService.setLoser(this.battleService.getDefender());
+  //     this.battleService.setSuccessfulAttack(true);
+  //     this.dialogRef.close({
+  //       battleOccurred: true
+  //     })
+  //   }
+
+  // DefenceWon() {
+  //     this.battleService.setWinner(this.battleService.getDefender());
+  //     this.battleService.setLoser(this.battleService.getAttacker());
+  //     this.battleService.setSuccessfulAttack(false);
+  //     this.dialogRef.close({
+  //       battleOccurred: true
+  //     })
+  //   }
+
+    BattleResults(winner: Card, loser: Card){
+      // let winner = player.id === this.attacker.id ? this.attacker : this.defender
+      // let loser = player.id === this.attacker.id ? this.attacker : this.defender
+
+      this.battleService.setWinner(winner);
+      this.battleService.setLoser(loser);
+
+      this.dialogRef.close({
+        battleOccurred: true,
+        loser: loser
+      })
     }
 
-  DefenceWon() {
-    this.battleService.setWinner(this.battleService.getDefender());
-    this.battleService.setLoser(this.battleService.getAttacker(), 'Attack');
-    this.battleService.setSuccessfulAttack(false);
-    this.dialogRef.close({
-      battleOccurred: true
-    })
+    CalculateHeal(user: Card){
+      let currentHealth = user.hp;
+
+      if (user.max_hp - currentHealth > 50){
+        user.hp += 50
+      }
+      else {
+        user.hp = user.max_hp
+      }
     }
 
+    object2Array(obj: Object){
+      return Object.entries(obj).map(([key, value]) => ({key, value}));
+    }
+
+    useAbility(value: string, player: Card){ //offboard most of this to service, also use this as blueprint for card effects maybe
+      let ability: string[] = value.split('|').map(item => item.trim());
+
+      let user = player.id === this.attacker.id ? this.attacker : this.defender
+      let target = player.id === this.attacker.id ? this.defender : this.attacker
+
+      if (ability[0] === 'Attack'){
+
+        target.hp -= +ability[1];
+
+        if (target.hp <= 0){
+          this.BattleResults(user, target)
+        }
+      }
+      else if (ability[0] === 'Mugic Heal'){
+        if (user.mugic_counter > 0){
+          user.hp += 50;
+
+          this.CalculateHeal(user);
+          user.mugic_counter -= 1;
+        }
+      }
+
+      // ability 
+      // 0 - action
+      // 1 - quantity
+      // 2 - cost
+    }
 }

@@ -20,6 +20,21 @@
         HP : {{attacker.hp}}
       </p>
       <img class="card-image" [src]="attacker.picture">
+      <p>
+        @for (stat of object2Array(attacker.stats); track stat) {
+        | {{stat.key}} : {{stat.value}} |
+        }
+      </p>
+      <p>
+        @for (element of object2Array(attacker.elements); track element) {
+        | {{element.key}} : {{element.value ? 'o' : 'x'}} |
+        }
+      </p>
+      @for (ability of object2Array(attacker.abilities); track ability) {
+        <button mat-button (click)="useAbility(ability.value, attacker)">
+        {{ability.value}}
+        </button>
+      } 
     </div>
     <div class="player2">
       <p>
@@ -30,6 +45,21 @@
         HP : {{defender.hp}}
       </p>
       <img class="card-image" [src]="defender.picture">
+      <p>
+        @for (stat of object2Array(defender.stats); track stat) {
+        | {{stat.key}} : {{stat.value}} |
+        }
+      </p>
+      <p>
+        @for (element of object2Array(defender.elements); track element) {
+        | {{element.key}} : {{element.value ? 'o' : 'x'}} |
+        }
+      </p>
+      @for (ability of object2Array(defender.abilities); track ability) {
+        <button mat-button (click)="useAbility(ability.value, defender)">
+        {{ability.value}}
+        </button>
+      } 
     </div>
     <div class="player2">
       <p>
@@ -40,7 +70,7 @@
     </div>
   </div>
 </mat-dialog-content>
-<!-- <mat-dialog-actions align="end" class="actions"> -->
-  <!-- <button class="player1" mat-button mat-dialog-close (click)="AttackWon()">{{attacker.name}}</button>
-  <button class="player2" mat-button mat-dialog-close (click)="DefenceWon()">{{defender.name}}</button> -->
-<!-- </mat-dialog-actions> -->
+<mat-dialog-actions align="end" class="actions">
+  <!-- <button class="" mat-button mat-dialog-close (click)="AttackWon()">{{attacker.name}}</button>
+  <button class="" mat-button mat-dialog-close (click)="DefenceWon()">{{defender.name}}</button> -->
+</mat-dialog-actions>
