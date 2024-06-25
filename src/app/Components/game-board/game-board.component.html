@@ -8,9 +8,7 @@
         (cdkDropListDropped)="drop($event)"
         >
         @for (item of card; track item) {
-          <mat-card class="example-box" cdkDragBoundary=".example-boundary" cdkDrag  >
-            <img mat-card-image class="card-image" [src]="item.picture">
-          </mat-card>
+          <app-card [picture]="item.picture"></app-card>
         }
       </div>
      }
@@ -24,9 +22,7 @@
         (cdkDropListDropped)="drop($event)"
         >
         @for (item of card; track item) {
-          <mat-card class="example-box" cdkDragBoundary=".example-boundary" cdkDrag  >
-            <img mat-card-image class="card-image" [src]="item.picture">
-          </mat-card>
+          <app-card [picture]="item.picture"></app-card>
         }
       </div>
      }

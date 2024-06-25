@@ -9,14 +9,15 @@ import { BattleService } from '../../shared/services/battle.service';
 import { Game } from '../../Interfaces/game';
 import { Player } from '../../Interfaces/player';
 import { v4 as uuidv4 } from 'uuid';
+import { CardComponent } from "../card/card.component";
 
 
 @Component({
-  selector: 'app-game-board',
-  standalone: true,
-  imports: [CdkDrag, CdkDragPreview, MatCardModule, CdkDropListGroup, CdkDropList, ],
-  templateUrl: './game-board.component.html',
-  styleUrl: './game-board.component.scss'
+    selector: 'app-game-board',
+    standalone: true,
+    templateUrl: './game-board.component.html',
+    styleUrl: './game-board.component.scss',
+    imports: [CdkDrag, CdkDragPreview, MatCardModule, CdkDropListGroup, CdkDropList, CardComponent]
 })
 
 export class GameBoardComponent {
@@ -24,14 +25,12 @@ export class GameBoardComponent {
   private battleService = inject(BattleService);
 
   // TODO:
-  // Fix weird one player placement thing - Done
-  // Make battle screen more interactive and actually cool (attack, abilities, mugic counter)
   // Fix CSS and make it more dynamic
   // Move cards to actual component
   // Do strike cards and merge hand with dialog
 
 
-  card1 : Card = { //these 2 need to move to individual card component eventually and be made dynamic
+  card1 : Card = { //these  need to move to individual card component eventually and be made dynamic
     id: uuidv4(),
     name: "Maxxor",
     hp: 100,
