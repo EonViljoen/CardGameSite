@@ -343,13 +343,16 @@ export class GameBoardComponent {
 
   // }
 
-  discardCard(card: Mugic_Card | Strike_Card){
+  discardCard(card: Mugic_Card | Strike_Card, index: number){
+    console.log(index)
 
     if (card.type === 'Strike'){
-      this.recyclePile.unshift(this.hand.splice(0,1));
+      this.recyclePile.push(this.hand.find(x => x.id === card.id));
+      this.hand.splice(index,1);
     }
     else {
-      this.discardPile.unshift(this.hand.splice(0,1));
+      this.discardPile.push(this.hand.find(x => x.id === card.id));
+      this.hand.splice(index,1);
     } 
   }
 

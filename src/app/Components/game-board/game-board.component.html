@@ -56,15 +56,15 @@
     cdkDropListOrientation="horizontal"
     (cdkDropListDropped)="arrangeHand($event)"
     >
-      @for (card of hand; track card) {
+      @for (card of hand; track card; let i = $index) {
         <mat-card class="hand-box" cdkDrag>
           <img mat-card-image class="card-image" [src]="card.picture"  
           [matTooltip]="card.name" matTooltipPosition="above"
-          (click)="discardCard(card)">
+          (click)="discardCard(card, i)">
         </mat-card>
       }
     </div>
-    
+
     <div class="draw" cdkDropList
     [cdkDropListData]="drawPile"
     >
