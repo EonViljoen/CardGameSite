@@ -1,9 +1,9 @@
-.example-box {
+.example-box { //have to change these example names still
     // width: 100px;
     // height: 100px;
     // border: solid 1px #ccc;
     // color: rgba(0, 0, 0, 0.87);
-    cursor: move;
+    // cursor: grab;
     // display: inline-flex; // dont think this is needed
     // justify-content: center;
     align-items: center;
@@ -161,17 +161,31 @@
 
   .hand {
     margin-right: 1%;
-    width: 750px;
+    // width: 750px;
     height: 125px;
     border: solid #ccc 3px;  
   }
+  
+  .hand-list {
+    display: flex;
+    flex-direction: row;
+  }
 
-  .draw {
+  .hand-box {
+    padding: 2px;
+    display: flex;
+    flex-direction: row;
+    cursor: grab;
+  }
+
+  .draw { //make this always lay on right side maybe
     width: 150px;
     height: 125px;
     border: solid #ccc 3px;  
+    background: gray;
   }
 
   .draw-card {
     background-color: rgb(54, 54, 54);
+    cursor: pointer;
   }

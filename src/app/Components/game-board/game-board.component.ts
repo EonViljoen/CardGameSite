@@ -10,6 +10,8 @@ import { Game } from '../../Interfaces/game';
 import { Player } from '../../Interfaces/player';
 import { v4 as uuidv4 } from 'uuid';
 import { CardComponent } from "../card/card.component";
+import { Mugic_Card } from '../../Interfaces/mugic_card';
+import { Strike_Card } from '../../Interfaces/strike_card';
 
 
 @Component({
@@ -17,18 +19,18 @@ import { CardComponent } from "../card/card.component";
     standalone: true,
     templateUrl: './game-board.component.html',
     styleUrl: './game-board.component.scss',
-    imports: [CdkDrag, CdkDragPreview, MatCardModule, CdkDropListGroup, CdkDropList, CardComponent]
+    imports: [CdkDrag, CdkDragPreview, MatCardModule, CdkDropListGroup, CdkDropList, CardComponent, MatTooltipModule]
 })
 
 export class GameBoardComponent {
+
   readonly dialog = inject(MatDialog);
   private battleService = inject(BattleService);
 
-  // TODO:
-  // Fix CSS and make it more dynamic
-  // Move cards to actual component
-  // Do strike cards and merge hand with dialog
-
+  ngOnInit(){
+    this.mugic_cards.map(card => this.hand.push(card));
+    this.strike_cards.map(card => this.drawPile.push(card));
+  }
 
   card1 : Card = { //these  need to move to individual card component eventually and be made dynamic
     id: uuidv4(),
@@ -55,7 +57,7 @@ export class GameBoardComponent {
       'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
     },
     card: '',
-    picture: "./assets/pictures/Maxxor_Picture.png",
+    picture: "./assets/pictures/Creatures/Overworlder/Maxxor_Picture.png",
     player: 1
   };
   card2 : Card = {
@@ -83,7 +85,7 @@ export class GameBoardComponent {
       'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
     },
     card: '',
-    picture: "./assets/pictures/Chaor_Picture.png",
+    picture: "./assets/pictures/Creatures/Underworlder/Chaor_Picture.png",
     player: 2
   };
   card3 : Card = { //these 2 need to move to individual card component eventually and be made dynamic
@@ -111,7 +113,7 @@ export class GameBoardComponent {
       'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
     },
     card: '',
-    picture: "./assets/pictures/Vidav_Picture.png",
+    picture: "./assets/pictures/Creatures/Overworlder/Vidav_Picture.png",
     player: 1
   };
   card4 : Card = {
@@ -139,7 +141,7 @@ export class GameBoardComponent {
       'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
     },
     card: '',
-    picture: "./assets/pictures/H'earing_Picture.png",
+    picture: "./assets/pictures/Creatures/Underworlder/H'earing_Picture.png",
     player: 2
   };
   card5 : Card = {
@@ -167,7 +169,7 @@ export class GameBoardComponent {
       'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
     },
     card: '',
-    picture: "./assets/pictures/Dractyl_Picture.png",
+    picture: "./assets/pictures/Creatures/Overworlder/Dractyl_Picture.png",
     player: 1
   };
   card6 : Card = {
@@ -195,7 +197,7 @@ export class GameBoardComponent {
       'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
     },
     card: '',
-    picture: "./assets/pictures/Pyrithion_Picture.png",
+    picture: "./assets/pictures/Creatures/Underworlder/Pyrithion_Picture.png",
     player: 2
   };
 
@@ -224,23 +226,107 @@ export class GameBoardComponent {
 
 
 
-cards: Card[][][] = [ //All cards
-    [ //a player's cards
-      [this.card1], //single instance of card (needs to be list due to hoe cdkDrop works)
-      [this.card3],
-      [this.card5]
-    ],
-    [
-      [this.card2],
-      [this.card4],
-      [this.card6],
-    ]
-]
-
-  discard : Card[] = [];
-  draw: number[] = [
-    1,2,3
+  cards: Card[][][] = [ //All cards
+      [ //a player's cards
+        [this.card1], //single instance of card (needs to be list due to hoe cdkDrop works)
+        [this.card3],
+        [this.card5]
+      ],
+      [
+        [this.card2],
+        [this.card4],
+        [this.card6],
+      ]
   ];
+
+  mugic_cards : Mugic_Card[] = [
+    {
+      id: uuidv4(),
+      name: 'Canon of Casualty',
+      type: 'Mugic',
+      tribe: 'Underworld',
+      cost: 1,
+      effect: '',
+      picture: `./assets/pictures/Mugic/Underworld/Canon_of_Casualty_Picture.png`
+    },
+    {
+      id: uuidv4(),
+      name: 'Song of Stasis',
+      type: 'Mugic',
+      tribe: 'Overworld',
+      cost: 1,
+      effect: '',
+      picture: `./assets/pictures/Mugic/Overworld/Song_of_Stasis_Picture.png`
+    },
+    {
+      id: uuidv4(),
+      name: 'Geo Flourish',
+      type: 'Mugic',
+      tribe: 'Generic',
+      cost: 1,
+      effect: '',
+      picture: `./assets/pictures/Mugic/Generic/Geo_Flourish_Picture.png`
+    },
+  ]
+
+  strike_cards: Strike_Card[] = [
+    {
+      id: uuidv4(),
+      name: 'Incinerase',
+      type: 'Strike',
+      cost: 0,
+      attack: 0,
+      additional_attack: {
+        'fire': 10
+      },
+      effect: '',
+      picture: './assets/pictures/Strikes/Incinerase_Picture.png'
+    },
+    {
+      id: uuidv4(),
+      name: 'Ember Swarm',
+      type: 'Strike',
+      cost: 1,
+      attack: 5,
+      additional_attack: {
+        'fire': 5
+      },
+      effect: '',
+      picture: './assets/pictures/Strikes/Ember_Swarm_Picture.png'
+    },
+    {
+      id: uuidv4(),
+      name: 'Pebblestorm',
+      type: 'Strike',
+      cost: 1,
+      attack: 0,
+      additional_attack: {
+        'air': 5,
+        'earth': 5
+      },
+      effect: '',
+      picture: './assets/pictures/Strikes/Pebblestorm_Picture.png'
+    },
+    {
+      id: uuidv4(),
+      name: 'Rustoxic',
+      type: 'Strike',
+      cost: 1,
+      attack: 5,
+      additional_attack: {
+        'water': 5,
+        'earth': 5
+      },
+      effect: '',
+      picture: './assets/pictures/Strikes/Rustoxic_Picture.png'
+    },
+  ]
+
+  discardPile : any[] = [];
+  drawPile: any[] = [];
+  hand: any[] = [];
+  recyclePile : any[] = [];
+
   // hand1 : Card[] = [];
   // hand2 : Card[] = [];
   // player1 : Player = {}
@@ -257,9 +343,19 @@ cards: Card[][][] = [ //All cards
 
   // }
 
-  discardCard(card: Card){
-    this.discard.unshift(card);
+  discardCard(card: Mugic_Card | Strike_Card){
+
+    if (card.type === 'Strike'){
+      this.recyclePile.unshift(this.hand.splice(0,1));
+    }
+    else {
+      this.discardPile.unshift(this.hand.splice(0,1));
+    } 
   }
+
+  DrawCard() {
+      this.hand.push(this.drawPile.pop());
+    }
 
   drop(event: CdkDragDrop<Card[]>) {
     if (event.container.data.length){// they fight, loser moves to discard pile and winner takes that spot
@@ -304,9 +400,9 @@ cards: Card[][][] = [ //All cards
       if (result.battleOccurred){ // Good place for observer if battle happened maybe?
         transferArrayItem( //transfer loser
           result.loser.id === event.container.data.at(0)?.id ? event.container.data : event.previousContainer.data ,
-          this.discard,
+          this.discardPile,
           event.previousIndex,
-          this.discard.length + 1
+          this.discardPile.length + 1
         );
 
           transferArrayItem( //transfer winner
@@ -322,6 +418,14 @@ cards: Card[][][] = [ //All cards
       } 
       
     })
+  }
+
+  arrangeHand(event: CdkDragDrop<Card[]>) {
+    moveItemInArray(
+      this.hand, 
+      event.previousIndex, 
+      event.currentIndex
+    );
   }
 
 }
