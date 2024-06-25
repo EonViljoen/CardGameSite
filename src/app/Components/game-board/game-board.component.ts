@@ -393,7 +393,8 @@ export class GameBoardComponent {
       width: '100%',
       data: { //Maybe don't need this anymore since I'm using service
         defender : event.container.data,
-        attacker : event.previousContainer.data
+        attacker : event.previousContainer.data,
+        hand: this.hand
       },
     });
 

@@ -147,7 +147,7 @@
     margin-right: 1%;
     width: 150px;
     height: 125px;
-    // border: solid #ccc 3px;  
+    border: solid #ccc 3px;  
     background: gray;
     border-radius: 4px;
   }
@@ -157,6 +157,8 @@
     width: 150px;
     height: 125px;
     border: solid #ccc 3px;  
+    background: gray;
+    border-radius: 4px;
   }
 
   .hand {
@@ -164,18 +166,22 @@
     // width: 750px;
     height: 125px;
     border: solid #ccc 3px;  
+    border-radius: 4px;
   }
   
   .hand-list {
     display: flex;
     flex-direction: row;
+    
   }
 
   .hand-box {
-    padding: 2px;
     display: flex;
     flex-direction: row;
     cursor: grab;
+    margin-right: 5px;
+    margin-left: 5px;
+    // background-color: black;
   }
 
   .draw { //make this always lay on right side maybe
@@ -183,6 +189,7 @@
     height: 125px;
     border: solid #ccc 3px;  
     background: gray;
+    border-radius: 4px;
   }
 
   .draw-card {

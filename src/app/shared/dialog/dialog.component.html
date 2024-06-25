@@ -1,5 +1,5 @@
 <div mat-dialog-title class="body">
-  <h2>Battle</h2><br>
+  <p>Battle</p>
   <p>Player {{currentPlayerTurn()}}'s' Turn</p>
 </div>
 <mat-dialog-content class="mat-typography">
@@ -70,6 +70,16 @@
     </div>
   </div>
 </mat-dialog-content>
-<mat-dialog-actions align="end" class="actions">
-  
+<mat-dialog-actions align="center" class="actions">
+  <div class="hand hand-list" cdkDropList
+    [cdkDropListData]="hand"
+    cdkDropListOrientation="horizontal"
+    >
+      @for (card of hand; track card; let i = $index) {
+        <mat-card class="hand-box">
+          <img mat-card-image class="card-image" [src]="card.picture"  
+          >
+        </mat-card>
+      }
+    </div>
 </mat-dialog-actions>

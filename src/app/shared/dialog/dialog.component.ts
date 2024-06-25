@@ -4,12 +4,15 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef} from '@angula
 import { Battle } from '../../Interfaces/battle';
 import { BattleService } from '../services/battle.service';
 import { Card } from '../../Interfaces/card';
+import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList, moveItemInArray, transferArrayItem, CdkDropListGroup} from '@angular/cdk/drag-drop';
+import {MatCardModule} from '@angular/material/card';
+
 
 
 @Component({
   selector: 'app-dialog',
   standalone: true,
-  imports: [MatDialogModule, MatButtonModule],
+  imports: [MatDialogModule, MatButtonModule, CdkDropList, MatCardModule],
   templateUrl: './dialog.component.html',
   styleUrl: './dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,11 +26,13 @@ export class DialogComponent { //this should probably be change to battle dialog
   currentPlayerTurn = signal<number>(1);
 
   // winner = signal;
+  hand: any[] = []
   
   constructor()
   {
     this.attacker = this.battleService.getAttacker();
     this.defender = this.battleService.getDefender();
+    this.hand = this.data.hand;
 
     this.currentPlayerTurn.set(
       this.attacker.stats['speed'] > this.defender.stats['speed'] ? this.attacker.player : this.defender.player 

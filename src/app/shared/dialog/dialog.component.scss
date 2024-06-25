@@ -67,3 +67,21 @@
     text-align: center;
     // display: inline;
 }
+
+.hand {
+    margin-right: 1%;
+    // width: 750px;
+    height: 125px;
+  }
+  
+  .hand-list {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .hand-box {
+    padding: 2px;
+    display: flex;
+    flex-direction: row;
+    cursor: grab;
+  }
