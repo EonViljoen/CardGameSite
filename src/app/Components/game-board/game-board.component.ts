@@ -97,17 +97,17 @@ export class GameBoardComponent {
     tribe: 'Overworld',
     class: '',
     abilities: {
-      // Mugic -  Type of Action ? Restriction  | Target ? Self/Target | Affecting ? specific [Key : Quantity] , ... | Quantity | Criteria ? [Key : Quantity] , ...
+      // Mugic -  Type of Action ? Restriction ? Cost  | Target ? Self/Target | Affecting ? specific [Key : Quantity] , ... | Quantity | Criteria ? [Key : Quantity] , ...
       // Strike - Type of Action ? Restriction  | Target ? Self/Target | Damage with Elements | Affecting ? specific [Key : Quantity] ? Target , ... |  Criteria ? [Key : Quantity] , ...
       // Passives - TBD
       0: ' Mugic ? Overworld ? 1 | Self | HP | +15 | x', 
-      1: ' Mugic ? Generic ? 1 | Target | HP | +15 | Check : Elements ? [Earth : x] , [Water : x] ? OR',
+      1: ' Mugic ? Generic ? 1 | Target | HP | +15 | Check : Elements ? [earth : true] , [water : true] ? OR ? Target',
       2: ' Mugic ? Overworld ? 1 | Target | Movement | Stop | x',
       3: ' Mugic ? Underworld ? 1 | Target | HP | -20 | x',
-      4: ' Strike | Target | 5 : 5: 0: 0: 0 | Stats ? [Wisdom : -25] ? Opposing | Check : Elements ? [Fire : x] ? x', 
-      5: ' Strike | Target | 0 : 10: 0: 0: 0 | Elements ? [Fire : Lose] ? Self | Check : Elements ? [Fire : x] ? x', 
+      4: ' Strike | Target | 5 : 5: 0: 0: 0 | Stats ? [wisdom : -25] ? Opposing | Check : Elements ? [fire : true] ? x ? Self', 
+      5: ' Strike | Target | 0 : 10: 0: 0: 0 | Elements ? [fire : x] ? Self | Check : Elements ? [fire : true] ? x ? Self', 
       6: ' Strike | Target | 0 : 0: 5: 5: 0 | x | x', //
-      7: ' Strike | Target | 5 : 5: 0: 0: 0 | HP ? -10 ? Opposing | Challenge : Stats ? [courage : 15] ? x', 
+      7: ' Strike | Target | 5 : 5: 0: 0: 0 | HP ? -10 ? Opposing | Challenge : Stats ? [courage : 15] ? x ? Self', 
     },
     elements: {
       'fire': true,
@@ -191,13 +191,13 @@ export class GameBoardComponent {
     class: '',
     abilities: {
       0: ' Mugic ? Overworld ? 1 | Self | HP | +15 | x', 
-      1: ' Mugic ? Generic ? 1 | Target | HP | +15 | Check : Elements ? [Earth : x] , [Water : x] ? OR',
+      1: ' Mugic ? Generic ? 1 | Target | HP | +15 | Check : Elements ? [earth : true] , [water : true] ? OR ? Target',
       2: ' Mugic ? Overworld ? 1 | Target | Movement | Stop | x',
       3: ' Mugic ? Underworld ? 1 | Target | HP | -20 | x',
-      4: ' Strike | Target | 5 : 5: 0: 0: 0 | Stats ? [Wisdom : -25] ? Opposing | Check : Elements ? [Fire : x] ? x', 
-      5: ' Strike | Target | 0 : 10: 0: 0: 0 | Elements ? [Fire : Lose] ? Self | Check : Elements ? [Fire : x] ? x', 
+      4: ' Strike | Target | 5 : 5: 0: 0: 0 | Stats ? [wisdom : -25] ? Opposing | Check : Elements ? [fire : true] ? x ? Self', 
+      5: ' Strike | Target | 0 : 10: 0: 0: 0 | Elements ? [fire : x] ? Self | Check : Elements ? [fire : true] ? x ? Self', 
       6: ' Strike | Target | 0 : 0: 5: 5: 0 | x | x', //
-      7: ' Strike | Target | 5 : 5: 0: 0: 0 | HP ? -10 ? Opposing | Challenge : Stats ? [courage : 15] ? x', 
+      7: ' Strike | Target | 5 : 5: 0: 0: 0 | HP ? -10 ? Opposing | Challenge : Stats ? [courage : 15] ? x ? Self', 
     },
     elements: {
       'fire': true,

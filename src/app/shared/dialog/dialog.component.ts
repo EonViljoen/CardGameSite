@@ -95,9 +95,43 @@ export class DialogComponent { //this should probably be change to battle dialog
       // flow = sort of check -> operator -> meet criteria -> set to true if it is met according to operator
 
       if (check[0] === 'Check'){
+        if (check[1] === 'Elements'){
+
+          let statChecks: string[] = parameters[1].split(',').map(item => item.trim()); //have potentially multiple criteria to meet
+          let overAllCheck: boolean;
+
+          let checker: Card = parameters[3] === 'Self' ? user : target;
+
+          statChecks.forEach(stat2Check => {
+            let meet: string[] = stat2Check.substring(1, stat2Check.length-1).split(':').map(item => item.trim());
+            console.log('here?')
+            if (checker.elements[meet[0]] === JSON.parse(meet[1])){ //Do this better later
+              console.log('criteria met')
+              criteriaMet = true;
+            }
+
+            if (parameters[2] !== 'x'){
+              if (!overAllCheck){
+                console.log('in here')
+                overAllCheck = criteriaMet;
+              }
+              else{
+                console.log('making sure its true')
+                if (parameters[2] === 'AND'){
+
+                  overAllCheck = overAllCheck && criteriaMet;
+                }
+                else if (parameters[2] === 'OR'){
+
+                  overAllCheck = overAllCheck || criteriaMet;
+                }
+              }
+            }
+          })
+        }
       }
       else if (check[0] === 'Challenge'){ //this should be moved to somewhere
-        
+
         if (check[1] === 'Stats'){
 
           let statChecks: string[] = parameters[1].split(',').map(item => item.trim()); //have potentially multiple criteria to meet
@@ -227,28 +261,6 @@ export class DialogComponent { //this should probably be change to battle dialog
         }
       }
 
-      this.currentPlayerTurn.set(opposing.player)
-
-
-      
-
-      // if (ability[0] === 'Attack'){
-
-      //   target.hp -= +ability[1];
-
-      //   
-      // }
-      // else if (ability[0] === 'Mugic Heal'){
-      //   if (user.mugic_counter > 0){
-      //     user.hp += 50;
-
-      //     this.CalculateHeal(user);
-      //     user.mugic_counter -= 1;
-      //   }
-      // }
-
-      // this.currentPlayerTurn.set(target.player)
-
-      
+      this.currentPlayerTurn.set(opposing.player)      
     }
 }
