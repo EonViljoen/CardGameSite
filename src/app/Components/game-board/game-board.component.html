@@ -7,7 +7,7 @@
         [cdkDropListData]="card"
         (cdkDropListDropped)="drop($event)"
         >
-        @for (item of card; track item) {
+        @for (item of card; track item.id) {
           <app-card [picture]="item.picture"
           [matTooltip]="item.name" matTooltipPosition="above"></app-card>
         }
@@ -22,7 +22,7 @@
         [cdkDropListData]="card"
         (cdkDropListDropped)="drop($event)"
         >
-        @for (item of card; track item) {
+        @for (item of card; track item.id) {
           <app-card [picture]="item.picture"
           [matTooltip]="item.name" matTooltipPosition="above"></app-card>
         }
@@ -69,7 +69,7 @@
     [cdkDropListData]="drawPile"
     >
     @for (item of drawPile; track item) {
-      <mat-card class="example-box" (click)="DrawCard()">
+      <mat-card class="example-box" (click)="DrawCard(1)">
         <img mat-card-image class="card-image draw-card" src="./assets/logo.png">
       </mat-card>
     }

@@ -43,35 +43,15 @@ export class DialogComponent { //this should probably be change to battle dialog
     this.dialogRef.updateSize('80%', '80%'); 
 }
 
-  // AttackWon() { 
-  //     this.battleService.setWinner(this.battleService.getAttacker());
-  //     this.battleService.setLoser(this.battleService.getDefender());
-  //     this.battleService.setSuccessfulAttack(true);
-  //     this.dialogRef.close({
-  //       battleOccurred: true
-  //     })
-  //   }
-
-  // DefenceWon() {
-  //     this.battleService.setWinner(this.battleService.getDefender());
-  //     this.battleService.setLoser(this.battleService.getAttacker());
-  //     this.battleService.setSuccessfulAttack(false);
-  //     this.dialogRef.close({
-  //       battleOccurred: true
-  //     })
-  //   }
-
 
     BattleResults(winner: Card, loser: Card){
-      // let winner = player.id === this.attacker.id ? this.attacker : this.defender
-      // let loser = player.id === this.attacker.id ? this.attacker : this.defender
-
       this.battleService.setWinner(winner);
       this.battleService.setLoser(loser);
 
       this.dialogRef.close({
         battleOccurred: true,
-        loser: loser
+        loser: loser,
+        winner: winner
       })
     }
 
@@ -86,38 +66,189 @@ export class DialogComponent { //this should probably be change to battle dialog
       }
     }
 
+    calculateDamage(user: Card, elementDamageArray: string[]) : number {
+      let damage: number = 0;
+        damage += parseInt(elementDamageArray[0]);
+
+        if (user.elements['fire']){
+          damage += parseInt(elementDamageArray[1]);
+        }
+        if (user.elements['air']){
+          damage += parseInt(elementDamageArray[2]);
+        }
+        if (user.elements['earth']){
+          damage += parseInt(elementDamageArray[3]);
+        }
+        if (user.elements['water']){
+          damage += parseInt(elementDamageArray[4]);
+        }
+
+        return damage
+    }
+
+    CheckCriteria(criteriaString: string, user: Card, target: Card) : boolean {
+      let criteriaMet: boolean = false;
+
+      let parameters: string[] = criteriaString.split('?').map(item => item.trim());
+      let check: string[] = parameters[0].split(':').map(item => item.trim());
+
+      // flow = sort of check -> operator -> meet criteria -> set to true if it is met according to operator
+
+      if (check[0] === 'Check'){
+      }
+      else if (check[0] === 'Challenge'){ //this should be moved to somewhere
+        
+        if (check[1] === 'Stats'){
+
+          let statChecks: string[] = parameters[1].split(',').map(item => item.trim()); //have potentially multiple criteria to meet
+          let overAllCheck: boolean;
+
+          statChecks.forEach(stat2Check => {
+            let meet: string[] = stat2Check.substring(1, stat2Check.length-1).split(':').map(item => item.trim());
+
+            let challenge : number = user.stats[meet[0]] - target.stats[meet[0]];
+
+            if(challenge >= parseInt(meet[1])){
+              criteriaMet = true;
+            }
+
+            if (parameters[2] !== 'x'){
+              if (!overAllCheck){
+                
+                overAllCheck = criteriaMet;
+              }
+              else{
+
+                if (parameters[2] === 'AND'){
+
+                  overAllCheck = overAllCheck && criteriaMet;
+                }
+                else if (parameters[2] === 'OR'){
+
+                  overAllCheck = overAllCheck || criteriaMet;
+                }
+              }
+            }
+          })
+        }
+        // else if (check[1] === 'Elements'){ //don't know if this is really gonna happen but keeping it here
+          
+        // }
+      }
+
+      // parameters
+      // 0 - sort of check (check, challenge ...) and on what
+      // 1 - criteria to meet
+      // 2 - operator (AND, OR, XOR ....)
+
+// Check : Elements ? [Fire : x]
+// Challenge : Stats ? [Courage : 15]'
+
+      return criteriaMet;
+    }
+
     object2Array(obj: Object){
       return Object.entries(obj).map(([key, value]) => ({key, value}));
     }
 
     useAbility(value: string, player: Card){ //offboard most of this to service, also use this as blueprint for card effects maybe
-      let ability: string[] = value.split('|').map(item => item.trim());
+      // some funky shit about to happen below
 
       let user = player.id === this.attacker.id ? this.attacker : this.defender
-      let target = player.id === this.attacker.id ? this.defender : this.attacker
+      let opposing = player.id === this.attacker.id ? this.defender : this.attacker
 
-      if (ability[0] === 'Attack'){
+      let ability: string[] = value.split('|').map(item => item.trim());
+      let action : string [] = ability[0].split('?').map(item => item.trim());
+      let target = ability[1] === 'Self' ? user : opposing;
 
-        target.hp -= +ability[1];
+      // mugic 
+      // 0 - action
+      // 1 - target
+      // 2 - affecting
+      // 3 - amount 
+      // 4 - criteria
+
+      // strike 
+      // 0 - action
+      // 1 - target
+      // 2 - elemental damage
+      // 3 - affecting 
+      // 4 - criteria
+
+      // logic
+      // mugic = check criteria ? do affect : prompt that you cant
+      // strike = check elements => do dammage => check criteria ? do affect : don't do affect
+
+      // mayber move target to action section
+
+      // 0: ' Mugic ? Overworld ? 1 | Self | HP | +15 | x', //done, make HP dynamic somehow  -- vidav heal
+      // 1: ' Mugic ? Generic ? 1 | Target | HP | +15 | Check : Elements ? [Earth : x] , [Water : x] ? OR', -- geo flurish
+      // 2: ' Mugic ? Overworld ? 1 | Target | Movement | Stop | x', -- statis
+      // 3: ' Mugic ? Underworld ? 1 | Target | HP | -20 | x', //done, make HP dynamic somehow -- causalty
+      // 4: ' Strike | Target | 5 : 5: 0: 0: 0 | Stats ? [Wisdom : -25] ? Opposing | Check : Elements ? [Fire : x]', -- ember swarm
+      // 5: ' Strike | Target | 0 : 10: 0: 0: 0 | Elements ? [Fire : Lose] ? Self | Check : Elements ? [Fire : x]', -- incinerate
+      // 6: ' Strike | Target | 0 : 0: 5: 5: 0 | x | x', // done -- pebblestorm
+      // 7: ' Strike | Target | 5 : 5: 0: 0: 0 | HP ? -10 ? Opposing | Challenge : Stats ? [Courage : 15]', -- rustoxic
+
+      //elements : generic fire air earch water
+
+      if (action[0] === 'Mugic'){
+        if (user.mugic_counter > 0 && user.mugic_counter >= parseInt(action[2])){
+          if (player.tribe === (action[1] || 'Generic')){
+
+            if (ability[2] === 'HP'){
+
+              target.hp += parseInt(ability[3]);
+              user.mugic_counter -= parseInt(action[2]);
+            }
+          }
+        }
 
         if (target.hp <= 0){
           this.BattleResults(user, target)
         }
       }
-      else if (ability[0] === 'Mugic Heal'){
-        if (user.mugic_counter > 0){
-          user.hp += 50;
+      else if (action[0] === 'Strike'){
 
-          this.CalculateHeal(user);
-          user.mugic_counter -= 1;
+        let elementDamage : string[] = ability[2].split(':').map(item => item.trim()); 
+        let criteriaMet : boolean = false; 
+        target.hp -= this.calculateDamage(user, elementDamage);
+
+        if (ability[4] !== 'x'){
+          criteriaMet = this.CheckCriteria(ability[4], user, opposing);
+        }
+
+        if (criteriaMet){
+          // do ability[3]
+        }
+        
+        if (target.hp <= 0){
+          this.BattleResults(user, target)
         }
       }
 
-      this.currentPlayerTurn.set(target.player)
+      this.currentPlayerTurn.set(opposing.player)
 
-      // ability 
-      // 0 - action
-      // 1 - quantity
-      // 2 - cost
+
+      
+
+      // if (ability[0] === 'Attack'){
+
+      //   target.hp -= +ability[1];
+
+      //   
+      // }
+      // else if (ability[0] === 'Mugic Heal'){
+      //   if (user.mugic_counter > 0){
+      //     user.hp += 50;
+
+      //     this.CalculateHeal(user);
+      //     user.mugic_counter -= 1;
+      //   }
+      // }
+
+      // this.currentPlayerTurn.set(target.player)
+
+      
     }
 }

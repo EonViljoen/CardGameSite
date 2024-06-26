@@ -30,6 +30,7 @@ export class GameBoardComponent {
   ngOnInit(){
     this.mugic_cards.map(card => this.hand.push(card));
     this.strike_cards.map(card => this.drawPile.push(card));
+    this.DrawCard(2);
   }
 
   card1 : Card = { //these  need to move to individual card component eventually and be made dynamic
@@ -41,8 +42,7 @@ export class GameBoardComponent {
     tribe: '',
     class: '',
     abilities: {
-      0: 'Attack | 50 | x',
-      1: 'Mugic Heal |  x | 1',
+      
     },
     elements: {
       'fire': true,
@@ -91,14 +91,23 @@ export class GameBoardComponent {
   card3 : Card = { //these 2 need to move to individual card component eventually and be made dynamic
     id: uuidv4(),
     name: "Vidav",
-    hp: 100,
+    hp: 15,
     max_hp: 100,
     mugic_counter: 3,
-    tribe: '',
+    tribe: 'Overworld',
     class: '',
     abilities: {
-      0: 'Attack | 50 | x',
-      1: 'Mugic Heal |  x | 1',
+      // Mugic -  Type of Action ? Restriction  | Target ? Self/Target | Affecting ? specific [Key : Quantity] , ... | Quantity | Criteria ? [Key : Quantity] , ...
+      // Strike - Type of Action ? Restriction  | Target ? Self/Target | Damage with Elements | Affecting ? specific [Key : Quantity] ? Target , ... |  Criteria ? [Key : Quantity] , ...
+      // Passives - TBD
+      0: ' Mugic ? Overworld ? 1 | Self | HP | +15 | x', 
+      1: ' Mugic ? Generic ? 1 | Target | HP | +15 | Check : Elements ? [Earth : x] , [Water : x] ? OR',
+      2: ' Mugic ? Overworld ? 1 | Target | Movement | Stop | x',
+      3: ' Mugic ? Underworld ? 1 | Target | HP | -20 | x',
+      4: ' Strike | Target | 5 : 5: 0: 0: 0 | Stats ? [Wisdom : -25] ? Opposing | Check : Elements ? [Fire : x] ? x', 
+      5: ' Strike | Target | 0 : 10: 0: 0: 0 | Elements ? [Fire : Lose] ? Self | Check : Elements ? [Fire : x] ? x', 
+      6: ' Strike | Target | 0 : 0: 5: 5: 0 | x | x', //
+      7: ' Strike | Target | 5 : 5: 0: 0: 0 | HP ? -10 ? Opposing | Challenge : Stats ? [courage : 15] ? x', 
     },
     elements: {
       'fire': true,
@@ -107,7 +116,7 @@ export class GameBoardComponent {
       'air' : true,
     },
     stats: {
-      'courage': 100,
+      'courage': 75,
       'power': 100,
       'wisdom': 80,
       'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
@@ -175,14 +184,20 @@ export class GameBoardComponent {
   card6 : Card = {
     id: uuidv4(),
     name: "Pyrithion",
-    hp: 100,
+    hp: 15,
     max_hp: 100,
     mugic_counter: 3,
-    tribe: '',
+    tribe: 'Underworld',
     class: '',
     abilities: {
-      0: 'Attack | 50 | x',
-      1: 'Mugic Heal |  x | 1',
+      0: ' Mugic ? Overworld ? 1 | Self | HP | +15 | x', 
+      1: ' Mugic ? Generic ? 1 | Target | HP | +15 | Check : Elements ? [Earth : x] , [Water : x] ? OR',
+      2: ' Mugic ? Overworld ? 1 | Target | Movement | Stop | x',
+      3: ' Mugic ? Underworld ? 1 | Target | HP | -20 | x',
+      4: ' Strike | Target | 5 : 5: 0: 0: 0 | Stats ? [Wisdom : -25] ? Opposing | Check : Elements ? [Fire : x] ? x', 
+      5: ' Strike | Target | 0 : 10: 0: 0: 0 | Elements ? [Fire : Lose] ? Self | Check : Elements ? [Fire : x] ? x', 
+      6: ' Strike | Target | 0 : 0: 5: 5: 0 | x | x', //
+      7: ' Strike | Target | 5 : 5: 0: 0: 0 | HP ? -10 ? Opposing | Challenge : Stats ? [courage : 15] ? x', 
     },
     elements: {
       'fire': true,
@@ -191,7 +206,7 @@ export class GameBoardComponent {
       'air' : true,
     },
     stats: {
-      'courage': 100,
+      'courage': 45,
       'power': 100,
       'wisdom': 80,
       'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
@@ -356,9 +371,24 @@ export class GameBoardComponent {
     } 
   }
 
-  DrawCard() {
+  DrawCard(drawTimes: number) {
+    for(let i=0; i < drawTimes; i++){
       this.hand.push(this.drawPile.pop());
+      }
     }
+
+  setBattleAfterMath(winner: Card | any): Card {
+    winner.abilities = this.battleService.getWinner().abilities;
+    winner.elements = this.battleService.getWinner().elements;
+    winner.hp = this.battleService.getWinner().hp;
+    winner.max_hp = this.battleService.getWinner().max_hp;
+    winner.mugic_counter = this.battleService.getWinner().mugic_counter;
+    winner.player = this.battleService.getWinner().player;
+    winner.stats = this.battleService.getWinner().stats;
+    // can change
+
+    return winner;
+  }
 
   drop(event: CdkDragDrop<Card[]>) {
     if (event.container.data.length){// they fight, loser moves to discard pile and winner takes that spot
@@ -415,8 +445,12 @@ export class GameBoardComponent {
             event.previousIndex,
             event.currentIndex
           );
-        
-  
+
+        // need better way of doing this, need to use result.winner somehow
+        let newState = this.setBattleAfterMath(event.container.data.at(0));
+        event.container.data.pop();
+        event.container.data.push(newState);
+
         this.battleService.resetWinner();
         this.battleService.resetLoser();
       } 

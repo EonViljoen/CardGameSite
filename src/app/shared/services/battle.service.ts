@@ -168,6 +168,19 @@ export class BattleService {
         this.successfulAttack.set(value);
     }
 
+    setBattleAfterMath(previousState: Card[] | any): Card[] {
+        previousState.at(0).abilities = this.winner().abilities;
+        previousState.at(0).elements = this.winner().elements;
+        previousState.at(0).hp = this.winner().hp;
+        previousState.at(0).max_hp = this.winner().max_hp;
+        previousState.at(0).mugic_counter = this.winner().mugic_counter;
+        previousState.at(0).player = this.winner().player;
+        previousState.at(0).stats = this.winner().stats;
+        // can change
+
+        return previousState.at(0);
+    }
+
     resetWinner(){
         this.winner.set({
             id: '',
