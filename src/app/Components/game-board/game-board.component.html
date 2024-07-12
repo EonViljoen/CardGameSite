@@ -1,9 +1,9 @@
-<div class="example-boundary" cdkDropListGroup>
-  <div class="left-side-container">
+<div class="example-boundary container" cdkDropListGroup>
+  <div class="left-side">
     @for (card of cards[0]; track card) {
       <div 
         cdkDropList
-        class="example-list-left"
+        class="card-background"
         [cdkDropListData]="card"
         (cdkDropListDropped)="drop($event)"
         >
@@ -14,11 +14,11 @@
       </div>
      }
   </div>
-  <div class="right-side-container">
+  <div class="right-side">
     @for (card of cards[1]; track card) {
       <div 
         cdkDropList
-        class="example-list-right"
+        class="card-background"
         [cdkDropListData]="card"
         (cdkDropListDropped)="drop($event)"
         >

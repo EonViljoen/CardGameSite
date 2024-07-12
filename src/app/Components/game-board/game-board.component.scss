@@ -27,6 +27,13 @@
                 0 3px 14px 2px rgba(0, 0, 0, 0.12);
   }
 
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px; /* Adjust gap as needed */
+  }
+
+  
   
   .example-boundary {
     margin-left: 10%;
@@ -34,7 +41,7 @@
     width: 80%;
     height: 75%;
     border: solid #ccc 3px;
-    display: grid;
+    // display: grid;
     // align-self: center;
   }
   
@@ -48,56 +55,113 @@
     opacity: 100%;
   }
 
-  .left-side-container {
-    flex-wrap: wrap;
-    // display: flexbox;
-    // margin-top: 15%;
-    // margin-left: 1%;
+  .left-side, .right-side {
+    // display: flex;
+    // flex-direction: column;
+    display: grid;
+    place-items: center;
+    // grid-auto-flow: column;
+    // grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    // gap: 10px; /* Adjust the gap between items */
   }
 
-  .right-side-container {
-    // display: flexbox;
-    // margin-top: 15%;
-    // margin-right: 1%;
-    // float: right;
+  .left-side.diamond-shape, .right-side.diamond-shape {
+    grid-auto-flow: column;
+  }
+
+  // .left-side {
+  //   grid-column: 1; /* Left side occupies the first column */
+  // }
+
+  // .right-side {
+  //   grid-column: 2; /* Right side occupies the second column */
+  //   // transform: translateY(-5%);
     
-  }
+  // }
 
-  .example-list-left {
+  // All this needs to be made dynamic
+
+  // .left-side.diamond-shape, .right-side.diamond-shape {
+  //   display: grid;
+  //   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  //   gap: 10px;
+  // }
+  
+  // .left-side.columns-1, .right-side.columns-1 {
+  //   grid-template-rows: auto;
+  // }
+  
+  // .left-side.columns-2, .right-side.columns-2 {
+  //   grid-template-rows: auto auto;
+  // }
+  
+  // .left-side.columns-3, .right-side.columns-3 {
+  //   grid-template-rows: auto auto auto;
+  // }
+  
+  // .left-side.columns-4, .right-side.columns-4 {
+  //   grid-template-rows: auto auto auto auto;
+  // }
+
+  // .left-side.diamond-shape, .right-side.diamond-shape {
+  //   display: grid;
+  //   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  //   gap: 10px;
+  // }
+
+  // /* For 3 images on each side */
+  // .left-side .three-images,
+  // .right-side .three-images {
+  //   grid-template-rows: auto auto auto;
+  //   justify-items: center;
+  // }
+
+  // /* For 6 images on each side */
+  // .left-side .six-images,
+  // .right-side .six-images {
+  //   grid-template-rows: auto auto auto;
+  //   grid-template-columns: repeat(3, 1fr);
+  // }
+
+  // /* For 10 images on each side */
+  // .left-side .ten-images,
+  // .right-side .ten-images {
+  //   grid-template-rows: auto auto auto auto;
+  //   grid-template-columns: repeat(4, 1fr);
+  // }
+
+
+  .card-background {
     border: solid 1px #ccc;
     height: 125px;
     width: 150px;
     background: gray;
     border-radius: 4px;
-    // opacity: 50%;
-    // float: left;
-    margin-top: 1%;
-    margin-left: 1%;
   }
 
-  .example-list-left:nth-child(2) {
-    border: solid 1px #ccc;
-    height: 125px;
-    width: 150px;
-    background: gray;
-    border-radius: 4px;
+  // .example-list-left:nth-child(2) {
+  //   border: solid 1px #ccc;
+  //   height: 125px;
+  //   width: 150px;
+  //   background: gray;
+  //   border-radius: 4px;
     // opacity: 50%;
     // float: left;
-    margin-top: 1%;
-    margin-left: 20%;
-  }
+    // margin-top: 1%;
+    // margin-left: 20%;
+  // }
 
-  .example-list-left:nth-child(3) {
-    border: solid 1px #ccc;
-    height: 125px;
-    width: 150px;
-    background: gray;
-    border-radius: 4px;
-    // opacity: 50%;
-    // float: left;
-    margin-top: 1%;
-    margin-left: 1%;
-  }
+  // .example-list-left:nth-child(3) {
+  //   border: solid 1px #ccc;
+  //   height: 125px;
+  //   width: 150px;
+  //   background: gray;
+  //   border-radius: 4px;
+  //   // opacity: 50%;
+  //   // float: left;
+  //   // margin-top: 1%;
+  //   // margin-left: 1%;
+  // }
 
   .example-list-right {
     border: solid 1px #ccc;
@@ -106,9 +170,9 @@
     background: gray;
     border-radius: 4px;
     // opacity: 50%;
-    float: right;
-    margin-top: 1%;
-    margin-right: 1%;
+    // float: right;
+    // margin-top: 1%;
+    // margin-right: 1%;
     
   }
 

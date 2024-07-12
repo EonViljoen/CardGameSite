@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { CardComponent } from "../card/card.component";
 import { Mugic_Card } from '../../Interfaces/mugic_card';
 import { Strike_Card } from '../../Interfaces/strike_card';
+import { empty } from 'rxjs';
 
 
 @Component({
@@ -26,12 +27,6 @@ export class GameBoardComponent {
 
   readonly dialog = inject(MatDialog);
   private battleService = inject(BattleService);
-
-  ngOnInit(){
-    this.mugic_cards.map(card => this.hand.push(card));
-    this.strike_cards.map(card => this.drawPile.push(card));
-    this.DrawCard(2);
-  }
 
   card1 : Card = { //these  need to move to individual card component eventually and be made dynamic
     id: uuidv4(),
@@ -245,7 +240,7 @@ export class GameBoardComponent {
       [ //a player's cards
         [this.card1], //single instance of card (needs to be list due to hoe cdkDrop works)
         [this.card3],
-        [this.card5]
+        [this.card5],
       ],
       [
         [this.card2],
@@ -335,6 +330,7 @@ export class GameBoardComponent {
       effect: '',
       picture: './assets/pictures/Strikes/Rustoxic_Picture.png'
     },
+    
   ]
 
   discardPile : any[] = [];
@@ -342,6 +338,10 @@ export class GameBoardComponent {
   hand: any[] = [];
   recyclePile : any[] = [];
 
+  leftPlayer: any;
+  rightPlayer: any;
+  cardCount : number = 0;
+  
   // hand1 : Card[] = [];
   // hand2 : Card[] = [];
   // player1 : Player = {}
@@ -357,6 +357,37 @@ export class GameBoardComponent {
 
 
   // }
+
+  ngOnInit(){
+    this.leftPlayer = document.querySelector<HTMLDivElement>('.left-side');
+    this.rightPlayer = document.querySelector<HTMLDivElement>('.right-side');
+    this.cardCount = (this.cards.at(0)?.length ?? 0) + (this.cards.at(1)?.length ?? 0);
+
+    this.cardDiamondArrangement(this.cardCount);
+
+    this.mugic_cards.map(card => this.hand.push(card));
+    this.strike_cards.map(card => this.drawPile.push(card));
+    this.DrawCard(2);
+  }
+
+  
+  cardDiamondArrangement(count: number) : void{
+    this.leftPlayer.classList.remove('diamond-shape');
+    this.rightPlayer.classList.remove('diamond-shape');
+
+    const rows = Math.ceil(Math.sqrt(count));
+    const columns = Math.ceil(count / rows);
+  
+    // Apply necessary classes to achieve the diamond shape
+    this.leftPlayer?.classList.add('diamond-shape');
+    this.rightPlayer?.classList.add('diamond-shape');
+    this.leftPlayer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    this.leftPlayer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+    this.rightPlayer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    this.rightPlayer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+
+    console.log(this.leftPlayer.classList)
+  }
 
   discardCard(card: Mugic_Card | Strike_Card, index: number){
     console.log(index)
@@ -465,5 +496,6 @@ export class GameBoardComponent {
       event.currentIndex
     );
   }
+
 
 }
