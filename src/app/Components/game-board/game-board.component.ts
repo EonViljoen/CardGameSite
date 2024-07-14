@@ -13,6 +13,7 @@ import { CardComponent } from "../card/card.component";
 import { Mugic_Card } from '../../Interfaces/mugic_card';
 import { Strike_Card } from '../../Interfaces/strike_card';
 import { empty } from 'rxjs';
+import { forEachChild } from 'typescript';
 
 
 @Component({
@@ -359,34 +360,64 @@ export class GameBoardComponent {
   // }
 
   ngOnInit(){
-    this.leftPlayer = document.querySelector<HTMLDivElement>('.left-side');
-    this.rightPlayer = document.querySelector<HTMLDivElement>('.right-side');
-    this.cardCount = (this.cards.at(0)?.length ?? 0) + (this.cards.at(1)?.length ?? 0);
-
-    this.cardDiamondArrangement(this.cardCount);
 
     this.mugic_cards.map(card => this.hand.push(card));
     this.strike_cards.map(card => this.drawPile.push(card));
     this.DrawCard(2);
   }
 
-  
-  cardDiamondArrangement(count: number) : void{
-    this.leftPlayer.classList.remove('diamond-shape');
-    this.rightPlayer.classList.remove('diamond-shape');
+  ngAfterViewInit(){
+    this.leftPlayer = document.querySelector('.left-side')
+    this.rightPlayer = document.querySelector('.right-side');
+    this.cardCount = (this.cards.at(0)?.length ?? 0) + (this.cards.at(1)?.length ?? 0);
+    this.cardDiamondArrangement(this.cardCount);
+  }
 
-    const rows = Math.ceil(Math.sqrt(count));
-    const columns = Math.ceil(count / rows);
   
-    // Apply necessary classes to achieve the diamond shape
-    this.leftPlayer?.classList.add('diamond-shape');
-    this.rightPlayer?.classList.add('diamond-shape');
-    this.leftPlayer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-    this.leftPlayer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
-    this.rightPlayer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-    this.rightPlayer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+  cardDiamondArrangement(cardCount: number) : void{
 
-    console.log(this.leftPlayer.classList)
+    const columns = Math.ceil(Math.sqrt(cardCount));
+    const CardAmount = Math.ceil(cardCount / columns);
+    let amount = CardAmount;
+    let cardCounter = CardAmount;  
+    let leftChildren = this.leftPlayer.children;   
+    let rightChildren = this.rightPlayer.children;    
+ 
+    for (let items of leftChildren){
+      if (cardCounter !== 0){
+        
+            cardCounter--;
+          }
+          else{
+            let colBreak = document.createElement('div');
+            colBreak.className = 'card-column-break'
+            this.leftPlayer.insertBefore(colBreak , items)
+            cardCounter = --amount;
+          }    
+        }
+
+      amount = CardAmount;
+      cardCounter = CardAmount;
+      console.log(this.rightPlayer.children)
+
+      for (let items of rightChildren){
+        console.log(items)
+        if (cardCounter !== 0){
+              cardCounter--;
+            }
+            else{
+              console.log(amount)
+              console.log(cardCounter)
+  
+              let colBreakRight = document.createElement('div');
+              colBreakRight.className = 'card-column-break'
+              this.rightPlayer.insertBefore(colBreakRight , items)
+              cardCounter = --amount;
+              console.log(amount)
+              console.log(cardCounter)
+  
+            }    
+        }
   }
 
   discardCard(card: Mugic_Card | Strike_Card, index: number){
