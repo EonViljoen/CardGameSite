@@ -1,19 +1,18 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, inject } from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList, moveItemInArray, transferArrayItem, CdkDropListGroup} from '@angular/cdk/drag-drop';
 import {MatCardModule} from '@angular/material/card';
 import { Card } from '../../Interfaces/card';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../../shared/dialog/dialog.component';
 import { BattleService } from '../../shared/services/battle.service';
-import { Game } from '../../Interfaces/game';
-import { Player } from '../../Interfaces/player';
 import { v4 as uuidv4 } from 'uuid';
 import { CardComponent } from "../card/card.component";
 import { Mugic_Card } from '../../Interfaces/mugic_card';
 import { Strike_Card } from '../../Interfaces/strike_card';
-import { empty } from 'rxjs';
-import { forEachChild } from 'typescript';
+import * as jsonData from '../../../assets/cardInformation.json'; //This gotta be fixed
+import { Player } from '../../Interfaces/player';
+import { Game } from '../../Interfaces/game';
 
 
 @Component({
@@ -29,207 +28,209 @@ export class GameBoardComponent {
   readonly dialog = inject(MatDialog);
   private battleService = inject(BattleService);
 
-  card1 : Card = { //these  need to move to individual card component eventually and be made dynamic
-    id: uuidv4(),
-    name: "Maxxor",
-    hp: 100,
-    max_hp: 100,
-    mugic_counter: 3,
-    tribe: '',
-    class: '',
-    abilities: {
-      
-    },
-    elements: {
-      'fire': true,
-      'earth' : true,
-      'water' : true,
-      'air' : true,
-    },
-    stats: {
-      'courage': 100,
-      'power': 100,
-      'wisdom': 80,
-      'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
-    },
-    card: '',
-    picture: "./assets/pictures/Creatures/Overworlder/Maxxor_Picture.png",
-    player: 1
-  };
-  card2 : Card = {
-    id: uuidv4(),
-    name: "Chaor",
-    hp: 100,
-    max_hp: 100,
-    mugic_counter: 3,
-    tribe: '',
-    class: '',
-    abilities: {
-      0: 'Attack | 50 | x',
-      1: 'Mugic Heal |  x | 1',
-    },
-    elements: {
-      'fire': true,
-      'earth' : true,
-      'water' : true,
-      'air' : true,
-    },
-    stats: {
-      'courage': 100,
-      'power': 100,
-      'wisdom': 80,
-      'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
-    },
-    card: '',
-    picture: "./assets/pictures/Creatures/Underworlder/Chaor_Picture.png",
-    player: 2
-  };
-  card3 : Card = { //these 2 need to move to individual card component eventually and be made dynamic
-    id: uuidv4(),
-    name: "Vidav",
-    hp: 15,
-    max_hp: 100,
-    mugic_counter: 3,
-    tribe: 'Overworld',
-    class: '',
-    abilities: {
-      // Mugic -  Type of Action ? Restriction ? Cost  | Target ? Self/Target | Affecting ? specific [Key : Quantity] , ... | Quantity | Criteria ? [Key : Quantity] , ...
-      // Strike - Type of Action ? Restriction  | Target ? Self/Target | Damage with Elements | Affecting ? specific [Key : Quantity] ? Target , ... |  Criteria ? [Key : Quantity] , ...
-      // Passives - TBD
-      0: ' Mugic ? Overworld ? 1 | Self | HP | +15 | x', 
-      1: ' Mugic ? Generic ? 1 | Target | HP | +15 | Check : Elements ? [earth : true] , [water : true] ? OR ? Target',
-      2: ' Mugic ? Overworld ? 1 | Target | Movement | Stop | x',
-      3: ' Mugic ? Underworld ? 1 | Target | HP | -20 | x',
-      4: ' Strike | Target | 5 : 5: 0: 0: 0 | Stats ? [wisdom : -25] ? Opposing | Check : Elements ? [fire : true] ? x ? Self', 
-      5: ' Strike | Target | 0 : 10: 0: 0: 0 | Elements ? [fire : x] ? Self | Check : Elements ? [fire : true] ? x ? Self', 
-      6: ' Strike | Target | 0 : 0: 5: 5: 0 | x | x', //
-      7: ' Strike | Target | 5 : 5: 0: 0: 0 | HP ? -10 ? Opposing | Challenge : Stats ? [courage : 15] ? x ? Self', 
-    },
-    elements: {
-      'fire': true,
-      'earth' : true,
-      'water' : true,
-      'air' : true,
-    },
-    stats: {
-      'courage': 75,
-      'power': 100,
-      'wisdom': 80,
-      'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
-    },
-    card: '',
-    picture: "./assets/pictures/Creatures/Overworlder/Vidav_Picture.png",
-    player: 1
-  };
-  card4 : Card = {
-    id: uuidv4(),
-    name: "H'earing",
-    hp: 100,
-    max_hp: 100,
-    mugic_counter: 3,
-    tribe: '',
-    class: '',
-    abilities: {
-      0: 'Attack | 50 | x',
-      1: 'Mugic Heal |  x | 1',
-    },
-    elements: {
-      'fire': true,
-      'earth' : true,
-      'water' : true,
-      'air' : true,
-    },
-    stats: {
-      'courage': 100,
-      'power': 100,
-      'wisdom': 80,
-      'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
-    },
-    card: '',
-    picture: "./assets/pictures/Creatures/Underworlder/H'earing_Picture.png",
-    player: 2
-  };
-  card5 : Card = {
-    id: uuidv4(),
-    name: "Dractyl",
-    hp: 100,
-    max_hp: 100,
-    mugic_counter: 3,
-    tribe: '',
-    class: '',
-    abilities: {
-      0: 'Attack | 50 | x',
-      1: 'Mugic Heal |  x | 1',
-    },
-    elements: {
-      'fire': true,
-      'earth' : true,
-      'water' : true,
-      'air' : true,
-    },
-    stats: {
-      'courage': 100,
-      'power': 100,
-      'wisdom': 80,
-      'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
-    },
-    card: '',
-    picture: "./assets/pictures/Creatures/Overworlder/Dractyl_Picture.png",
-    player: 1
-  };
-  card6 : Card = {
-    id: uuidv4(),
-    name: "Pyrithion",
-    hp: 15,
-    max_hp: 100,
-    mugic_counter: 3,
-    tribe: 'Underworld',
-    class: '',
-    abilities: {
-      0: ' Mugic ? Overworld ? 1 | Self | HP | +15 | x', 
-      1: ' Mugic ? Generic ? 1 | Target | HP | +15 | Check : Elements ? [earth : true] , [water : true] ? OR ? Target',
-      2: ' Mugic ? Overworld ? 1 | Target | Movement | Stop | x',
-      3: ' Mugic ? Underworld ? 1 | Target | HP | -20 | x',
-      4: ' Strike | Target | 5 : 5: 0: 0: 0 | Stats ? [wisdom : -25] ? Opposing | Check : Elements ? [fire : true] ? x ? Self', 
-      5: ' Strike | Target | 0 : 10: 0: 0: 0 | Elements ? [fire : x] ? Self | Check : Elements ? [fire : true] ? x ? Self', 
-      6: ' Strike | Target | 0 : 0: 5: 5: 0 | x | x', //
-      7: ' Strike | Target | 5 : 5: 0: 0: 0 | HP ? -10 ? Opposing | Challenge : Stats ? [courage : 15] ? x ? Self', 
-    },
-    elements: {
-      'fire': true,
-      'earth' : true,
-      'water' : true,
-      'air' : true,
-    },
-    stats: {
-      'courage': 45,
-      'power': 100,
-      'wisdom': 80,
-      'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
-    },
-    card: '',
-    picture: "./assets/pictures/Creatures/Underworlder/Pyrithion_Picture.png",
-    player: 2
-  };
+  // + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
 
-// All cards [
-//   player 1 cards [
-//     list with single card in [
-//       card
-//     ],
-//     list with single card in [
-//       card
-//     ],
-//   ],
-//   player 2 cards [
-//     list with single card in [
-//       card
-//     ],
-//     list with single card in [
-//       card
-//     ],
-//   ]
-// ]
+  // card1 : Card = { //these  need to move to individual card component eventually and be made dynamic
+  //   id: uuidv4(),
+  //   name: "Maxxor",
+  //   hp: 20,
+  //   max_hp: 100,
+  //   mugic_counter: 3,
+  //   tribe: 'Overworld',
+  //   class: '',
+  //   abilities: {
+  //     'flurish': ' Mugic ? Generic ? 1 | [HP : x : 15] ? x ? Target | Check : Elements ? [earth : true] , [water : true] ? OR ? Target',
+  //     'stasis': ' Mugic ? Overworld ? 1 | [Movement : x : x] ? x ? Target | x',
+  //     'casualty': ' Mugic ? Underworld ? 1 | [HP : x : -20] ? x ? Target | x',
+  //     'ember': ' Strike | Target | 5 : 5 : 0 : 0 : 0 | [Stats : wisdom : -25] ? x ? Opposing | Check : Elements ? [fire : true] ? x ? Self', 
+  //     'incinerase': ' Strike | Target | 0 : 10 : 0 : 0 : 0 | [Elements : fire : x] ? x ? Self | Check : Elements ? [fire : true] ? x ? Self', 
+  //     'pebble': ' Strike | Target | 0 : 0 : 5 : 5 : 0 | x | x', 
+  //     'rust': ' Strike | Target | 0 : 0 : 0 : 5 : 5 | [HP : x : -10] ? x ? Opposing | Challenge : Stats ? [courage : 15] ? x ? Self',  
+  //   },
+  //   elements: {
+  //     'fire': true,
+  //     'air' : false,
+  //     'earth' : true,
+  //     'water' : false,
+  //   },
+  //   stats: {
+  //     'courage': 100,
+  //     'power': 100,
+  //     'wisdom': 80,
+  //     'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
+  //   },
+  //   statuses: [{}],
+  //   card: '',
+  //   picture: "./assets/pictures/Creatures/Overworlder/Maxxor_Picture.png",
+  //   player: 1
+  // };
+  // card2 : Card = {
+  //   id: uuidv4(),
+  //   name: "Chaor",
+  //   hp: 5,
+  //   max_hp: 100,
+  //   mugic_counter: 3,
+  //   tribe: 'Underworld',
+  //   class: '',
+  //   abilities: {
+  //     'flurish': ' Mugic ? Generic ? 1 | [HP : x : 15] ? x ? Target | Check : Elements ? [earth : true] , [water : true] ? OR ? Target',
+  //     'stasis': ' Mugic ? Overworld ? 1 | [Movement : x : x] ? x ? Target | x',
+  //     'casualty': ' Mugic ? Underworld ? 1 | [HP : x : -20] ? x ? Target | x',
+  //     'ember': ' Strike | Target | 5 : 5 : 0 : 0 : 0 | [Stats : wisdom : -25] ? x ? Opposing | Check : Elements ? [fire : true] ? x ? Self', 
+  //     'incinerase': ' Strike | Target | 0 : 10 : 0 : 0 : 0 | [Elements : fire : x] ? x ? Self | Check : Elements ? [fire : true] ? x ? Self', 
+  //     'pebble': ' Strike | Target | 0 : 0 : 5 : 5 : 0 | x | x', 
+  //     'rust': ' Strike | Target | 0 : 0 : 0 : 5 : 5 | [HP : x : -10] ? x ? Opposing | Challenge : Stats ? [courage : 15] ? x ? Self',  
+  //   },
+  //   elements: {
+  //     'fire': true,
+  //     'air' : false,
+  //     'earth' : false,
+  //     'water' : false,
+  //   },
+  //   stats: {
+  //     'courage': 80,
+  //     'power': 100,
+  //     'wisdom': 80,
+  //     'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
+  //   },
+  //   statuses: [{}],
+  //   card: '',
+  //   picture: "./assets/pictures/Creatures/Underworlder/Chaor_Picture.png",
+  //   player: 2
+  // };
+  // card3 : Card = { //these 2 need to move to individual card component eventually and be made dynamic
+  //   id: uuidv4(),
+  //   name: "Vidav",
+  //   hp: 15,
+  //   max_hp: 100,
+  //   mugic_counter: 3,
+  //   tribe: 'Overworld',
+  //   class: '',
+  //   abilities: {
+  //     // Mugic -  Type of Action ? Restriction ? Cost  | Target ? Self/Target | Affecting ? specific [Key : Quantity] , ... | Quantity | Criteria ? [Key : Quantity] , ...
+  //     // Strike - Type of Action ? Restriction  | Target ? Self/Target | Damage with Elements | Affecting ? specific [Key : Quantity] ? Target , ... |  Criteria ? [Key : Quantity] , ...
+  //     // Passives - TBD
+  //     // 'heal': ' Mugic ? Overworld ? 1 | Self | HP | +15 | x', 
+  //     // 'flurish': ' Mugic ? Generic ? 1 | Target | HP | +15 | Check : Elements ? [earth : true] , [water : true] ? OR ? Target',
+  //     // 'stasis': ' Mugic ? Overworld ? 1 | Target | Movement | Stop | x',
+  //     // 'casualty': ' Mugic ? Underworld ? 1 | Target | HP | -20 | x',
+  //     // 'ember': ' Strike | Target | 5 : 5: 0: 0: 0 | Stats ? [wisdom : -25] ? Opposing | Check : Elements ? [fire : true] ? x ? Self', 
+  //     // 'incinerase': ' Strike | Target | 0 : 10: 0: 0: 0 | Elements ? [fire : x] ? Self | Check : Elements ? [fire : true] ? x ? Self', 
+  //     // 'pebble': ' Strike | Target | 0 : 0: 5: 5: 0 | x | x', //
+  //     // 'rust': ' Strike | Target | 5 : 5: 0: 0: 0 | HP ? -10 ? Opposing | Challenge : Stats ? [courage : 15] ? x ? Self', 
+  //   },
+  //   elements: {
+  //     'fire': true,
+  //     'earth' : true,
+  //     'water' : true,
+  //     'air' : true,
+  //   },
+  //   stats: {
+  //     'courage': 75,
+  //     'power': 100,
+  //     'wisdom': 80,
+  //     'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
+  //   },
+  //   statuses: [{}],
+  //   card: '',
+  //   picture: "./assets/pictures/Creatures/Overworlder/Vidav_Picture.png",
+  //   player: 1
+  // };
+  // card4 : Card = {
+  //   id: uuidv4(),
+  //   name: "H'earing",
+  //   hp: 100,
+  //   max_hp: 100,
+  //   mugic_counter: 3,
+  //   tribe: '',
+  //   class: '',
+  //   abilities: {
+  //     0: 'Attack | 50 | x',
+  //     1: 'Mugic Heal |  x | 1',
+  //   },
+  //   elements: {
+  //     'fire': true,
+  //     'earth' : true,
+  //     'water' : true,
+  //     'air' : true,
+  //   },
+  //   stats: {
+  //     'courage': 100,
+  //     'power': 100,
+  //     'wisdom': 80,
+  //     'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
+  //   },
+  //   statuses: [{}],
+  //   card: '',
+  //   picture: "./assets/pictures/Creatures/Underworlder/H'earing_Picture.png",
+  //   player: 2
+  // };
+  // card5 : Card = {
+  //   id: uuidv4(),
+  //   name: "Dractyl",
+  //   hp: 100,
+  //   max_hp: 100,
+  //   mugic_counter: 3,
+  //   tribe: '',
+  //   class: '',
+  //   abilities: {
+  //     0: 'Attack | 50 | x',
+  //     1: 'Mugic Heal |  x | 1',
+  //   },
+  //   elements: {
+  //     'fire': true,
+  //     'earth' : true,
+  //     'water' : true,
+  //     'air' : true,
+  //   },
+  //   stats: {
+  //     'courage': 100,
+  //     'power': 100,
+  //     'wisdom': 80,
+  //     'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
+  //   },
+  //   statuses: [{}],
+  //   card: '',
+  //   picture: "./assets/pictures/Creatures/Overworlder/Dractyl_Picture.png",
+  //   player: 1
+  // };
+  // card6 : Card = {
+  //   id: uuidv4(),
+  //   name: "Pyrithion",
+  //   hp: 15,
+  //   max_hp: 100,
+  //   mugic_counter: 3,
+  //   tribe: 'Underworld',
+  //   class: '',
+  //   abilities: {
+  //     // 0: ' Mugic ? Overworld ? 1 | Self | HP | +15 | x', 
+  //     // 1: ' Mugic ? Generic ? 1 | Target | HP | +15 | Check : Elements ? [earth : true] , [water : true] ? OR ? Target',
+  //     // 2: ' Mugic ? Overworld ? 1 | Target | Movement | Stop | x',
+  //     // 3: ' Mugic ? Underworld ? 1 | Target | HP | -20 | x',
+  //     // 4: ' Strike | Target | 5 : 5: 0: 0: 0 | Stats ? [wisdom : -25] ? Opposing | Check : Elements ? [fire : true] ? x ? Self', 
+  //     // 5: ' Strike | Target | 0 : 10: 0: 0: 0 | Elements ? [fire : x] ? Self | Check : Elements ? [fire : true] ? x ? Self', 
+  //     // 6: ' Strike | Target | 0 : 0: 5: 5: 0 | x | x', //
+  //     // 7: ' Strike | Target | 5 : 5: 0: 0: 0 | HP ? -10 ? Opposing | Challenge : Stats ? [courage : 15] ? x ? Self', 
+  //   },
+  //   elements: {
+  //     'fire': true,
+  //     'earth' : true,
+  //     'water' : true,
+  //     'air' : true,
+  //   },
+  //   stats: {
+  //     'courage': 45,
+  //     'power': 100,
+  //     'wisdom': 80,
+  //     'speed': 50 + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
+  //   },
+  //   statuses: [{}],
+  //   card: '',
+  //   picture: "./assets/pictures/Creatures/Underworlder/Pyrithion_Picture.png",
+  //   player: 2
+  // };
+
+
 
 // Maybe change first dimension to array to object?
 // Game, player and card object
@@ -237,18 +238,18 @@ export class GameBoardComponent {
 
 
 
-  cards: Card[][][] = [ //All cards
-      [ //a player's cards
-        [this.card1], //single instance of card (needs to be list due to hoe cdkDrop works)
-        [this.card3],
-        [this.card5],
-      ],
-      [
-        [this.card2],
-        [this.card4],
-        [this.card6],
-      ]
-  ];
+  // cards: Card[][][] = [ //All cards --game
+  //     [ //a player's cards --left 
+  //       [this.card1], //single instance of card (needs to be list due to hoe cdkDrop works)
+  //       [this.card3],
+  //       [this.card5],
+  //     ],
+  //     [
+  //       [this.card2],
+  //       [this.card4],
+  //       [this.card6],
+  //     ]
+  // ];
 
   mugic_cards : Mugic_Card[] = [
     {
@@ -339,27 +340,52 @@ export class GameBoardComponent {
   hand: any[] = [];
   recyclePile : any[] = [];
 
-  leftPlayer: any;
-  rightPlayer: any;
-  cardCount : number = 0;
+  leftPlayer : Player = {
+    id: 1,
+    hand: []
+  }
+  rightPlayer : Player = {
+    id: 2,
+    hand: []
+  }
+
+  game : any = {
+    left:{
+      id: 0,
+      hand: []
+    },
+    right: {
+      id: 0,
+      hand: []
+    }
+  }
   
-  // hand1 : Card[] = [];
-  // hand2 : Card[] = [];
-  // player1 : Player = {}
+  // game [
+//   player 1  [
+//      id
+//      hand [
+//       list with single card in[
+//        card
+//        ],
+//       list with single card in[
+//        card
+//        ],
+//     ],
+//   ],  same for player 2
+//   player 2 cards [
+//     list with single card in [
+//       card
+//     ],
+//     list with single card in [
+//       card
+//     ],
+//   ]
+// ]
 
-  // buildGame(){
-  //   this.hand1.push(this.card1);
-  //   this.hand1.push(this.card3);
-  //   this.hand1.push(this.card5);
-
-  //   this.hand2.push(this.card2);
-  //   this.hand2.push(this.card4);
-  //   this.hand2.push(this.card6);
-
-
-  // }
 
   ngOnInit(){
+
+    this.buildGame();
 
     this.mugic_cards.map(card => this.hand.push(card));
     this.strike_cards.map(card => this.drawPile.push(card));
@@ -367,21 +393,27 @@ export class GameBoardComponent {
   }
 
   ngAfterViewInit(){
-    this.leftPlayer = document.querySelector('.left-side')
-    this.rightPlayer = document.querySelector('.right-side');
-    this.cardCount = (this.cards.at(0)?.length ?? 0) + (this.cards.at(1)?.length ?? 0);
-    this.cardDiamondArrangement(this.cardCount);
+    let left = document.querySelector('.left-side');
+    let right = document.querySelector('.right-side');
+    let cardCount = (this.leftPlayer.hand.length ?? 0) + (this.rightPlayer.hand.length ?? 0);
+    this.cardDiamondArrangement(cardCount, left, right);
   }
 
+  buildGame(){
+    this.leftPlayer.hand = this.getCreatures('Overworld', this.leftPlayer.id);
+    this.rightPlayer.hand = this.getCreatures('Underworld', this.rightPlayer.id);
+    this.game.left = this.leftPlayer;
+    this.game.right = this.rightPlayer;
+  }
   
-  cardDiamondArrangement(cardCount: number) : void{
+  cardDiamondArrangement(cardCount: number, leftPlayer: any, rightPlayer : any ) : void{
 
     const columns = Math.ceil(Math.sqrt(cardCount));
     const CardAmount = Math.ceil(cardCount / columns);
     let amount = CardAmount;
     let cardCounter = CardAmount;  
-    let leftChildren = this.leftPlayer.children;   
-    let rightChildren = this.rightPlayer.children;    
+    let leftChildren = leftPlayer.children;   
+    let rightChildren = rightPlayer.children;    
  
     for (let items of leftChildren){
       if (cardCounter !== 0){
@@ -389,39 +421,78 @@ export class GameBoardComponent {
             cardCounter--;
           }
           else{
-            let colBreak = document.createElement('div');
-            colBreak.className = 'card-column-break'
-            this.leftPlayer.insertBefore(colBreak , items)
+            let colBreakLeft = document.createElement('div');
+            colBreakLeft.className = 'card-column-break'
+            leftPlayer?.insertBefore(colBreakLeft , items)
             cardCounter = --amount;
           }    
         }
 
       amount = CardAmount;
       cardCounter = CardAmount;
-      console.log(this.rightPlayer.children)
 
       for (let items of rightChildren){
-        console.log(items)
+
         if (cardCounter !== 0){
               cardCounter--;
             }
             else{
-              console.log(amount)
-              console.log(cardCounter)
   
               let colBreakRight = document.createElement('div');
               colBreakRight.className = 'card-column-break'
-              this.rightPlayer.insertBefore(colBreakRight , items)
-              cardCounter = --amount;
-              console.log(amount)
-              console.log(cardCounter)
-  
+              rightPlayer?.insertBefore(colBreakRight , items)
+              cardCounter = --amount;  
             }    
         }
   }
 
+  getCreatures(Tribe: string, playerNumber: number) : Card[] {
+    let cards: any[] = [];
+
+    jsonData.Creatures.map(x => {
+      if (x.Tribe === Tribe){
+        x.Creatures.map(y => {
+          let cardList = this.buildCreature(y, playerNumber);
+          console.log(cardList)
+
+          cards.push(cardList)
+
+        })
+      }
+    });
+
+
+
+    return cards;
+  }
+
+  buildCreature(info: any, player: number) : Card[] {
+    let card : Card = {
+      id: uuidv4(),
+      name: info.Name,
+      hp: info.Energy,
+      max_hp: info.Max_Energy,
+      mugic_counter: info.Mugic_Counters,
+      tribe: info.Tribe,
+      class: info.Class,
+      abilities : info.Abilities,
+      elements: info.Elements,
+      stats: info.Stats,
+      statuses: info.Statuses,
+      card: info.Card,
+      picture: info.Picture,
+      player: player
+      };
+    
+    let singleCardList: Card[] = [];
+    singleCardList.push(card);
+
+    console.log(singleCardList)
+
+      return singleCardList
+  }
+
   discardCard(card: Mugic_Card | Strike_Card, index: number){
-    console.log(index)
 
     if (card.type === 'Strike'){
       this.recyclePile.push(this.hand.find(x => x.id === card.id));
@@ -447,6 +518,7 @@ export class GameBoardComponent {
     winner.mugic_counter = this.battleService.getWinner().mugic_counter;
     winner.player = this.battleService.getWinner().player;
     winner.stats = this.battleService.getWinner().stats;
+    winner.statuses = this.battleService.getWinner().statuses;
     // can change
 
     return winner;
@@ -501,13 +573,23 @@ export class GameBoardComponent {
           this.discardPile.length + 1
         );
 
-          transferArrayItem( //transfer winner
-            event.previousContainer.data,
-            event.container.data,        
-            event.previousIndex,
-            event.currentIndex
-          );
 
+        this.battleService.getWinner().statuses.map(x => {
+          console.log('ping')
+          console.log(x)
+          console.log(x['Movement'] )
+          if (x['Movement'] !== 'x'){
+            transferArrayItem( //transfer winner
+              event.previousContainer.data,
+              event.container.data,        
+              event.previousIndex,
+              event.currentIndex
+            );
+          }
+        }
+        )
+
+          
         // need better way of doing this, need to use result.winner somehow
         let newState = this.setBattleAfterMath(event.container.data.at(0));
         event.container.data.pop();

@@ -24,6 +24,7 @@ export class BattleService {
         },
         elements: {},
         abilities: {},
+        statuses: [{}],
         player: 0
     };
     defender: Card = {
@@ -44,13 +45,14 @@ export class BattleService {
             'speed': 0,
             'wisdowm': 0,
         },
+        statuses: [{}],
         player: 0
     }; 
 
-    // playersTurn: number = 0;
-
     attackingCard: Card[] = [];
     defendingCard: Card[] = [];
+
+    successfulAttack = signal<boolean>(false);
 
     winner = signal<Card>({
         id: '',
@@ -65,8 +67,9 @@ export class BattleService {
         abilities: {},
         elements: {},
         stats: {},
+        statuses: [{}],
         player: 0
-    }); //need to research signal more
+    });
     // look at using behavior subjects for observers
     // also lok at using this for health points
 
@@ -83,12 +86,9 @@ export class BattleService {
         abilities: {},
         elements: {},
         stats: {},
+        statuses: [{}],
         player: 0
-    }); //need to research signal more
-
-    // loserCard = signal<string>(''); //Check if this is even needed
-
-    successfulAttack = signal<boolean>(false);
+    });
 
     setAttacker(attacker: Card){ //better way of setting this?
         this.attacker.id = attacker.id;
@@ -134,14 +134,6 @@ export class BattleService {
         return this.winner();
     }
 
-    // getLoser(){
-    //     return this.loser();
-    // }
-
-    // getLoserIndicator(){
-    //     return this.loserCard();
-    // }
-
     getBattleResult(){
         return this.successfulAttack();
     }
@@ -150,9 +142,7 @@ export class BattleService {
         this.winner.set(winner);
     }
 
-    setLoser(loser: Card
-        // , whoLost: string
-    ){
+    setLoser(loser: Card){
         this.loser.set(loser);
     }
 
@@ -176,7 +166,6 @@ export class BattleService {
         previousState.at(0).mugic_counter = this.winner().mugic_counter;
         previousState.at(0).player = this.winner().player;
         previousState.at(0).stats = this.winner().stats;
-        // can change
 
         return previousState.at(0);
     }
@@ -195,6 +184,7 @@ export class BattleService {
             abilities: {},
             elements: {},
             stats: {},
+            statuses: [{}],
             player: 0
         }); 
     }
@@ -213,6 +203,7 @@ export class BattleService {
             abilities: {},
             elements: {},
             stats: {},
+            statuses: [{}],
             player: 0
         }); 
     }

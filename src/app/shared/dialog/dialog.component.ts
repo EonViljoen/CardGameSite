@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, Signal, inject, model, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Battle } from '../../Interfaces/battle';
 import { BattleService } from '../services/battle.service';
 import { Card } from '../../Interfaces/card';
-import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList, moveItemInArray, transferArrayItem, CdkDropListGroup} from '@angular/cdk/drag-drop';
-import {MatCardModule} from '@angular/material/card';
+import { CdkDropList } from '@angular/cdk/drag-drop';
+import { MatCardModule } from '@angular/material/card';
 
 
 
@@ -104,19 +104,15 @@ export class DialogComponent { //this should probably be change to battle dialog
 
           statChecks.forEach(stat2Check => {
             let meet: string[] = stat2Check.substring(1, stat2Check.length-1).split(':').map(item => item.trim());
-            console.log('here?')
             if (checker.elements[meet[0]] === JSON.parse(meet[1])){ //Do this better later
-              console.log('criteria met')
               criteriaMet = true;
             }
 
             if (parameters[2] !== 'x'){
               if (!overAllCheck){
-                console.log('in here')
                 overAllCheck = criteriaMet;
               }
               else{
-                console.log('making sure its true')
                 if (parameters[2] === 'AND'){
 
                   overAllCheck = overAllCheck && criteriaMet;
@@ -175,10 +171,83 @@ export class DialogComponent { //this should probably be change to battle dialog
       // 1 - criteria to meet
       // 2 - operator (AND, OR, XOR ....)
 
-// Check : Elements ? [Fire : x]
-// Challenge : Stats ? [Courage : 15]'
+      // Check : Elements ? [Fire : x]
+      // Challenge : Stats ? [Courage : 15]'
 
       return criteriaMet;
+    }
+
+    additionalEffect(additionalEffectString: string, user: Card, target: Card) : void{
+
+      // parameters
+      // 0 - Whats affected and how much
+      // 1 - who affected --done
+      // 2 - operator (AND, OR, XOR ....)
+      let parameters: string[] = additionalEffectString.split('?').map(item => item.trim());
+      let affected: Card = parameters[2] === 'Self' ? user : target; // also target vs opposing
+
+      if(parameters[1] !== 'x'){
+        // done something later, also maybe recursively go through effects? then don't need if check anymore
+      }
+      else {
+
+        let affects: string[] = parameters[0].substring(1, parameters[0].length-1).split(':').map(item => item.trim());
+        if (affects[1] !== 'x'){
+
+          switch (affects[0]) {
+            case 'Stats':
+              affected.stats[affects[1]] += parseInt(affects[2])
+              break;
+            case 'Elements':
+              affected.elements[affects[1]] = affects[2] === 'x' ? false : true; 
+              break;
+            default:
+              break;
+          } 
+        }
+        else{
+
+          switch (affects[0]) {
+            case 'HP': //more to add as go along
+              affected.hp += parseInt(affects[2]);
+              break;
+            case 'Movement': //more to add as go along
+              affected.statuses.push({
+                'Movement' : affects[2]
+              });
+              break;
+            default:
+              break;
+          }
+          
+          console.log(affected.statuses)
+        }
+
+      }
+    }
+
+    useMugic(characteristics: string, user: Card, target: Card) : void {
+      let parameters: string[] = characteristics.split('|').map(item => item.trim());
+      console.log(parameters)
+
+      let affects: Card = parameters[1] === 'Self' ? user : target;
+
+      if (parameters[2] !== 'x'){
+
+        let criteriaMet = this.CheckCriteria(parameters[2], user, target);
+        if (criteriaMet){
+          console.log('criteria met');
+          this.additionalEffect(parameters[1], user, target);
+        }
+        else {
+          console.log('criteria not met');
+        }
+      }
+      else{
+        console.log('no criteria');
+        this.additionalEffect(parameters[1], user, target);
+      }
+
     }
 
     object2Array(obj: Object){
@@ -214,53 +283,44 @@ export class DialogComponent { //this should probably be change to battle dialog
       // strike = check elements => do dammage => check criteria ? do affect : don't do affect
 
       // mayber move target to action section
-
-      // 0: ' Mugic ? Overworld ? 1 | Self | HP | +15 | x', //done, make HP dynamic somehow  -- vidav heal
-      // 1: ' Mugic ? Generic ? 1 | Target | HP | +15 | Check : Elements ? [Earth : x] , [Water : x] ? OR', -- geo flurish
-      // 2: ' Mugic ? Overworld ? 1 | Target | Movement | Stop | x', -- statis
-      // 3: ' Mugic ? Underworld ? 1 | Target | HP | -20 | x', //done, make HP dynamic somehow -- causalty
-      // 4: ' Strike | Target | 5 : 5: 0: 0: 0 | Stats ? [Wisdom : -25] ? Opposing | Check : Elements ? [Fire : x]', -- ember swarm
-      // 5: ' Strike | Target | 0 : 10: 0: 0: 0 | Elements ? [Fire : Lose] ? Self | Check : Elements ? [Fire : x]', -- incinerate
-      // 6: ' Strike | Target | 0 : 0: 5: 5: 0 | x | x', // done -- pebblestorm
-      // 7: ' Strike | Target | 5 : 5: 0: 0: 0 | HP ? -10 ? Opposing | Challenge : Stats ? [Courage : 15]', -- rustoxic
-
       //elements : generic fire air earch water
 
-      if (action[0] === 'Mugic'){
-        if (user.mugic_counter > 0 && user.mugic_counter >= parseInt(action[2])){
-          if (player.tribe === (action[1] || 'Generic')){
+      if (action[0] === 'Mugic'){ //check if mugic
+        if (user.mugic_counter > 0 && user.mugic_counter >= parseInt(action[2])){ //check cost
+          if (player.tribe === action[1] || action[1] === 'Generic'){ //check restriction
+            
+            this.useMugic(value, user, target);
+            // if (ability[2] === 'HP'){ //if mugic HP focus
 
-            if (ability[2] === 'HP'){
-
-              target.hp += parseInt(ability[3]);
-              user.mugic_counter -= parseInt(action[2]);
-            }
+            //   target.hp += parseInt(ability[3]); //need to make a change on how opposing vs targeted creatures work
+            //   user.mugic_counter -= parseInt(action[2]);
+            // }
           }
         }
 
-        if (target.hp <= 0){
+        if (target.hp <= 0){ //check if combat done
           this.BattleResults(user, target)
         }
       }
-      else if (action[0] === 'Strike'){
+      else if (action[0] === 'Strike'){ //check if strike
 
-        let elementDamage : string[] = ability[2].split(':').map(item => item.trim()); 
+        let elementDamage : string[] = ability[2].split(':').map(item => item.trim()); //determine element damage
         let criteriaMet : boolean = false; 
         target.hp -= this.calculateDamage(user, elementDamage);
 
-        if (ability[4] !== 'x'){
+        if (ability[4] !== 'x'){ //check if their is criteria to meet
           criteriaMet = this.CheckCriteria(ability[4], user, opposing);
         }
 
-        if (criteriaMet){
-          // do ability[3]
+        if (criteriaMet){ //additional effects if criteria met
+          this.additionalEffect(ability[3], user, opposing)
         }
         
-        if (target.hp <= 0){
+        if (target.hp <= 0){//check if combat done
           this.BattleResults(user, target)
         }
       }
 
-      this.currentPlayerTurn.set(opposing.player)      
+      this.currentPlayerTurn.set(opposing.player); //next players turn
     }
 }

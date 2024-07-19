@@ -1,6 +1,6 @@
 <div class="example-boundary container" cdkDropListGroup>
   <div class="left-side">
-    @for (card of cards[0]; track card) {
+    @for (card of game.left.hand; track card) {
       <div 
         cdkDropList
         class="card-background"
@@ -15,7 +15,7 @@
      }
   </div>
   <div class="right-side">
-    @for (card of cards[1]; track card) {
+    @for (card of game.right.hand; track card) {
       <div 
         cdkDropList
         class="card-background"

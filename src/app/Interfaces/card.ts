@@ -10,6 +10,7 @@ export interface Card {
     class: string;
     stats: { [key: string]: number };
     elements: { [key: string]: boolean };
-    abilities: { [key: number]: string };
+    abilities: { [key: string]: string };
+    statuses: [ {[key: string]: string}]
     player: number;
 }
