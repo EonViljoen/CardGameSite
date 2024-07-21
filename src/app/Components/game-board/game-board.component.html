@@ -1,30 +1,30 @@
 <div class="example-boundary container" cdkDropListGroup>
   <div class="left-side">
-    @for (card of game.left.hand; track card) {
+    @for (card of game.left.Field; track card) {
       <div 
         cdkDropList
         class="card-background"
         [cdkDropListData]="card"
         (cdkDropListDropped)="drop($event)"
         >
-        @for (item of card; track item.id) {
-          <app-card [picture]="item.picture"
-          [matTooltip]="item.name" matTooltipPosition="above"></app-card>
+        @for (item of card; track item.Id) {
+          <app-card [Picture]="item"
+          [matTooltip]="item.Name" matTooltipPosition="above"></app-card>
         }
       </div>
      }
   </div>
   <div class="right-side">
-    @for (card of game.right.hand; track card) {
+    @for (card of game.right.Field; track card) {
       <div 
         cdkDropList
         class="card-background"
         [cdkDropListData]="card"
         (cdkDropListDropped)="drop($event)"
         >
-        @for (item of card; track item.id) {
-          <app-card [picture]="item.picture"
-          [matTooltip]="item.name" matTooltipPosition="above"></app-card>
+        @for (item of card; track item.Id) {
+          <app-card [Picture]="item.Picture"
+          [matTooltip]="item.Name" matTooltipPosition="above"></app-card>
         }
       </div>
      }
@@ -36,7 +36,7 @@
     >
     @for (item of discardPile; track item) {
       <mat-card class="example-box" >
-        <img mat-card-image class="card-image" [src]="item.picture">
+        <img mat-card-image class="card-image" [src]="item.Picture">
       </mat-card>
     }
     </div>
@@ -46,20 +46,20 @@
     >
     @for (item of recyclePile; track item) {
       <mat-card class="example-box">
-        <img mat-card-image class="card-image" [src]="item.picture">
+        <img mat-card-image class="card-image" [src]="item.Picture">
       </mat-card>
     }
     </div>
 
     <div class="hand hand-list" cdkDropList
-    [cdkDropListData]="hand"
+    [cdkDropListData]="playPool"
     cdkDropListOrientation="horizontal"
     (cdkDropListDropped)="arrangeHand($event)"
     >
-      @for (card of hand; track card; let i = $index) {
+      @for (card of playPool; track card; let i = $index) {
         <mat-card class="hand-box" cdkDrag>
-          <img mat-card-image class="card-image" [src]="card.picture"  
-          [matTooltip]="card.name" matTooltipPosition="above"
+          <img mat-card-image class="card-image" [src]="card.Picture"  
+          [matTooltip]="card.Name" matTooltipPosition="above"
           (click)="discardCard(card, i)">
         </mat-card>
       }
@@ -70,7 +70,7 @@
     >
     @for (item of drawPile; track item) {
       <mat-card class="example-box" (click)="DrawCard(1)">
-        <img mat-card-image class="card-image draw-card" src="./assets/logo.png">
+        <img mat-card-image class="card-image draw-card" src="./assets/cardBack.png">
       </mat-card>
     }
     </div>

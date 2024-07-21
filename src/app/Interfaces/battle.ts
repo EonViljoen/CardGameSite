@@ -1,7 +1,7 @@
-import { Card } from "./card";
+import { Creature_Card } from "./creature_card";
 
 export interface Battle {
-    attacker: Card,
-    defender: Card,
+    attacker: Creature_Card,
+    defender: Creature_Card,
     hand: any[]
 }

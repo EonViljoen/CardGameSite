@@ -1,10 +1,8 @@
 export interface Strike_Card {
     id: string;
-    name: string;
-    type: string;
-    cost: number;
-    attack: number;
-    additional_attack: { [key: string]: number };
-    effect: string;
-    picture: string;
+    Name: string;
+    Cost: number;
+    Type: string;
+    Effect: string;
+    Picture: string;
 }

@@ -1,125 +1,124 @@
 import {Injectable, signal} from '@angular/core';
-import { Card } from '../../Interfaces/card';
+import { Creature_Card } from '../../Interfaces/creature_card';
 
 @Injectable({
   providedIn: 'root',
 })
 
 export class BattleService {
-    attacker: Card = {
-        id: '',
-        name: '',
-        picture: '',
-        card: '',
-        hp: 100,
-        max_hp: 100,
-        mugic_counter: 0,
-        class: '',
-        tribe: '',
-        stats: {
+    attacker: Creature_Card = {
+        Id: '',
+        Name: '',
+        Picture: '',
+        Card: '',
+        Energy: 0,
+        Max_Energy: 0,
+        Mugic_Counter: 0,
+        Tribe: '',
+        Class: '',
+        Stats: {
             'courage': 0,
             'power': 0,
             'speed': 0,
             'wisdowm': 0,
         },
-        elements: {},
-        abilities: {},
-        statuses: [{}],
-        player: 0
+        Elements: {},
+        Abilities: {},
+        Statuses: [{}],
+        Player: 0
     };
-    defender: Card = {
-        id: '',
-        name: '',
-        picture: '',
-        card: '',
-        hp: 100,
-        max_hp: 100,
-        mugic_counter: 0,
-        class: '',
-        tribe: '',
-        abilities: {},
-        elements: {},
-        stats: {
+    defender: Creature_Card = {
+        Id: '',
+        Name: '',
+        Picture: '',
+        Card: '',
+        Energy: 0,
+        Max_Energy: 0,
+        Mugic_Counter: 0,
+        Tribe: '',
+        Class: '',
+        Stats: {
             'courage': 0,
             'power': 0,
             'speed': 0,
             'wisdowm': 0,
         },
-        statuses: [{}],
-        player: 0
-    }; 
-
-    attackingCard: Card[] = [];
-    defendingCard: Card[] = [];
+        Elements: {},
+        Abilities: {},
+        Statuses: [{}],
+        Player: 0
+    };
+    attackingCard: Creature_Card[] = [];
+    defendingCard: Creature_Card[] = [];
 
     successfulAttack = signal<boolean>(false);
 
-    winner = signal<Card>({
-        id: '',
-        name: '',
-        picture: '',
-        card: '',
-        hp: 100,
-        max_hp: 100,
-        mugic_counter: 0,
-        class: '',
-        tribe: '',
-        abilities: {},
-        elements: {},
-        stats: {},
-        statuses: [{}],
-        player: 0
+    winner = signal<Creature_Card>({
+        Id: '',
+        Name: '',
+        Picture: '',
+        Card: '',
+        Energy: 0,
+        Max_Energy: 0,
+        Mugic_Counter: 0,
+        Tribe: '',
+        Class: '',
+        Stats: {},
+        Elements: {},
+        Abilities: {},
+        Statuses: [{}],
+        Player: 0
     });
     // look at using behavior subjects for observers
     // also lok at using this for health points
 
-    loser = signal<Card>({
-        id: '',
-        name: '',
-        picture: '',
-        card: '',
-        hp: 100,
-        max_hp: 100,
-        mugic_counter: 0,
-        class: '',
-        tribe: '',
-        abilities: {},
-        elements: {},
-        stats: {},
-        statuses: [{}],
-        player: 0
+    loser = signal<Creature_Card>({
+        Id: '',
+        Name: '',
+        Picture: '',
+        Card: '',
+        Energy: 0,
+        Max_Energy: 0,
+        Mugic_Counter: 0,
+        Tribe: '',
+        Class: '',
+        Stats: {},
+        Elements: {},
+        Abilities: {},
+        Statuses: [{}],
+        Player: 0
     });
 
-    setAttacker(attacker: Card){ //better way of setting this?
-        this.attacker.id = attacker.id;
-        this.attacker.name = attacker.name;
-        this.attacker.picture = attacker.picture;
-        this.attacker.card = attacker.card;
-        this.attacker.hp = attacker.hp;
-        this.attacker.max_hp = attacker.max_hp;
-        this.attacker.mugic_counter = attacker.mugic_counter;
-        this.attacker.class = attacker.class;
-        this.attacker.tribe = attacker.tribe;
-        this.attacker.abilities = attacker.abilities;
-        this.attacker.stats = attacker.stats;
-        this.attacker.elements = attacker.elements;
-        this.attacker.player = attacker.player;
+    setAttacker(attacker: Creature_Card){ //better way of setting this?
+        this.attacker.Id = attacker.Id;
+        this.attacker.Name = attacker.Name;
+        this.attacker.Picture = attacker.Picture;
+        this.attacker.Card = attacker.Card;
+        this.attacker.Energy = attacker.Energy;
+        this.attacker.Max_Energy = attacker.Max_Energy;
+        this.attacker.Mugic_Counter = attacker.Mugic_Counter;
+        this.attacker.Class = attacker.Class;
+        this.attacker.Tribe = attacker.Tribe;
+        this.attacker.Abilities = attacker.Abilities;
+        this.attacker.Stats = attacker.Stats;
+        this.attacker.Elements = attacker.Elements;
+        this.attacker.Player = attacker.Player;
     }
 
-    setDefender(defender: Card){
-        this.defender.id = defender.id;
-        this.defender.name = defender.name;
-        this.defender.picture = defender.picture;
-        this.defender.card = defender.card;
-        this.defender.hp = defender.hp;
-        this.defender.max_hp = defender.max_hp;
-        this.defender.mugic_counter = defender.mugic_counter;
-        this.defender.class = defender.class;
-        this.defender.tribe = defender.tribe;
-        this.defender.abilities = defender.abilities;
-        this.defender.stats = defender.stats;
-        this.defender.elements = defender.elements;
-        this.defender.player = defender.player;
+    setDefender(defender: Creature_Card){
+        this.defender.Id = defender.Id;
+        this.defender.Name = defender.Name;
+        this.defender.Picture = defender.Picture;
+        this.defender.Card = defender.Card;
+        this.defender.Energy = defender.Energy;
+        this.defender.Max_Energy = defender.Max_Energy;
+        this.defender.Mugic_Counter = defender.Mugic_Counter;
+        this.defender.Class = defender.Class;
+        this.defender.Tribe = defender.Tribe;
+        this.defender.Abilities = defender.Abilities;
+        this.defender.Stats = defender.Stats;
+        this.defender.Elements = defender.Elements;
+        this.defender.Player = defender.Player;
     }
 
     getAttacker(){
@@ -138,19 +137,19 @@ export class BattleService {
         return this.successfulAttack();
     }
 
-    setWinner(winner: Card){
+    setWinner(winner: Creature_Card){
         this.winner.set(winner);
     }
 
-    setLoser(loser: Card){
+    setLoser(loser: Creature_Card){
         this.loser.set(loser);
     }
 
-    setAttackingCard(card: Card[]){
+    setAttackingCard(card: Creature_Card[]){
         this.attackingCard = card;
     }
 
-    setDefendingCard(card: Card[]){
+    setDefendingCard(card: Creature_Card[]){
         this.defendingCard = card;
     }
 
@@ -158,53 +157,53 @@ export class BattleService {
         this.successfulAttack.set(value);
     }
 
-    setBattleAfterMath(previousState: Card[] | any): Card[] {
-        previousState.at(0).abilities = this.winner().abilities;
-        previousState.at(0).elements = this.winner().elements;
-        previousState.at(0).hp = this.winner().hp;
-        previousState.at(0).max_hp = this.winner().max_hp;
-        previousState.at(0).mugic_counter = this.winner().mugic_counter;
-        previousState.at(0).player = this.winner().player;
-        previousState.at(0).stats = this.winner().stats;
+    setBattleAfterMath(previousState: Creature_Card[] | any): Creature_Card[] {
+        previousState.at(0).Abilities = this.winner().Abilities;
+        previousState.at(0).Elements = this.winner().Elements;
+        previousState.at(0).Energy = this.winner().Energy;
+        previousState.at(0).Max_Energy = this.winner().Max_Energy;
+        previousState.at(0).Mugic_Counter = this.winner().Mugic_Counter;
+        previousState.at(0).Player = this.winner().Player;
+        previousState.at(0).Stats = this.winner().Stats;
 
         return previousState.at(0);
     }
 
     resetWinner(){
         this.winner.set({
-            id: '',
-            name: '',
-            picture: '',
-            card: '',
-            hp: 100,
-            max_hp: 100,
-            mugic_counter: 0,
-            class: '',
-            tribe: '',
-            abilities: {},
-            elements: {},
-            stats: {},
-            statuses: [{}],
-            player: 0
+            Id: '',
+            Name: '',
+            Picture: '',
+            Card: '',
+            Energy: 0,
+            Max_Energy: 0,
+            Mugic_Counter: 0,
+            Tribe: '',
+            Class: '',
+            Stats: {},
+            Elements: {},
+            Abilities: {},
+            Statuses: [{}],
+            Player: 0
         }); 
     }
 
     resetLoser(){
         this.loser.set({
-            id: '',
-            name: '',
-            picture: '',
-            card: '',
-            hp: 100,
-            max_hp: 100,
-            mugic_counter: 0,
-            class: '',
-            tribe: '',
-            abilities: {},
-            elements: {},
-            stats: {},
-            statuses: [{}],
-            player: 0
+            Id: '',
+            Name: '',
+            Picture: '',
+            Card: '',
+            Energy: 0,
+            Max_Energy: 0,
+            Mugic_Counter: 0,
+            Tribe: '',
+            Class: '',
+            Stats: {},
+            Elements: {},
+            Abilities: {},
+            Statuses: [{}],
+            Player: 0
         }); 
     }
 }

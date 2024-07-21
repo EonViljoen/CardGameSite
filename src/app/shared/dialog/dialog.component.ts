@@ -3,29 +3,46 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Battle } from '../../Interfaces/battle';
 import { BattleService } from '../services/battle.service';
-import { Card } from '../../Interfaces/card';
+import { Creature_Card } from '../../Interfaces/creature_card';
 import { CdkDropList } from '@angular/cdk/drag-drop';
 import { MatCardModule } from '@angular/material/card';
-
-
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-dialog',
   standalone: true,
-  imports: [MatDialogModule, MatButtonModule, CdkDropList, MatCardModule],
+  imports: [MatDialogModule, MatButtonModule, CdkDropList, MatCardModule, MatTooltipModule],
   templateUrl: './dialog.component.html',
   styleUrl: './dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DialogComponent { //this should probably be change to battle dialog or somehting like that
   readonly dialogRef = inject(MatDialogRef<DialogComponent>);
-  data = inject<Battle>(MAT_DIALOG_DATA);
-  private battleService = inject(BattleService);
-  readonly attacker : Card;
-  readonly defender : Card;
-  currentPlayerTurn = signal<number>(1);
 
-  // winner = signal;
+  data = inject<Battle>(MAT_DIALOG_DATA);
+
+  private battleService = inject(BattleService);
+
+  readonly attacker : Creature_Card;
+  readonly defender : Creature_Card;
+  
+  currentPlayerTurn = signal<Creature_Card>({
+    Id: '',
+    Name: '',
+    Picture: '',
+    Card: '',
+    Energy: 0,
+    Max_Energy: 0,
+    Mugic_Counter: 0,
+    Tribe: '',
+    Class: '',
+    Stats: {},
+    Elements: {},
+    Abilities: {},
+    Statuses: [{}],
+    Player: 0
+  });
+
   hand: any[] = []
   
   constructor()
@@ -35,7 +52,7 @@ export class DialogComponent { //this should probably be change to battle dialog
     this.hand = this.data.hand;
 
     this.currentPlayerTurn.set(
-      this.attacker.stats['speed'] > this.defender.stats['speed'] ? this.attacker.player : this.defender.player 
+      this.attacker.Stats['speed'] > this.defender.Stats['speed'] ? this.attacker : this.defender 
     );    
   }
 
@@ -44,67 +61,74 @@ export class DialogComponent { //this should probably be change to battle dialog
 }
 
 
-    BattleResults(winner: Card, loser: Card){
-      this.battleService.setWinner(winner);
-      this.battleService.setLoser(loser);
+    determineBattleResults(userCard: Creature_Card, opposingCard: Creature_Card){
+      if (userCard.Energy >  opposingCard.Energy){
+
+        this.battleService.setWinner(userCard);
+        this.battleService.setLoser(opposingCard);
+      }
+      else if (userCard.Energy < opposingCard.Energy){
+
+        this.battleService.setWinner(opposingCard);
+        this.battleService.setLoser(userCard);
+      }
+      else {
+        // this.battleService.draw();
+      }
 
       this.dialogRef.close({
         battleOccurred: true,
-        loser: loser,
-        winner: winner
+        loser: this.battleService.loser(),
+        winner: this.battleService.winner()
       })
     }
 
-    CalculateHeal(user: Card){
-      let currentHealth = user.hp;
-
-      if (user.max_hp - currentHealth > 50){
-        user.hp += 50
-      }
-      else {
-        user.hp = user.max_hp
-      }
-    }
-
-    calculateDamage(user: Card, elementDamageArray: string[]) : number {
+    //elements : generic fire air earch water
+    calculateDamage(user: Creature_Card, elementDamageArray: string[]) : number {
       let damage: number = 0;
         damage += parseInt(elementDamageArray[0]);
 
-        if (user.elements['fire']){
+        if (user.Elements['fire']){
           damage += parseInt(elementDamageArray[1]);
         }
-        if (user.elements['air']){
+        if (user.Elements['air']){
           damage += parseInt(elementDamageArray[2]);
         }
-        if (user.elements['earth']){
+        if (user.Elements['earth']){
           damage += parseInt(elementDamageArray[3]);
         }
-        if (user.elements['water']){
+        if (user.Elements['water']){
           damage += parseInt(elementDamageArray[4]);
         }
 
         return damage
     }
 
-    CheckCriteria(criteriaString: string, user: Card, target: Card) : boolean {
+    // parameters
+      // 0 - sort of check (check, challenge ...) and on what
+      // 1 - criteria to meet
+      // 2 - operator (AND, OR, XOR ....)
+    CheckCriteria(criteria: string, user: Creature_Card) : boolean {
       let criteriaMet: boolean = false;
 
-      let parameters: string[] = criteriaString.split('?').map(item => item.trim());
-      let check: string[] = parameters[0].split(':').map(item => item.trim());
+      let parameters: string[] = criteria.split('?').map(item => item.trim());
+      let criteriaType: string[] = parameters[0].split(':').map(item => item.trim());
+
+      let target: Creature_Card = this.getTarget(user, parameters[3])
+
 
       // flow = sort of check -> operator -> meet criteria -> set to true if it is met according to operator
 
-      if (check[0] === 'Check'){
-        if (check[1] === 'Elements'){
+      if (criteriaType[0] === 'Check'){
 
-          let statChecks: string[] = parameters[1].split(',').map(item => item.trim()); //have potentially multiple criteria to meet
+        if (criteriaType[1] === 'Elements'){
+
+          let qualtifications: string[] = parameters[1].split(',').map(item => item.trim()); //have potentially multiple criteria to meet
           let overAllCheck: boolean;
 
-          let checker: Card = parameters[3] === 'Self' ? user : target;
-
-          statChecks.forEach(stat2Check => {
-            let meet: string[] = stat2Check.substring(1, stat2Check.length-1).split(':').map(item => item.trim());
-            if (checker.elements[meet[0]] === JSON.parse(meet[1])){ //Do this better later
+          qualtifications.forEach(block => {
+            let elementCheck: string[] = block.substring(1, block.length-1).split(':').map(item => item.trim());
+            if (target.Elements[elementCheck[0]] === JSON.parse(elementCheck[1])){ //Do this better later
               criteriaMet = true;
             }
 
@@ -126,19 +150,19 @@ export class DialogComponent { //this should probably be change to battle dialog
           })
         }
       }
-      else if (check[0] === 'Challenge'){ //this should be moved to somewhere
+      else if (criteriaType[0] === 'Challenge'){ //this should be moved to somewhere
 
-        if (check[1] === 'Stats'){
+        if (criteriaType[1] === 'Stats'){
 
-          let statChecks: string[] = parameters[1].split(',').map(item => item.trim()); //have potentially multiple criteria to meet
+          let qualtifications: string[] = parameters[1].split(',').map(item => item.trim()); //have potentially multiple criteria to meet
           let overAllCheck: boolean;
 
-          statChecks.forEach(stat2Check => {
-            let meet: string[] = stat2Check.substring(1, stat2Check.length-1).split(':').map(item => item.trim());
+          qualtifications.forEach(block => {
+            let statCheck: string[] = block.substring(1, block.length-1).split(':').map(item => item.trim());
 
-            let challenge : number = user.stats[meet[0]] - target.stats[meet[0]];
+            let challenge : number = user.Stats[statCheck[0]] - target.Stats[statCheck[0]];
 
-            if(challenge >= parseInt(meet[1])){
+            if(challenge >= parseInt(statCheck[1])){
               criteriaMet = true;
             }
 
@@ -166,40 +190,34 @@ export class DialogComponent { //this should probably be change to battle dialog
         // }
       }
 
-      // parameters
-      // 0 - sort of check (check, challenge ...) and on what
-      // 1 - criteria to meet
-      // 2 - operator (AND, OR, XOR ....)
-
-      // Check : Elements ? [Fire : x]
-      // Challenge : Stats ? [Courage : 15]'
-
+      
       return criteriaMet;
     }
-
-    additionalEffect(additionalEffectString: string, user: Card, target: Card) : void{
 
       // parameters
       // 0 - Whats affected and how much
       // 1 - who affected --done
       // 2 - operator (AND, OR, XOR ....)
+    doEffect(additionalEffectString: string, user: Creature_Card) : void{
+      
       let parameters: string[] = additionalEffectString.split('?').map(item => item.trim());
-      let affected: Card = parameters[2] === 'Self' ? user : target; // also target vs opposing
+      let affected: Creature_Card = this.getTarget(user,parameters[2] )
 
-      if(parameters[1] !== 'x'){
+      if(parameters[1] !== 'x'){ //do like I did with criteria
         // done something later, also maybe recursively go through effects? then don't need if check anymore
       }
       else {
 
-        let affects: string[] = parameters[0].substring(1, parameters[0].length-1).split(':').map(item => item.trim());
-        if (affects[1] !== 'x'){
+        let effects: string[] = parameters[0].substring(1, parameters[0].length-1).split(':').map(item => item.trim());
+        if (effects[1] !== 'x'){
 
-          switch (affects[0]) {
+          console.log('do effect on lists')
+          switch (effects[0]) {
             case 'Stats':
-              affected.stats[affects[1]] += parseInt(affects[2])
+              affected.Stats[effects[1]] += parseInt(effects[2])
               break;
             case 'Elements':
-              affected.elements[affects[1]] = affects[2] === 'x' ? false : true; 
+              affected.Elements[effects[1]] = effects[2] === 'x' ? false : true; 
               break;
             default:
               break;
@@ -207,120 +225,111 @@ export class DialogComponent { //this should probably be change to battle dialog
         }
         else{
 
-          switch (affects[0]) {
+          console.log('do effects on props')
+          switch (effects[0]) {
             case 'HP': //more to add as go along
-              affected.hp += parseInt(affects[2]);
+              affected.Energy += parseInt(effects[2]);
               break;
-            case 'Movement': //more to add as go along
-              affected.statuses.push({
-                'Movement' : affects[2]
+            case 'Movement':
+              affected.Statuses.push({
+                'Movement' : effects[2]
               });
               break;
             default:
               break;
-          }
-          
-          console.log(affected.statuses)
+          }          
         }
 
       }
     }
 
-    useMugic(characteristics: string, user: Card, target: Card) : void {
-      let parameters: string[] = characteristics.split('|').map(item => item.trim());
-      console.log(parameters)
+    // useMugic(effect: string, user: Creature_Card, target : Creature_Card, cost: number) : void {
 
-      let affects: Card = parameters[1] === 'Self' ? user : target;
+    //   let parameters = this.splitToString(effect, '?');        
 
-      if (parameters[2] !== 'x'){
-
-        let criteriaMet = this.CheckCriteria(parameters[2], user, target);
-        if (criteriaMet){
-          console.log('criteria met');
-          this.additionalEffect(parameters[1], user, target);
-        }
-        else {
-          console.log('criteria not met');
-        }
-      }
-      else{
-        console.log('no criteria');
-        this.additionalEffect(parameters[1], user, target);
-      }
-
-    }
+    // }
 
     object2Array(obj: Object){
       return Object.entries(obj).map(([key, value]) => ({key, value}));
     }
 
-    useAbility(value: string, player: Card){ //offboard most of this to service, also use this as blueprint for card effects maybe
-      // some funky shit about to happen below
+    splitToString(value: string, splitOn: string) : string[] {
+      return value.split(splitOn).map(item => item.trim());
+    }
 
-      let user = player.id === this.attacker.id ? this.attacker : this.defender
-      let opposing = player.id === this.attacker.id ? this.defender : this.attacker
+    getTarget(user : Creature_Card, target: string) : Creature_Card {
 
-      let ability: string[] = value.split('|').map(item => item.trim());
-      let action : string [] = ability[0].split('?').map(item => item.trim());
-      let target = ability[1] === 'Self' ? user : opposing;
+      switch (target) {
+        case "Self":
+          return user.Id === this.attacker.Id ? this.attacker : this.defender;
+          break;
+        
+        case "Opposing":
+          return user.Id === this.attacker.Id ? this.defender : this.attacker;
+          break;
 
-      // mugic 
-      // 0 - action
-      // 1 - target
-      // 2 - affecting
-      // 3 - amount 
-      // 4 - criteria
+        case "Target" :
+          return user.Id === this.attacker.Id ? this.defender : this.attacker;
+          break;
 
-      // strike 
-      // 0 - action
-      // 1 - target
-      // 2 - elemental damage
-      // 3 - affecting 
-      // 4 - criteria
+        default:
+          return user.Id === this.attacker.Id ? this.attacker : this.defender;
+          break;
+      }
+    }
+
+    use(value: string, user: Creature_Card){
+
+      let abilityInformation = this.splitToString(value, '|');
+      let metaInformation = this.splitToString(abilityInformation[0], '?');
+
+      let target = this.getTarget(user, metaInformation[1]);
 
       // logic
       // mugic = check criteria ? do affect : prompt that you cant
-      // strike = check elements => do dammage => check criteria ? do affect : don't do affect
+      // strike = check elements => do dammage => check criteria ? do affect : don't do affect     
 
-      // mayber move target to action section
-      //elements : generic fire air earch water
+      if (metaInformation[0] === 'Mugic'){
 
-      if (action[0] === 'Mugic'){ //check if mugic
-        if (user.mugic_counter > 0 && user.mugic_counter >= parseInt(action[2])){ //check cost
-          if (player.tribe === action[1] || action[1] === 'Generic'){ //check restriction
+        if (user.Mugic_Counter > 0 && user.Mugic_Counter >= parseInt(metaInformation[3])){ 
+          
+          if (user.Tribe === metaInformation[2] || metaInformation[2] === 'Generic'){ 
             
-            this.useMugic(value, user, target);
-            // if (ability[2] === 'HP'){ //if mugic HP focus
+            if(this.CheckCriteria(abilityInformation[2], user)){ //maybe remove target
 
-            //   target.hp += parseInt(ability[3]); //need to make a change on how opposing vs targeted creatures work
-            //   user.mugic_counter -= parseInt(action[2]);
-            // }
+              // this.useMugic(abilityInformation[1], user, target, parseInt(metaInformation[3])); // is a seperate method even needed?
+              user.Mugic_Counter -= parseInt(metaInformation[3])
+              this.doEffect(abilityInformation[1], user);
+
+            }
+
           }
         }
 
-        if (target.hp <= 0){ //check if combat done
-          this.BattleResults(user, target)
+        if (user.Energy <= 0 || target.Energy <= 0){
+          
+          this.determineBattleResults(user, target)
         }
       }
-      else if (action[0] === 'Strike'){ //check if strike
+      else if (metaInformation[0] === 'Strike'){
 
-        let elementDamage : string[] = ability[2].split(':').map(item => item.trim()); //determine element damage
-        let criteriaMet : boolean = false; 
-        target.hp -= this.calculateDamage(user, elementDamage);
+        let elementDamage = this.splitToString(abilityInformation[1], ':');
+        target.Energy -= this.calculateDamage(user, elementDamage);
 
-        if (ability[4] !== 'x'){ //check if their is criteria to meet
-          criteriaMet = this.CheckCriteria(ability[4], user, opposing);
-        }
+        if (abilityInformation[3] !== 'x'){
 
-        if (criteriaMet){ //additional effects if criteria met
-          this.additionalEffect(ability[3], user, opposing)
+          if(this.CheckCriteria(metaInformation[4], user)){
+
+            this.doEffect(abilityInformation[3], user)
+          };
+
         }
         
-        if (target.hp <= 0){//check if combat done
-          this.BattleResults(user, target)
+        if (user.Energy <= 0 || target.Energy <= 0){//check if combat done
+          this.determineBattleResults(user, target)
         }
       }
 
-      this.currentPlayerTurn.set(opposing.player); //next players turn
+      this.currentPlayerTurn.set(target); //next players turn
     }
 }

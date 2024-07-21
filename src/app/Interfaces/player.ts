@@ -1,6 +1,6 @@
-import { Card } from "./card";
+import { Creature_Card } from "./creature_card";
 
 export interface Player {
-    id: number;
-    hand: Card[];
+    Id: number;
+    Field: Creature_Card[];
 }

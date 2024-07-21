@@ -1,6 +1,6 @@
 <div mat-dialog-title class="body">
   <p>Battle</p>
-  <p>Player {{currentPlayerTurn()}}'s' Turn</p>
+  <p>Player {{currentPlayerTurn().Player}}'s' Turn</p>
 </div>
 <mat-dialog-content class="mat-typography">
   <div class="cardzone">
@@ -8,30 +8,30 @@
       <p>
         Mugic
         <br>
-        {{attacker.mugic_counter}}
+        {{attacker.Mugic_Counter}}
       </p>
     </div>
     <div class="player1">
       <p>
         Attacker
         <br>
-        {{attacker.name}}
+        {{attacker.Name}}
         <br>
-        HP : {{attacker.hp}}
+        HP : {{attacker.Energy}}
       </p>
-      <img class="card-image" [src]="attacker.picture">
+      <img class="card-image" [src]="attacker.Picture">
       <p>
-        @for (stat of object2Array(attacker.stats); track stat.key) {
+        @for (stat of object2Array(attacker.Stats); track stat.key) {
         | {{stat.key}} : {{stat.value}} |
         }
       </p>
       <p>
-        @for (element of object2Array(attacker.elements); track element.key) {
+        @for (element of object2Array(attacker.Elements); track element.key) {
         | {{element.key}} : {{element.value ? 'o' : 'x'}} |
         }
       </p>
-      @for (ability of object2Array(attacker.abilities); track ability.key) {
-        <button mat-button (click)="useAbility(ability.value, attacker)" [disabled]="attacker.player == currentPlayerTurn() ? false : true">
+      @for (ability of object2Array(attacker.Abilities); track ability.key) {
+        <button mat-button (click)="use(ability.value, attacker)" [disabled]="attacker == currentPlayerTurn()">
         {{ability.key}}
         </button>
       } 
@@ -40,23 +40,23 @@
       <p>
         Defender
         <br>
-        {{defender.name}}
+        {{defender.Name}}
         <br>
-        HP : {{defender.hp}}
+        HP : {{defender.Energy}}
       </p>
-      <img class="card-image" [src]="defender.picture">
+      <img class="card-image" [src]="defender.Picture">
       <p>
-        @for (stat of object2Array(defender.stats); track stat.key) {
+        @for (stat of object2Array(defender.Stats); track stat.key) {
         | {{stat.key}} : {{stat.value}} |
         }
       </p>
       <p>
-        @for (element of object2Array(defender.elements); track element.key) {
+        @for (element of object2Array(defender.Elements); track element.key) {
         | {{element.key}} : {{element.value ? 'o' : 'x'}} |
         }
       </p>
-      @for (ability of object2Array(defender.abilities); track ability.key) {
-        <button mat-button (click)="useAbility(ability.value, defender)" [disabled]="defender.player == currentPlayerTurn() ? false : true">
+      @for (ability of object2Array(defender.Abilities); track ability.key) {
+        <button mat-button (click)="use(ability.value, defender)" [disabled]="defender == currentPlayerTurn()">
         {{ability.key}}
         </button>
       } 
@@ -65,7 +65,7 @@
       <p>
         Mugic
         <br>
-        {{defender.mugic_counter}}
+        {{defender.Mugic_Counter}}
       </p>
     </div>
   </div>
@@ -77,7 +77,9 @@
     >
       @for (card of hand; track card; let i = $index) {
         <mat-card class="hand-box">
-          <img mat-card-image class="card-image" [src]="card.picture"  
+          <img mat-card-image class="card-image" [src]="card.Picture"
+          [matTooltip]="card.Name" matTooltipPosition="above"
+          (click)="use(card.Effect, currentPlayerTurn())"  
           >
         </mat-card>
       }
