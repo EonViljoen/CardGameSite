@@ -8,7 +8,7 @@
         (cdkDropListDropped)="drop($event)"
         >
         @for (item of card; track item.Id) {
-          <app-card [Picture]="item"
+          <app-card [Picture]="item.Picture"
           [matTooltip]="item.Name" matTooltipPosition="above"></app-card>
         }
       </div>

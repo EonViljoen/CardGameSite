@@ -10,5 +10,5 @@ import { CdkDrag } from '@angular/cdk/drag-drop';
   styleUrl: './card.component.scss'
 })
 export class CardComponent {
-  @Input() Picture: string = ''
+  @Input() Picture: string = '';
 }
