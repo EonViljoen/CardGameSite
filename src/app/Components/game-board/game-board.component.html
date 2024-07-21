@@ -34,7 +34,7 @@
     <div class="discard" cdkDropList
       [cdkDropListData]="discardPile"
     >
-    @for (item of discardPile; track item) {
+    @for (item of discardPile; track item.Id) {
       <mat-card class="example-box" >
         <img mat-card-image class="card-image" [src]="item.Picture">
       </mat-card>

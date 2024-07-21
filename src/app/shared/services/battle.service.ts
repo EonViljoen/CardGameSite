@@ -16,12 +16,7 @@ export class BattleService {
         Mugic_Counter: 0,
         Tribe: '',
         Class: '',
-        Stats: {
-            'courage': 0,
-            'power': 0,
-            'speed': 0,
-            'wisdowm': 0,
-        },
+        Stats: {},
         Elements: {},
         Abilities: {},
         Statuses: [{}],
@@ -37,19 +32,12 @@ export class BattleService {
         Mugic_Counter: 0,
         Tribe: '',
         Class: '',
-        Stats: {
-            'courage': 0,
-            'power': 0,
-            'speed': 0,
-            'wisdowm': 0,
-        },
+        Stats: {},
         Elements: {},
         Abilities: {},
         Statuses: [{}],
         Player: 0
     };
-    attackingCard: Creature_Card[] = [];
-    defendingCard: Creature_Card[] = [];
 
     successfulAttack = signal<boolean>(false);
 
@@ -90,35 +78,11 @@ export class BattleService {
     });
 
     setAttacker(attacker: Creature_Card){ //better way of setting this?
-        this.attacker.Id = attacker.Id;
-        this.attacker.Name = attacker.Name;
-        this.attacker.Picture = attacker.Picture;
-        this.attacker.Card = attacker.Card;
-        this.attacker.Energy = attacker.Energy;
-        this.attacker.Max_Energy = attacker.Max_Energy;
-        this.attacker.Mugic_Counter = attacker.Mugic_Counter;
-        this.attacker.Class = attacker.Class;
-        this.attacker.Tribe = attacker.Tribe;
-        this.attacker.Abilities = attacker.Abilities;
-        this.attacker.Stats = attacker.Stats;
-        this.attacker.Elements = attacker.Elements;
-        this.attacker.Player = attacker.Player;
+        this.attacker = attacker;
     }
 
     setDefender(defender: Creature_Card){
-        this.defender.Id = defender.Id;
-        this.defender.Name = defender.Name;
-        this.defender.Picture = defender.Picture;
-        this.defender.Card = defender.Card;
-        this.defender.Energy = defender.Energy;
-        this.defender.Max_Energy = defender.Max_Energy;
-        this.defender.Mugic_Counter = defender.Mugic_Counter;
-        this.defender.Class = defender.Class;
-        this.defender.Tribe = defender.Tribe;
-        this.defender.Abilities = defender.Abilities;
-        this.defender.Stats = defender.Stats;
-        this.defender.Elements = defender.Elements;
-        this.defender.Player = defender.Player;
+        this.defender = defender;
     }
 
     getAttacker(){
@@ -143,14 +107,6 @@ export class BattleService {
 
     setLoser(loser: Creature_Card){
         this.loser.set(loser);
-    }
-
-    setAttackingCard(card: Creature_Card[]){
-        this.attackingCard = card;
-    }
-
-    setDefendingCard(card: Creature_Card[]){
-        this.defendingCard = card;
     }
 
     setSuccessfulAttack(value: boolean){

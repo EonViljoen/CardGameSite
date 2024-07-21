@@ -45,11 +45,11 @@ export class GameBoardComponent {
 
   game : any = {
     left:{
-      Id: 0,
+      Id: 1,
       Field: []
     },
     right: {
-      Id: 0,
+      Id: 2,
       Field: []
     }
   }
@@ -267,10 +267,7 @@ export class GameBoardComponent {
   openDialog(event: CdkDragDrop<Creature_Card[]>){
 
     this.battleService.setDefender(<Creature_Card>event.container.data.at(0)); //correct way of setting them?, also is there better way than using at 0?
-    this.battleService.setAttacker(<Creature_Card>event.previousContainer.data.at(0));
-    this.battleService.setAttackingCard(event.previousContainer.data);
-    this.battleService.setDefendingCard(event.container.data);
-    
+    this.battleService.setAttacker(<Creature_Card>event.previousContainer.data.at(0));    
 
     const dialogRef = this.dialog.open(DialogComponent, {
       maxWidth: '100vw', //review these 4 to see which is actually needed
@@ -278,8 +275,6 @@ export class GameBoardComponent {
       height: '100%',
       width: '100%',
       data: { //Maybe don't need this anymore since I'm using service
-        defender : event.container.data,
-        attacker : event.previousContainer.data,
         hand: this.playPool
       },
     });
@@ -289,7 +284,7 @@ export class GameBoardComponent {
       
       if (result.battleOccurred){ // Good place for observer if battle happened maybe?
         transferArrayItem( //transfer loser
-          result.loser.id === event.container.data.at(0)?.Id ? event.container.data : event.previousContainer.data ,
+          result.loser.id === event.container.data.at(0)?.Id ? event.previousContainer.data : event.container.data ,
           this.discardPile,
           event.previousIndex,
           this.discardPile.length + 1

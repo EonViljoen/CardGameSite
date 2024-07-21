@@ -23,41 +23,17 @@ export class DialogComponent { //this should probably be change to battle dialog
 
   private battleService = inject(BattleService);
 
-  readonly attacker : Creature_Card;
-  readonly defender : Creature_Card;
+  attacker : Creature_Card = this.battleService.getAttacker();
+  defender : Creature_Card = this.battleService.getDefender();
   
-  currentPlayerTurn = signal<Creature_Card>({
-    Id: '',
-    Name: '',
-    Picture: '',
-    Card: '',
-    Energy: 0,
-    Max_Energy: 0,
-    Mugic_Counter: 0,
-    Tribe: '',
-    Class: '',
-    Stats: {},
-    Elements: {},
-    Abilities: {},
-    Statuses: [{}],
-    Player: 0
-  });
-
+  currentPlayerTurn: number = 0;
   hand: any[] = []
-  
-  constructor()
-  {
-    this.attacker = this.battleService.getAttacker();
-    this.defender = this.battleService.getDefender();
-    this.hand = this.data.hand;
-
-    this.currentPlayerTurn.set(
-      this.attacker.Stats['speed'] > this.defender.Stats['speed'] ? this.attacker : this.defender 
-    );    
-  }
 
   ngOnInit() {
     this.dialogRef.updateSize('80%', '80%'); 
+    this.hand = this.data.hand;
+
+    this.currentPlayerTurn = this.attacker.Player;
 }
 
 
@@ -88,16 +64,16 @@ export class DialogComponent { //this should probably be change to battle dialog
       let damage: number = 0;
         damage += parseInt(elementDamageArray[0]);
 
-        if (user.Elements['fire']){
+        if (user.Elements['Fire']){
           damage += parseInt(elementDamageArray[1]);
         }
-        if (user.Elements['air']){
+        if (user.Elements['Air']){
           damage += parseInt(elementDamageArray[2]);
         }
-        if (user.Elements['earth']){
+        if (user.Elements['Earth']){
           damage += parseInt(elementDamageArray[3]);
         }
-        if (user.Elements['water']){
+        if (user.Elements['Water']){
           damage += parseInt(elementDamageArray[4]);
         }
 
@@ -110,6 +86,8 @@ export class DialogComponent { //this should probably be change to battle dialog
       // 2 - operator (AND, OR, XOR ....)
     CheckCriteria(criteria: string, user: Creature_Card) : boolean {
       let criteriaMet: boolean = false;
+
+      console.log(criteria)
 
       let parameters: string[] = criteria.split('?').map(item => item.trim());
       let criteriaType: string[] = parameters[0].split(':').map(item => item.trim());
@@ -249,6 +227,12 @@ export class DialogComponent { //this should probably be change to battle dialog
 
     // }
 
+    transferTurn(): void {
+      this.currentPlayerTurn === this.attacker.Player 
+      ? this.currentPlayerTurn = this.defender.Player 
+      : this.currentPlayerTurn = this.attacker.Player
+    }
+
     object2Array(obj: Object){
       return Object.entries(obj).map(([key, value]) => ({key, value}));
     }
@@ -261,27 +245,30 @@ export class DialogComponent { //this should probably be change to battle dialog
 
       switch (target) {
         case "Self":
-          return user.Id === this.attacker.Id ? this.attacker : this.defender;
-          break;
+          return user.Player === this.attacker.Player ? this.attacker : this.defender;
         
         case "Opposing":
-          return user.Id === this.attacker.Id ? this.defender : this.attacker;
-          break;
+          return user.Player === this.attacker.Player ? this.defender : this.attacker;
 
         case "Target" :
-          return user.Id === this.attacker.Id ? this.defender : this.attacker;
-          break;
+          return user.Player === this.attacker.Player ? this.defender : this.attacker;
 
         default:
-          return user.Id === this.attacker.Id ? this.attacker : this.defender;
-          break;
+          return user.Player === this.attacker.Player ? this.attacker : this.defender;
       }
     }
 
-    use(value: string, user: Creature_Card){
+    getUser(player: number) : Creature_Card {
+      return player === this.attacker.Player ? this.attacker : this.defender; 
+    }
 
+    use(value: string, playerNumber: number){
+
+      let user = this.getUser(playerNumber);
       let abilityInformation = this.splitToString(value, '|');
       let metaInformation = this.splitToString(abilityInformation[0], '?');
+      console.log(abilityInformation)
+      console.log(metaInformation)
 
       let target = this.getTarget(user, metaInformation[1]);
 
@@ -313,14 +300,23 @@ export class DialogComponent { //this should probably be change to battle dialog
       }
       else if (metaInformation[0] === 'Strike'){
 
+        console.log('strike')
+        console.log(abilityInformation[1])
+
+        console.log('target energy ' + target.Energy)
+
         let elementDamage = this.splitToString(abilityInformation[1], ':');
         target.Energy -= this.calculateDamage(user, elementDamage);
 
+        console.log('target energy after damage' + target.Energy)
+
         if (abilityInformation[3] !== 'x'){
 
-          if(this.CheckCriteria(metaInformation[4], user)){
+          if(this.CheckCriteria(abilityInformation[3], user)){
 
-            this.doEffect(abilityInformation[3], user)
+            console.log('true?')
+
+            this.doEffect(abilityInformation[2], user)
           };
 
         }
@@ -330,6 +326,9 @@ export class DialogComponent { //this should probably be change to battle dialog
         }
       }
 
-      this.currentPlayerTurn.set(target); //next players turn
-    }
+      console.log('player now' + this.currentPlayerTurn)
+      console.log('next turn' + target.Player)
+
+      this.transferTurn()   
+  }
 }

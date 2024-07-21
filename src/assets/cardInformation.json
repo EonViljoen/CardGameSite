@@ -20,7 +20,7 @@
                       "Fire": true,
                       "Air" : false,
                       "Earth" : true,
-                      "Wa" : false
+                      "Water" : false
                     },
                     "Stats": {
                       "Courage": 100,
@@ -47,7 +47,7 @@
                       "Fire": false,
                       "Air" : false,
                       "Earth" : false,
-                      "Wa" : false
+                      "Water" : false
                     },
                     "Stats": {
                       "Courage": 100,
@@ -73,7 +73,7 @@
                       "Fire": false,
                       "Air" : false,
                       "Earth" : false,
-                      "Wa" : false
+                      "Water" : false
                     },
                     "Stats": {
                       "Courage": 100,
@@ -107,7 +107,7 @@
                       "Fire": true,
                       "Air" : false,
                       "Earth" : false,
-                      "Wa" : false
+                      "Water" : false
                     },
                     "Stats": {
                       "Courage": 100,
@@ -133,7 +133,7 @@
                       "Fire": false,
                       "Air" : false,
                       "Earth" : false,
-                      "Wa" : false
+                      "Water" : false
                     },
                     "Stats": {
                       "Courage": 100,
@@ -160,7 +160,7 @@
                       "Fire": true,
                       "Air" : false,
                       "Earth" : false,
-                      "Wa" : false
+                      "Water" : false
                     },
                     "Stats": {
                       "Courage": 100,
@@ -184,7 +184,7 @@
                 "Name": "Geo Flourish",
                 "Tribe": "Generic",
                 "Cost": 1,
-                "Effect": " Mugic ? Target ? Generic ? 1 | [HP : x : 15] ? x ? Target | Check : Elements ? [earth : true] , [water : true] ? OR ? Target ",
+                "Effect": " Mugic ? Target ? Generic ? 1 | [HP : x : 15] ? x ? Target | Check : Elements ? [Earth : true] , [Water : true] ? OR ? Target ",
                 "Picture": "./assets/pictures/Mugic/Generic/Geo_Flourish_Picture.png"
               }
           ]  
@@ -221,13 +221,13 @@
     {
       "Name": "Ember Swarm",
       "Cost": 0,
-      "Effect": " Strike ? Target | 5 : 5 : 0 : 0 : 0 | [Stats : wisdom : -25] ? x ? Opposing | Check : Elements ? [fire : true] ? x ? Self ",
+      "Effect": " Strike ? Target | 5 : 5 : 0 : 0 : 0 | [Stats : wisdom : -25] ? x ? Opposing | Check : Elements ? [Fire : true] ? x ? Self ",
       "Picture": "./assets/pictures/Strikes/Ember_Swarm_Picture.png"
     },
     {
       "Name": "Incinerase",
       "Cost": 0,
-      "Effect": " Strike ? Target | 0 : 10 : 0 : 0 : 0 | [Elements : fire : x] ? x ? Self | Check : Elements ? [fire : true] ? x ? Self ",
+      "Effect": " Strike ? Target | 0 : 10 : 0 : 0 : 0 | [Elements : Fire : x] ? x ? Self | Check : Elements ? [Fire : true] ? x ? Self ",
       "Picture": "./assets/pictures/Strikes/Incinerase_Picture.png"
     },
     {

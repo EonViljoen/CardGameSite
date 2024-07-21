@@ -1,6 +1,6 @@
 <div mat-dialog-title class="body">
   <p>Battle</p>
-  <p>Player {{currentPlayerTurn().Player}}'s' Turn</p>
+  <p>Player {{currentPlayerTurn}}'s' Turn</p>
 </div>
 <mat-dialog-content class="mat-typography">
   <div class="cardzone">
@@ -13,7 +13,7 @@
     </div>
     <div class="player1">
       <p>
-        Attacker
+        Attacker {{attacker.Player}}
         <br>
         {{attacker.Name}}
         <br>
@@ -31,14 +31,14 @@
         }
       </p>
       @for (ability of object2Array(attacker.Abilities); track ability.key) {
-        <button mat-button (click)="use(ability.value, attacker)" [disabled]="attacker == currentPlayerTurn()">
+        <button mat-button (click)="use(ability.value, attacker.Player)" [disabled]="!(attacker.Player === currentPlayerTurn)">
         {{ability.key}}
         </button>
       } 
     </div>
     <div class="player2">
       <p>
-        Defender
+        Defender {{defender.Player}}
         <br>
         {{defender.Name}}
         <br>
@@ -56,7 +56,7 @@
         }
       </p>
       @for (ability of object2Array(defender.Abilities); track ability.key) {
-        <button mat-button (click)="use(ability.value, defender)" [disabled]="defender == currentPlayerTurn()">
+        <button mat-button (click)="use(ability.value, defender.Player)" [disabled]="!(defender.Player === currentPlayerTurn)">
         {{ability.key}}
         </button>
       } 
@@ -79,7 +79,7 @@
         <mat-card class="hand-box">
           <img mat-card-image class="card-image" [src]="card.Picture"
           [matTooltip]="card.Name" matTooltipPosition="above"
-          (click)="use(card.Effect, currentPlayerTurn())"  
+          (click)="use(card.Effect, currentPlayerTurn)"  
           >
         </mat-card>
       }
