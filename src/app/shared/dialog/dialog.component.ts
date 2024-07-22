@@ -87,15 +87,14 @@ export class DialogComponent { //this should probably be change to battle dialog
     CheckCriteria(criteria: string, user: Creature_Card) : boolean {
       let criteriaMet: boolean = false;
 
-      console.log(criteria)
-
       let parameters: string[] = criteria.split('?').map(item => item.trim());
       let criteriaType: string[] = parameters[0].split(':').map(item => item.trim());
 
       let target: Creature_Card = this.getTarget(user, parameters[3])
 
-
-      // flow = sort of check -> operator -> meet criteria -> set to true if it is met according to operator
+      if (parameters[0] === 'x'){
+        return true;
+      }
 
       if (criteriaType[0] === 'Check'){
 
@@ -189,7 +188,6 @@ export class DialogComponent { //this should probably be change to battle dialog
         let effects: string[] = parameters[0].substring(1, parameters[0].length-1).split(':').map(item => item.trim());
         if (effects[1] !== 'x'){
 
-          console.log('do effect on lists')
           switch (effects[0]) {
             case 'Stats':
               affected.Stats[effects[1]] += parseInt(effects[2])
@@ -203,7 +201,6 @@ export class DialogComponent { //this should probably be change to battle dialog
         }
         else{
 
-          console.log('do effects on props')
           switch (effects[0]) {
             case 'HP': //more to add as go along
               affected.Energy += parseInt(effects[2]);
@@ -220,12 +217,6 @@ export class DialogComponent { //this should probably be change to battle dialog
 
       }
     }
-
-    // useMugic(effect: string, user: Creature_Card, target : Creature_Card, cost: number) : void {
-
-    //   let parameters = this.splitToString(effect, '?');        
-
-    // }
 
     transferTurn(): void {
       this.currentPlayerTurn === this.attacker.Player 
@@ -267,14 +258,8 @@ export class DialogComponent { //this should probably be change to battle dialog
       let user = this.getUser(playerNumber);
       let abilityInformation = this.splitToString(value, '|');
       let metaInformation = this.splitToString(abilityInformation[0], '?');
-      console.log(abilityInformation)
-      console.log(metaInformation)
 
       let target = this.getTarget(user, metaInformation[1]);
-
-      // logic
-      // mugic = check criteria ? do affect : prompt that you cant
-      // strike = check elements => do dammage => check criteria ? do affect : don't do affect     
 
       if (metaInformation[0] === 'Mugic'){
 
@@ -282,12 +267,10 @@ export class DialogComponent { //this should probably be change to battle dialog
           
           if (user.Tribe === metaInformation[2] || metaInformation[2] === 'Generic'){ 
             
-            if(this.CheckCriteria(abilityInformation[2], user)){ //maybe remove target
+            if(this.CheckCriteria(abilityInformation[2], user)){
 
-              // this.useMugic(abilityInformation[1], user, target, parseInt(metaInformation[3])); // is a seperate method even needed?
               user.Mugic_Counter -= parseInt(metaInformation[3])
               this.doEffect(abilityInformation[1], user);
-
             }
 
           }
@@ -300,35 +283,23 @@ export class DialogComponent { //this should probably be change to battle dialog
       }
       else if (metaInformation[0] === 'Strike'){
 
-        console.log('strike')
-        console.log(abilityInformation[1])
-
-        console.log('target energy ' + target.Energy)
-
         let elementDamage = this.splitToString(abilityInformation[1], ':');
         target.Energy -= this.calculateDamage(user, elementDamage);
-
-        console.log('target energy after damage' + target.Energy)
 
         if (abilityInformation[3] !== 'x'){
 
           if(this.CheckCriteria(abilityInformation[3], user)){
-
-            console.log('true?')
 
             this.doEffect(abilityInformation[2], user)
           };
 
         }
         
-        if (user.Energy <= 0 || target.Energy <= 0){//check if combat done
+        if (user.Energy <= 0 || target.Energy <= 0){
           this.determineBattleResults(user, target)
         }
       }
-
-      console.log('player now' + this.currentPlayerTurn)
-      console.log('next turn' + target.Player)
-
-      this.transferTurn()   
+      this.transferTurn() 
+        
   }
 }

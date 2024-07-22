@@ -12,15 +12,24 @@ export class CardService {
   recyclePile: any[] = [];
   hand: any[] = [];
 
-
-  constructor() { }
-
-  buildHand(cards: Mugic_Card[] | Strike_Card[]) {
-    this.hand.push(cards);
+  constructor(){
+    
+    // this.drawPile = [];
+    // this.discardPile = [];
+    // this.recyclePile = [];
+    // this.hand = [];
   }
 
-  buildDrawPile(cards: Strike_Card[]) {
-    this.drawPile.push();
+  addToHand(cards:any[]) {
+    cards.forEach(card => {
+      this.hand.push(card);
+    });
+  }
+
+  addToDrawPile(cards: any[]) {
+    cards.forEach(card => {
+      this.drawPile.push(card);
+    });
   }
 
   discardCard(card: any, index: number){
@@ -36,9 +45,14 @@ export class CardService {
   }
 
   drawCard(drawTimes: number) {
+    console.log('draw')
+    console.log(this.drawPile);
+    console.log(this.hand);
     for(let i=0; i < drawTimes; i++){
       this.hand.push(this.drawPile.pop());
       }
+      console.log(this.drawPile);
+      console.log(this.hand);
     }
 
     getDrawPile() : any[] {

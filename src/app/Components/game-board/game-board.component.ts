@@ -1,4 +1,4 @@
-import {Component, inject } from '@angular/core';
+import {ChangeDetectorRef, Component, inject } from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList, moveItemInArray, transferArrayItem, CdkDropListGroup} from '@angular/cdk/drag-drop';
 import {MatCardModule} from '@angular/material/card';
 import { Creature_Card } from '../../Interfaces/creature_card';
@@ -6,6 +6,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../../shared/dialog/dialog.component';
 import { BattleService } from '../../shared/services/battle.service';
+import { CardService } from '../../shared/services/card.service';
 import { v4 as uuidv4 } from 'uuid';
 import { CardComponent } from "../card/card.component";
 import { Mugic_Card } from '../../Interfaces/mugic_card';
@@ -26,13 +27,10 @@ export class GameBoardComponent {
 
   readonly dialog = inject(MatDialog);
   private battleService = inject(BattleService);
+  private cardService = inject(CardService);
 
-  // + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)),
+  // + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)), , // Maybe make this a cool variance based on class or Tribe or something like that with delta configurable
 
-  discardPile : any[] = [];
-  drawPile: any[] = [];
-  playPool: any[] = [];
-  recyclePile : any[] = [];
 
   leftPlayer : Player = {
     Id: 1,
@@ -54,17 +52,25 @@ export class GameBoardComponent {
     }
   }
 
-  ngOnInit(){
-    
+  constructor( private cdref: ChangeDetectorRef ) {}   
+
+
+  ngOnInit(){ //hand broken......fix
+
     this.buildGame();
+    this.buildHand();
   }
 
   ngAfterViewInit(){
+
     let left = document.querySelector('.left-side');
     let right = document.querySelector('.right-side');
     let cardCount = (this.leftPlayer.Field.length ?? 0) + (this.rightPlayer.Field.length ?? 0);
     this.cardDiamondArrangement(cardCount, left, right);
   }
+
+  ngAfterContentChecked() {
+   }
 
   buildGame(){
 
@@ -73,11 +79,36 @@ export class GameBoardComponent {
     this.game.left = this.leftPlayer;
     this.game.right = this.rightPlayer;
 
-    this.playPool = this.getMugic('Overworld');
-    this.drawPile = this.getStrikes();
-    this.DrawCard(2);
+
+  }
+
+  buildHand() {
+    
+    // this.discardPile = this.cardService.getDiscardPile();
+    // this.drawPile = this.cardService.getDrawPile();
+    // this.playPool = this.cardService.getHand();
+    // this.recyclePile = this.cardService.getRecyclePile();
+
+    this.cardService.addToDrawPile(this.getStrikes());
+    this.cardService.addToHand(this.getMugic('Overworld'));
+    
+    this.cardService.drawCard(2);
+  }
+
+  getHand(): any[] {
+    return this.cardService.getHand();
   }
   
+  getDrawPile(): any[] {
+    return this.cardService.getDrawPile();
+  }
+  getDiscardPile(): any[] {
+    return this.cardService.getDiscardPile();
+  }
+  getRecyclePile(): any[] {
+    return this.cardService.getRecyclePile();
+  }
+
   cardDiamondArrangement(cardCount: number, leftPlayer: any, rightPlayer : any ) : void{
 
     const columns = Math.ceil(Math.sqrt(cardCount));
@@ -160,8 +191,8 @@ export class GameBoardComponent {
       return singleCardList
   }
 
-  getMugic(Tribe: string) : any[] {
-    let cards: any[] = [];
+  getMugic(Tribe: string) : Mugic_Card[] {
+    let cards: Mugic_Card[] = [];
 
     jsonData.Mugic.map(x => {
       if (x.Tribe === Tribe){
@@ -181,7 +212,6 @@ export class GameBoardComponent {
       id: uuidv4(),
       Name: info.Name,
       Cost: info.Cost,
-      Tribe: info.Tribe,
       Type: 'Mugic',
       Effect: info.Effect,
       Picture: info.Picture
@@ -190,7 +220,7 @@ export class GameBoardComponent {
       return card
   }
 
-    getStrikes() : any[] {
+    getStrikes() : Strike_Card[] {
       let cards: Strike_Card[] = [];
   
       jsonData.Strike.map(x => {
@@ -214,23 +244,23 @@ export class GameBoardComponent {
         return card
     }
 
-  discardCard(card: Mugic_Card | Strike_Card, index: number){
+  // discardCard(card: Mugic_Card | Strike_Card, index: number){
 
-    if (card.Type === 'Strike'){
-      this.recyclePile.push(this.playPool.find(x => x.id === card.id));
-      this.playPool.splice(index,1);
-    }
-    else {
-      this.discardPile.push(this.playPool.find(x => x.id === card.id));
-      this.playPool.splice(index,1);
-    } 
-  }
+  //   if (card.Type === 'Strike'){
+  //     this.recyclePile.push(this.playPool.find(x => x.id === card.id));
+  //     this.playPool.splice(index,1);
+  //   }
+  //   else {
+  //     this.discardPile.push(this.playPool.find(x => x.id === card.id));
+  //     this.playPool.splice(index,1);
+  //   } 
+  // }
 
-  DrawCard(drawTimes: number) {
-    for(let i=0; i < drawTimes; i++){
-      this.playPool.push(this.drawPile.pop());
-      }
-    }
+  // DrawCard(drawTimes: number) {
+  //   for(let i=0; i < drawTimes; i++){
+  //     this.playPool.push(this.drawPile.pop());
+  //     }
+  //   }
 
   setBattleAfterMath(winner: Creature_Card): Creature_Card {
     winner.Abilities = this.battleService.getWinner().Abilities;
@@ -275,7 +305,7 @@ export class GameBoardComponent {
       height: '100%',
       width: '100%',
       data: { //Maybe don't need this anymore since I'm using service
-        hand: this.playPool
+        hand: this.cardService.getHand()
       },
     });
 
@@ -285,9 +315,9 @@ export class GameBoardComponent {
       if (result.battleOccurred){ // Good place for observer if battle happened maybe?
         transferArrayItem( //transfer loser
           result.loser.id === event.container.data.at(0)?.Id ? event.previousContainer.data : event.container.data ,
-          this.discardPile,
+          this.cardService.getDiscardPile(),
           event.previousIndex,
-          this.discardPile.length + 1
+          this.cardService.getDiscardPile().length + 1
         );
 
 
@@ -321,7 +351,7 @@ export class GameBoardComponent {
 
   arrangeHand(event: CdkDragDrop<any[]>) {
     moveItemInArray(
-      this.playPool, 
+      this.cardService.getHand(), 
       event.previousIndex, 
       event.currentIndex
     );
