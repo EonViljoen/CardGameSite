@@ -39,6 +39,9 @@ export class BattleService {
         Player: 0
     };
 
+    currentPlayer: number = 0;
+    movingPlayer: number = 0;
+
     successfulAttack = signal<boolean>(false);
 
     winner = signal<Creature_Card>({
@@ -76,6 +79,26 @@ export class BattleService {
         Statuses: [{}],
         Player: 0
     });
+
+    setCurrentPlayer(player: number) {
+        this.currentPlayer=player;
+    }
+
+    getCurrentPlayer() : number {
+        return this.currentPlayer;
+    }
+
+    setMovingPlayer() { //this and one below should be moved to own service and done better somehow
+        if (this.movingPlayer === 0){
+            this.movingPlayer = 1;
+        }
+
+        this.movingPlayer === 1 ? 2 : 1;
+    }
+    
+    getMovingPlayer(): number{
+     return this.movingPlayer;
+    }
 
     setAttacker(attacker: Creature_Card){ //better way of setting this?
         this.attacker = attacker;

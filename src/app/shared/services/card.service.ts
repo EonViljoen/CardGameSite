@@ -32,42 +32,53 @@ export class CardService {
     });
   }
 
-  discardCard(card: any, index: number){
+  discardCard(card: any, index: any){
 
-    if (card.Type === 'Strike'){
-      this.recyclePile.push(this.hand.find(x => x.id === card.id));
-      this.hand.splice(index,1);
+    if (this.hand.length <= 2){
+      this.recycleCards();
     }
-    else {
-      this.discardPile.push(this.hand.find(x => x.id === card.id));
-      this.hand.splice(index,1);
-    } 
+
+    if (index !== 'x'){
+      if (card.Type === 'Strike'){
+        this.recyclePile.push(this.hand.find(x => x.id === card.id));
+        this.hand.splice(index,1);
+      }
+      else {
+        this.discardPile.push(this.hand.find(x => x.id === card.id));
+        this.hand.splice(index,1);
+        // this.drawCard(1);
+      }
+    }
   }
 
   drawCard(drawTimes: number) {
-    console.log('draw')
-    console.log(this.drawPile);
-    console.log(this.hand);
+
     for(let i=0; i < drawTimes; i++){
-      this.hand.push(this.drawPile.pop());
+      if (this.drawPile.length > 0){
+        this.hand.push(this.drawPile.pop());
       }
-      console.log(this.drawPile);
-      console.log(this.hand);
     }
+  }
 
-    getDrawPile() : any[] {
-      return this.drawPile;
-    }
+  recycleCards() { //Refine a bit to where you only have 3 cards when in battle, not on field
 
-    getHand() : Strike_Card[] | Mugic_Card[] {
-      return this.hand;
-    }
+    this.drawPile = this.recyclePile.slice().sort(() => Math.random() - 0.5);
+    this.drawCard(1);
+  }
 
-    getDiscardPile() : any[] {
-      return this.discardPile;
-    }
+  getDrawPile() : any[] {
+    return this.drawPile;
+  }
 
-    getRecyclePile() : any[] {
-      return this.recyclePile;
-    }
+  getHand() : Strike_Card[] | Mugic_Card[] {
+    return this.hand;
+  }
+
+  getDiscardPile() : any[] {
+    return this.discardPile;
+  }
+
+  getRecyclePile() : any[] {
+    return this.recyclePile;
+  }
 }

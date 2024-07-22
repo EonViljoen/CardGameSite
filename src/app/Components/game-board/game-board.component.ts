@@ -13,6 +13,7 @@ import { Mugic_Card } from '../../Interfaces/mugic_card';
 import { Strike_Card } from '../../Interfaces/strike_card';
 import * as jsonData from '../../../assets/cardInformation.json'; //This gotta be fixed
 import { Player } from '../../Interfaces/player';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
@@ -20,7 +21,7 @@ import { Player } from '../../Interfaces/player';
     standalone: true,
     templateUrl: './game-board.component.html',
     styleUrl: './game-board.component.scss',
-    imports: [CdkDrag, CdkDragPreview, MatCardModule, CdkDropListGroup, CdkDropList, CardComponent, MatTooltipModule]
+    imports: [CdkDrag, CdkDragPreview, MatCardModule, CdkDropListGroup, CdkDropList, CardComponent, MatTooltipModule, CommonModule]
 })
 
 export class GameBoardComponent {
@@ -42,20 +43,11 @@ export class GameBoardComponent {
   }
 
   game : any = {
-    left:{
-      Id: 1,
-      Field: []
-    },
-    right: {
-      Id: 2,
-      Field: []
-    }
+    left: this.leftPlayer,
+    right: this.rightPlayer
   }
 
-  constructor( private cdref: ChangeDetectorRef ) {}   
-
-
-  ngOnInit(){ //hand broken......fix
+  ngOnInit(){
 
     this.buildGame();
     this.buildHand();
@@ -65,29 +57,35 @@ export class GameBoardComponent {
 
     let left = document.querySelector('.left-side');
     let right = document.querySelector('.right-side');
+
     let cardCount = (this.leftPlayer.Field.length ?? 0) + (this.rightPlayer.Field.length ?? 0);
+
     this.cardDiamondArrangement(cardCount, left, right);
   }
 
-  ngAfterContentChecked() {
-   }
+  getCurrentPlayer() : number {
+    return this.battleService.getCurrentPlayer();
+  }
+
+  getMovingPlayer(): number{
+    return this.battleService.getMovingPlayer();
+  }
 
   buildGame(){
 
+    this.battleService.setMovingPlayer();
+    this.battleService.setCurrentPlayer(1);
+
     this.leftPlayer.Field = this.getCreatures('Overworld', this.leftPlayer.Id);
     this.rightPlayer.Field = this.getCreatures('Underworld', this.rightPlayer.Id);
+
     this.game.left = this.leftPlayer;
     this.game.right = this.rightPlayer;
 
-
+    this.battleService.setMovingPlayer(); //needs to be observable because it no works dat good
   }
 
   buildHand() {
-    
-    // this.discardPile = this.cardService.getDiscardPile();
-    // this.drawPile = this.cardService.getDrawPile();
-    // this.playPool = this.cardService.getHand();
-    // this.recyclePile = this.cardService.getRecyclePile();
 
     this.cardService.addToDrawPile(this.getStrikes());
     this.cardService.addToHand(this.getMugic('Overworld'));
@@ -244,24 +242,6 @@ export class GameBoardComponent {
         return card
     }
 
-  // discardCard(card: Mugic_Card | Strike_Card, index: number){
-
-  //   if (card.Type === 'Strike'){
-  //     this.recyclePile.push(this.playPool.find(x => x.id === card.id));
-  //     this.playPool.splice(index,1);
-  //   }
-  //   else {
-  //     this.discardPile.push(this.playPool.find(x => x.id === card.id));
-  //     this.playPool.splice(index,1);
-  //   } 
-  // }
-
-  // DrawCard(drawTimes: number) {
-  //   for(let i=0; i < drawTimes; i++){
-  //     this.playPool.push(this.drawPile.pop());
-  //     }
-  //   }
-
   setBattleAfterMath(winner: Creature_Card): Creature_Card {
     winner.Abilities = this.battleService.getWinner().Abilities;
     winner.Elements = this.battleService.getWinner().Elements;
@@ -305,7 +285,6 @@ export class GameBoardComponent {
       height: '100%',
       width: '100%',
       data: { //Maybe don't need this anymore since I'm using service
-        hand: this.cardService.getHand()
       },
     });
 
@@ -346,7 +325,9 @@ export class GameBoardComponent {
         this.battleService.resetLoser();
       } 
       
-    })
+    });
+
+    this.battleService.setMovingPlayer();
   }
 
   arrangeHand(event: CdkDragDrop<any[]>) {

@@ -1,5 +1,7 @@
 <div class="example-boundary container" cdkDropListGroup>
-  <div class="left-side">
+  <div class="left-side" [ngClass]="{
+    'active-left-side': getMovingPlayer() === 1 
+  }">
     @for (card of game.left.Field; track card) {
       <div 
         cdkDropList
@@ -14,7 +16,9 @@
       </div>
      }
   </div>
-  <div class="right-side">
+  <div class="right-side" [ngClass]="{
+    'active-right-side': getMovingPlayer() === 2
+  }">
     @for (card of game.right.Field; track card) {
       <div 
         cdkDropList
@@ -34,7 +38,7 @@
     <div class="discard" cdkDropList
       [cdkDropListData]="getDiscardPile()"
     >
-    @for (item of getDiscardPile(); track item.Id) {
+    @for (item of getDiscardPile(); track i; let i = $index) {
       <mat-card class="example-box" >
         <img mat-card-image class="card-image" [src]="item.Picture">
       </mat-card>
@@ -44,7 +48,7 @@
     <div class="recycle" cdkDropList
       [cdkDropListData]="getRecyclePile()"
     >
-    @for (item of getRecyclePile(); track item) {
+    @for (item of getRecyclePile(); track i; let i = $index) {
       <mat-card class="example-box">
         <img mat-card-image class="card-image" [src]="item.Picture">
       </mat-card>
@@ -67,7 +71,7 @@
     <div class="draw" cdkDropList
     [cdkDropListData]="getDrawPile()"
     >
-    @for (item of getDrawPile(); track item) {
+    @for (item of getDrawPile(); track i; let i = $index) {
       <mat-card class="example-box">
         <img mat-card-image class="card-image draw-card" src="./assets/cardBack.png">
       </mat-card>

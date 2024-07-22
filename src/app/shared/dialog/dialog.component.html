@@ -1,6 +1,6 @@
 <div mat-dialog-title class="body">
   <p>Battle</p>
-  <p>Player {{currentPlayerTurn}}'s' Turn</p>
+  <p>Player {{getCurrentPlayer()}}'s' Turn</p>
 </div>
 <mat-dialog-content class="mat-typography">
   <div class="cardzone">
@@ -31,7 +31,7 @@
         }
       </p>
       @for (ability of object2Array(attacker.Abilities); track ability.key) {
-        <button mat-button (click)="use(ability.value, attacker.Player)" [disabled]="!(attacker.Player === currentPlayerTurn)">
+        <button mat-button (click)="useAbility(ability.value, attacker.Player)" [disabled]="!(attacker.Player === getCurrentPlayer())">
         {{ability.key}}
         </button>
       } 
@@ -56,7 +56,7 @@
         }
       </p>
       @for (ability of object2Array(defender.Abilities); track ability.key) {
-        <button mat-button (click)="use(ability.value, defender.Player)" [disabled]="!(defender.Player === currentPlayerTurn)">
+        <button mat-button (click)="useAbility(ability.value, defender.Player)" [disabled]="!(defender.Player === getCurrentPlayer())">
         {{ability.key}}
         </button>
       } 
@@ -75,11 +75,11 @@
     [cdkDropListData]="hand"
     cdkDropListOrientation="horizontal"
     >
-      @for (card of hand; track card; let i = $index) {
+      @for (card of getHand(); track card; let i = $index) {
         <mat-card class="hand-box">
           <img mat-card-image class="card-image" [src]="card.Picture"
           [matTooltip]="card.Name" matTooltipPosition="above"
-          (click)="use(card.Effect, currentPlayerTurn)"  
+          (click)="useCard(card, i, getCurrentPlayer())"  
           >
         </mat-card>
       }

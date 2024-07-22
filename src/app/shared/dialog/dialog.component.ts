@@ -7,6 +7,7 @@ import { Creature_Card } from '../../Interfaces/creature_card';
 import { CdkDropList } from '@angular/cdk/drag-drop';
 import { MatCardModule } from '@angular/material/card';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { CardService } from '../services/card.service';
 
 @Component({
   selector: 'app-dialog',
@@ -18,66 +19,73 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 })
 export class DialogComponent { //this should probably be change to battle dialog or somehting like that
   readonly dialogRef = inject(MatDialogRef<DialogComponent>);
-
   data = inject<Battle>(MAT_DIALOG_DATA);
 
+
+  private cardService = inject(CardService);
   private battleService = inject(BattleService);
+
+
 
   attacker : Creature_Card = this.battleService.getAttacker();
   defender : Creature_Card = this.battleService.getDefender();
   
-  currentPlayerTurn: number = 0;
   hand: any[] = []
 
   ngOnInit() {
     this.dialogRef.updateSize('80%', '80%'); 
-    this.hand = this.data.hand;
 
-    this.currentPlayerTurn = this.attacker.Player;
-}
+    this.battleService.setCurrentPlayer(this.attacker.Player);
+  }
+
+  getHand(): any[]{
+    return this.cardService.getHand();
+  }
 
 
-    determineBattleResults(userCard: Creature_Card, opposingCard: Creature_Card){
-      if (userCard.Energy >  opposingCard.Energy){
+  determineBattleResults(userCard: Creature_Card, opposingCard: Creature_Card){
+    if (userCard.Energy >  opposingCard.Energy){
 
-        this.battleService.setWinner(userCard);
-        this.battleService.setLoser(opposingCard);
-      }
-      else if (userCard.Energy < opposingCard.Energy){
+      this.battleService.setWinner(userCard);
+      this.battleService.setLoser(opposingCard);
+    }
+    else if (userCard.Energy < opposingCard.Energy){
 
-        this.battleService.setWinner(opposingCard);
-        this.battleService.setLoser(userCard);
-      }
-      else {
-        // this.battleService.draw();
-      }
-
-      this.dialogRef.close({
-        battleOccurred: true,
-        loser: this.battleService.loser(),
-        winner: this.battleService.winner()
-      })
+      this.battleService.setWinner(opposingCard);
+      this.battleService.setLoser(userCard);
+    }
+    else {
+      // this.battleService.draw();
     }
 
-    //elements : generic fire air earch water
-    calculateDamage(user: Creature_Card, elementDamageArray: string[]) : number {
-      let damage: number = 0;
-        damage += parseInt(elementDamageArray[0]);
+    // this.battleService.setMovingPlayer();
 
-        if (user.Elements['Fire']){
-          damage += parseInt(elementDamageArray[1]);
-        }
-        if (user.Elements['Air']){
-          damage += parseInt(elementDamageArray[2]);
-        }
-        if (user.Elements['Earth']){
-          damage += parseInt(elementDamageArray[3]);
-        }
-        if (user.Elements['Water']){
-          damage += parseInt(elementDamageArray[4]);
-        }
+    this.dialogRef.close({
+      battleOccurred: true,
+      loser: this.battleService.loser(),
+      winner: this.battleService.winner()
+    })
+  }
 
-        return damage
+  //elements : generic fire air earch water
+  calculateDamage(user: Creature_Card, elementDamageArray: string[]) : number {
+    let damage: number = 0;
+      damage += parseInt(elementDamageArray[0]);
+
+      if (user.Elements['Fire']){
+        damage += parseInt(elementDamageArray[1]);
+      }
+      if (user.Elements['Air']){
+        damage += parseInt(elementDamageArray[2]);
+      }
+      if (user.Elements['Earth']){
+        damage += parseInt(elementDamageArray[3]);
+      }
+      if (user.Elements['Water']){
+        damage += parseInt(elementDamageArray[4]);
+      }
+
+      return damage
     }
 
     // parameters
@@ -219,9 +227,10 @@ export class DialogComponent { //this should probably be change to battle dialog
     }
 
     transferTurn(): void {
-      this.currentPlayerTurn === this.attacker.Player 
-      ? this.currentPlayerTurn = this.defender.Player 
-      : this.currentPlayerTurn = this.attacker.Player
+
+        this.battleService.getCurrentPlayer() === this.attacker.Player 
+        ? this.battleService.setCurrentPlayer(this.defender.Player) 
+        : this.battleService.setCurrentPlayer(this.attacker.Player)
     }
 
     object2Array(obj: Object){
@@ -231,6 +240,10 @@ export class DialogComponent { //this should probably be change to battle dialog
     splitToString(value: string, splitOn: string) : string[] {
       return value.split(splitOn).map(item => item.trim());
     }
+
+    getCurrentPlayer() : number {
+      return this.battleService.currentPlayer;
+  }
 
     getTarget(user : Creature_Card, target: string) : Creature_Card {
 
@@ -253,10 +266,21 @@ export class DialogComponent { //this should probably be change to battle dialog
       return player === this.attacker.Player ? this.attacker : this.defender; 
     }
 
-    use(value: string, playerNumber: number){
+    useAbility(effect: string, playerNumber: number){
+      this.useEffect(effect, playerNumber);
+    }
+
+    useCard(card: any, index: any, playerNumber: number){
+      this.useEffect(card.Effect, playerNumber);
+      this.cardService.discardCard(card, index);
+      this.cardService.drawCard(1);
+
+    }
+
+    useEffect(effect: string, playerNumber: number){
 
       let user = this.getUser(playerNumber);
-      let abilityInformation = this.splitToString(value, '|');
+      let abilityInformation = this.splitToString(effect, '|');
       let metaInformation = this.splitToString(abilityInformation[0], '?');
 
       let target = this.getTarget(user, metaInformation[1]);
@@ -299,7 +323,7 @@ export class DialogComponent { //this should probably be change to battle dialog
           this.determineBattleResults(user, target)
         }
       }
-      this.transferTurn() 
-        
+
+      this.transferTurn();        
   }
 }
