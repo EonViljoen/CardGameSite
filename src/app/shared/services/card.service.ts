@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Mugic_Card } from '../../Interfaces/mugic_card';
-import { Strike_Card } from '../../Interfaces/strike_card';
+import { Mugic_Card } from '../Interfaces/mugic_card';
+import { Strike_Card } from '../Interfaces/strike_card';
 
 @Injectable({
   providedIn: 'root'

@@ -1,18 +1,18 @@
 import {ChangeDetectorRef, Component, inject } from '@angular/core';
-import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList, moveItemInArray, transferArrayItem, CdkDropListGroup} from '@angular/cdk/drag-drop';
+import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList, moveItemInArray, transferArrayItem, CdkDropListGroup} from '@angular/cdk/drag-drop'; //Sort this out later
 import {MatCardModule} from '@angular/material/card';
-import { Creature_Card } from '../../Interfaces/creature_card';
+import { Creature_Card } from '../../shared/Interfaces/creature_card';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatDialog } from '@angular/material/dialog';
-import { DialogComponent } from '../../shared/dialog/dialog.component';
+import { DialogComponent } from '../../Dialogs/dialog/battle-dialog.component';
 import { BattleService } from '../../shared/services/battle.service';
 import { CardService } from '../../shared/services/card.service';
 import { v4 as uuidv4 } from 'uuid';
 import { CardComponent } from "../card/card.component";
-import { Mugic_Card } from '../../Interfaces/mugic_card';
-import { Strike_Card } from '../../Interfaces/strike_card';
+import { Mugic_Card } from '../../shared/Interfaces/mugic_card';
+import { Strike_Card } from '../../shared/Interfaces/strike_card';
 import * as jsonData from '../../../assets/cardInformation.json'; //This gotta be fixed
-import { Player } from '../../Interfaces/player';
+import { Player } from '../../shared/Interfaces/player';
 import { CommonModule } from '@angular/common';
 
 
@@ -21,7 +21,7 @@ import { CommonModule } from '@angular/common';
     standalone: true,
     templateUrl: './game-board.component.html',
     styleUrl: './game-board.component.scss',
-    imports: [CdkDrag, CdkDragPreview, MatCardModule, CdkDropListGroup, CdkDropList, CardComponent, MatTooltipModule, CommonModule]
+    imports: [CdkDrag, CdkDragPreview, MatCardModule, CdkDropListGroup, CdkDropList, CardComponent, MatTooltipModule, CommonModule ]
 })
 
 export class GameBoardComponent {
@@ -67,14 +67,19 @@ export class GameBoardComponent {
     return this.battleService.getCurrentPlayer();
   }
 
-  getMovingPlayer(): number{
-    return this.battleService.getMovingPlayer();
+  isMovingPlayer(movingPlayerId : number): boolean {
+    if (this.battleService.getMovingPlayer() === movingPlayerId){
+      return true;
+    }
+    else{
+      return false
+    }
   }
 
   buildGame(){
 
-    this.battleService.setMovingPlayer();
-    this.battleService.setCurrentPlayer(1);
+    let movingPlayer = this.battleService.setMovingPlayer();  //needs to be observable because it no works dat good
+    this.battleService.setCurrentPlayer(movingPlayer);
 
     this.leftPlayer.Field = this.getCreatures('Overworld', this.leftPlayer.Id);
     this.rightPlayer.Field = this.getCreatures('Underworld', this.rightPlayer.Id);
@@ -82,7 +87,6 @@ export class GameBoardComponent {
     this.game.left = this.leftPlayer;
     this.game.right = this.rightPlayer;
 
-    this.battleService.setMovingPlayer(); //needs to be observable because it no works dat good
   }
 
   buildHand() {
@@ -155,12 +159,10 @@ export class GameBoardComponent {
         x.Creatures.map(y => {
 
           let cardList = this.buildCreature(y, playerNumber);
-          cards.push(cardList)
-        })
+          cards.push(cardList);
+        })     
       }
     });
-
-    
 
     return cards;
   }
@@ -186,7 +188,7 @@ export class GameBoardComponent {
     let singleCardList: Creature_Card[] = [];
     singleCardList.push(card);
 
-      return singleCardList
+    return singleCardList
   }
 
   getMugic(Tribe: string) : Mugic_Card[] {
@@ -299,21 +301,12 @@ export class GameBoardComponent {
           this.cardService.getDiscardPile().length + 1
         );
 
-
-        this.battleService.getWinner().Statuses.map((x: { [x: string]: string; }) => {
-            console.log('ping')
-            console.log(x)
-            console.log(x['Movement'] )
-            if (x['Movement'] !== 'x'){
-              transferArrayItem( //transfer winner
-                event.previousContainer.data,
-                event.container.data,        
-                event.previousIndex,
-                event.currentIndex
-              );
-            }
-          }
-        )
+        transferArrayItem( //transfer winner
+          event.previousContainer.data,
+          event.container.data,        
+          event.previousIndex,
+          event.currentIndex
+        );
 
           
         // need better way of doing this, need to use result.winner somehow
@@ -325,9 +318,11 @@ export class GameBoardComponent {
         this.battleService.resetLoser();
       } 
       
+      this.battleService.setMovingPlayer(); 
+
     });
 
-    this.battleService.setMovingPlayer();
+    
   }
 
   arrangeHand(event: CdkDragDrop<any[]>) {

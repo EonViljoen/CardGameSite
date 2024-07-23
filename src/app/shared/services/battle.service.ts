@@ -1,5 +1,5 @@
 import {Injectable, signal} from '@angular/core';
-import { Creature_Card } from '../../Interfaces/creature_card';
+import { Creature_Card } from '../Interfaces/creature_card';
 
 @Injectable({
   providedIn: 'root',
@@ -88,12 +88,15 @@ export class BattleService {
         return this.currentPlayer;
     }
 
-    setMovingPlayer() { //this and one below should be moved to own service and done better somehow
+    setMovingPlayer(): number { //this and one below should be moved to own service and done better somehow
         if (this.movingPlayer === 0){
             this.movingPlayer = 1;
+            return this.movingPlayer;
         }
-
-        this.movingPlayer === 1 ? 2 : 1;
+        else{
+            this.movingPlayer = this.movingPlayer === 1 ? 2 : 1;
+            return this.movingPlayer;
+        }   
     }
     
     getMovingPlayer(): number{

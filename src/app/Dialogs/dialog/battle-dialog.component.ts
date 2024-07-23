@@ -1,20 +1,20 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { Battle } from '../../Interfaces/battle';
-import { BattleService } from '../services/battle.service';
-import { Creature_Card } from '../../Interfaces/creature_card';
+import { Battle } from '../../shared/Interfaces/battle';
+import { BattleService } from '../../shared/services/battle.service';
+import { Creature_Card } from '../../shared/Interfaces/creature_card';
 import { CdkDropList } from '@angular/cdk/drag-drop';
 import { MatCardModule } from '@angular/material/card';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import { CardService } from '../services/card.service';
+import { CardService } from '../../shared/services/card.service';
 
 @Component({
   selector: 'app-dialog',
   standalone: true,
   imports: [MatDialogModule, MatButtonModule, CdkDropList, MatCardModule, MatTooltipModule],
-  templateUrl: './dialog.component.html',
-  styleUrl: './dialog.component.scss',
+  templateUrl: './battle-dialog.component.html',
+  styleUrl: './battle-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DialogComponent { //this should probably be change to battle dialog or somehting like that
@@ -41,6 +41,8 @@ export class DialogComponent { //this should probably be change to battle dialog
   getHand(): any[]{
     return this.cardService.getHand();
   }
+
+  //////////////////////Everything below should probably be moved to own service
 
 
   determineBattleResults(userCard: Creature_Card, opposingCard: Creature_Card){

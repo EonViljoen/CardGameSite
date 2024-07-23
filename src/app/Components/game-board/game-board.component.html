@@ -1,6 +1,6 @@
 <div class="example-boundary container" cdkDropListGroup>
   <div class="left-side" [ngClass]="{
-    'active-left-side': getMovingPlayer() === 1 
+    'active-left-side': isMovingPlayer(game.left.Id) 
   }">
     @for (card of game.left.Field; track card) {
       <div 
@@ -9,15 +9,16 @@
         [cdkDropListData]="card"
         (cdkDropListDropped)="drop($event)"
         >
-        @for (item of card; track item.Id) {
-          <app-card [Picture]="item.Picture"
-          [matTooltip]="item.Name" matTooltipPosition="above"></app-card>
+        @for (leftItem of card; track leftItem.Id) {
+          <app-card [Card]="leftItem"
+          [Moveable]="isMovingPlayer(game.left.Id) "
+          [matTooltip]="leftItem.Name" matTooltipPosition="above"></app-card>
         }
       </div>
      }
   </div>
   <div class="right-side" [ngClass]="{
-    'active-right-side': getMovingPlayer() === 2
+    'active-right-side': isMovingPlayer(game.right.Id) 
   }">
     @for (card of game.right.Field; track card) {
       <div 
@@ -26,9 +27,10 @@
         [cdkDropListData]="card"
         (cdkDropListDropped)="drop($event)"
         >
-        @for (item of card; track item.Id) {
-          <app-card [Picture]="item.Picture"
-          [matTooltip]="item.Name" matTooltipPosition="above"></app-card>
+        @for (rightItem of card; track rightItem.Id) {
+          <app-card [Card]="rightItem"
+          [Moveable]="isMovingPlayer(game.right.Id) "
+          [matTooltip]="rightItem.Name" matTooltipPosition="above"></app-card>
         }
       </div>
      }

@@ -75,7 +75,7 @@
     [cdkDropListData]="hand"
     cdkDropListOrientation="horizontal"
     >
-      @for (card of getHand(); track card; let i = $index) {
+      @for (card of getHand(); track i; let i = $index) {
         <mat-card class="hand-box">
           <img mat-card-image class="card-image" [src]="card.Picture"
           [matTooltip]="card.Name" matTooltipPosition="above"
