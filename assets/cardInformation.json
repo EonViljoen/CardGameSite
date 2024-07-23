@@ -1,0 +1,248 @@
+{
+  "Creatures" : [
+       {
+        "Tribe": "Overworld",
+        "Creatures" : 
+            [
+                {
+                    "Name": "Maxxor",
+                    "Energy": 20,
+                    "Max_Energy": 100,
+                    "Mugic_Counters": 3,
+                    "Tribe": "Overworld",
+                    "Class": "Hero",
+                    "Abilities": {
+                        "0" : " Mugic ? 1 | [HP : x : 10] ? x ? Target | x ",
+                        "1" : " Passive ? Self | [Loyal : x : x] ? x ? Self | x",
+                        "2" : " Passive ? Self | [Unique : x : x] ? x ? Self | x"
+                    },
+                    "Elements": {
+                      "Fire": true,
+                      "Air" : false,
+                      "Earth" : true,
+                      "Water" : false
+                    },
+                    "Stats": {
+                      "Courage": 100,
+                      "Power": 100,
+                      "Wisdom": 80,
+                      "Speed": 60
+                    },
+                    "Statuses": [{}],
+                    "Card": "./assets/cards/Creatures/Overworld/Maxxor.png",
+                    "Picture": "./assets/pictures/Creatures/Overworld/Maxxor_Picture.png"
+              },
+                {
+                    "Name": "Dractyl",
+                    "Energy": 20,
+                    "Max_Energy": 100,
+                    "Mugic_Counters": 0,
+                    "Tribe": "Overworld",
+                    "Class": "Scout",
+                    "Abilities": {
+                        "0" : " Passive ? Self | [Range : x : x] ? x ? Self | x ",
+                        "1" : " Passive ? Self | [Swift : x : 1] ? x ? Self | x "
+                    },
+                    "Elements": {
+                      "Fire": false,
+                      "Air" : false,
+                      "Earth" : false,
+                      "Water" : false
+                    },
+                    "Stats": {
+                      "Courage": 100,
+                      "Power": 100,
+                      "Wisdom": 80,
+                      "Speed": 50
+                    },
+                    "Statuses": [{}],
+                    "Card": "./assets/cards/Creatures/Overworld/Dractyl.png",
+                    "Picture": "./assets/pictures/Creatures/Overworld/Dractyl_Picture.png"
+                },
+                {
+                    "Name": "Vidav",
+                    "Energy": 20,
+                    "Max_Energy": 100,
+                    "Mugic_Counters": 2,
+                    "Tribe": "Overworld",
+                    "Class": "Strategist",
+                    "Abilities": {
+                        "0" : " Mugic ? 1 | [HP : x : 15] ? x ? Target | x "
+                    },
+                    "Elements": {
+                      "Fire": false,
+                      "Air" : false,
+                      "Earth" : false,
+                      "Water" : false
+                    },
+                    "Stats": {
+                      "Courage": 100,
+                      "Power": 100,
+                      "Wisdom": 80,
+                      "Speed": 50
+                    },
+                    "Statuses": [{}],
+                    "Card": "./assets/cards/Creatures/Overworld/Vidav.png",
+                    "Picture": "./assets/pictures/Creatures/Overworld/Vidav_Picture.png"
+                }
+            ]  
+      },
+      {
+            "Tribe": "Underworld",
+            "Creatures" : 
+            [
+              {
+                    "Name": "Chaor",
+                    "Energy": 20,
+                    "Max_Energy": 100,
+                    "Mugic_Counters": 3,
+                    "Tribe": "Underworld",
+                    "Class": "Conqueror , Warrior",
+                    "Abilities": {
+                        "0" : " Mugic ? 3 | [Dispel : x : x] ? x ? Target | Response : Mugic , Ability ? [Mugic : x : Self] , [Ability : x : Self] ? OR ? Target ",
+                        "1" : " Passive ? Self | [Loyal : x : x] ? x ? Self | x",
+                        "2" : " Passive ? Self | [Unique : x : x] ? x ? Self | x"
+                    },
+                    "Elements": {
+                      "Fire": true,
+                      "Air" : false,
+                      "Earth" : false,
+                      "Water" : false
+                    },
+                    "Stats": {
+                      "Courage": 100,
+                      "Power": 100,
+                      "Wisdom": 80,
+                      "Speed": 50
+                    },
+                    "Statuses": [{}],
+                    "Card": "./assets/cards/Creatures/Underworld/Chaor.png",
+                    "Picture": "./assets/pictures/Creatures/Underworld/Chaor_Picture.png"
+              },
+                {
+                    "Name": "H'earring",
+                    "Energy": 20,
+                    "Max_Energy": 100,
+                    "Mugic_Counters": 1,
+                    "Tribe": "Underworld",
+                    "Class": "Scout",
+                    "Abilities": {
+                        "0" : " Mugic ? 1 | [Location : Look : 3] , [Location : Order : 3] ? AND ? Self | x "
+                    },
+                    "Elements": {
+                      "Fire": false,
+                      "Air" : false,
+                      "Earth" : false,
+                      "Water" : false
+                    },
+                    "Stats": {
+                      "Courage": 100,
+                      "Power": 100,
+                      "Wisdom": 80,
+                      "Speed": 50
+                    },
+                    "Statuses": [{}],
+                    "Card": "./assets/cards/Creatures/Underworld/H'earring.png",
+                    "Picture": "./assets/pictures/Creatures/Underworld/H'earring_Picture.png"
+              },
+              {
+                    "Name": "Pyrithion",
+                    "Energy": 20,
+                    "Max_Energy": 100,
+                    "Mugic_Counters": 0,
+                    "Tribe": "Underworld",
+                    "Class": "Commander",
+                    "Abilities": {
+                        "0" : " Passive ? Opposing | [Stats : Courage : -10] ? x ? Self | Intimidate : Stats ? [Courage : 10] ? x ? Self'",
+                        "1" : " Passive ? Opposing | [Stats : Wisdom : -10] ? x ? Self | Intimidate : Stats ? [Wisdom : 10] ? x ? Self'"
+                    },
+                    "Elements": {
+                      "Fire": true,
+                      "Air" : false,
+                      "Earth" : false,
+                      "Water" : false
+                    },
+                    "Stats": {
+                      "Courage": 100,
+                      "Power": 100,
+                      "Wisdom": 80,
+                      "Speed": 50
+                    },
+                    "Statuses": [{}],
+                    "Card": "./assets/cards/Creatures/Underworld/Pyrithion.png",
+                    "Picture": "./assets/pictures/Creatures/Underworld/Pyrithion_Picture.png"
+              }
+            ]
+          }
+  ],
+  "Mugic": [
+    {
+      "Tribe": "Generic",
+      "Mugic" : 
+          [
+              {
+                "Name": "Geo Flourish",
+                "Tribe": "Generic",
+                "Cost": 1,
+                "Effect": " Mugic ? Target ? Generic ? 1 | [HP : x : 15] ? x ? Target | Check : Elements ? [Earth : true] , [Water : true] ? OR ? Target ",
+                "Picture": "./assets/pictures/Mugic/Generic/Geo_Flourish_Picture.png"
+              }
+          ]  
+    },
+    {
+      "Tribe": "Overworld",
+      "Mugic" : 
+          [
+              {
+                "Name": "Song of Stasis",
+                "Tribe": "Overworld",
+                "Cost": 1,
+                "Effect": " Mugic ? Target ? Overworld ? 1 | [Movement : x : x] ? x ? Target | x ",
+                "Picture": "./assets/pictures/Mugic/Overworld/Song_of_Stasis_Picture.png"
+              }
+          ]  
+    },
+    {
+      "Tribe": "Underworld",
+      "Mugic" : 
+          [
+              {
+                "Name": "Canon of Casualy",
+                "Tribe": "Underworld",
+                "Cost": 1,
+                "Effect": " Mugic ? Target ? Underworld ? 1 | [HP : x : -20] ? x ? Target | x ",
+                "Picture": "./assets/pictures/Mugic/Underworld/Canon_of_Casualty_Picture.png"
+              }
+          ]  
+    }
+
+  ],
+  "Strike": [
+    {
+      "Name": "Ember Swarm",
+      "Cost": 0,
+      "Effect": " Strike ? Target | 5 : 5 : 0 : 0 : 0 | [Stats : wisdom : -25] ? x ? Opposing | Check : Elements ? [Fire : true] ? x ? Self ",
+      "Picture": "./assets/pictures/Strikes/Ember_Swarm_Picture.png"
+    },
+    {
+      "Name": "Incinerase",
+      "Cost": 0,
+      "Effect": " Strike ? Target | 0 : 10 : 0 : 0 : 0 | [Elements : Fire : x] ? x ? Self | Check : Elements ? [Fire : true] ? x ? Self ",
+      "Picture": "./assets/pictures/Strikes/Incinerase_Picture.png"
+    },
+    {
+      "Name": "Pebblestorm",
+      "Cost": 0,
+      "Effect": " Strike ? Target | 0 : 0 : 5 : 5 : 0 | x | x ",
+      "Picture": "./assets/pictures/Strikes/Pebblestorm_Picture.png"
+    },
+    {
+      "Name": "Rustoxic",
+      "Cost": 0,
+      "Effect": " Strike ? Target | 0 : 0 : 0 : 5 : 5 | [HP : x : -10] ? x ? Opposing | Challenge : Stats ? [courage : 15] ? x ? Self ",
+      "Picture": "./assets/pictures/Strikes/Rustoxic_Picture.png"
+    }
+  ]
+        
+}
+
