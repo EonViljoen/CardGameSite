@@ -1,11 +1,12 @@
-import {ChangeDetectorRef, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList, moveItemInArray, transferArrayItem, CdkDropListGroup} from '@angular/cdk/drag-drop'; //Sort this out later
 import {MatCardModule} from '@angular/material/card';
 import { Creature_Card } from '../../shared/Interfaces/creature_card';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatDialog } from '@angular/material/dialog';
-import { DialogComponent } from '../../Dialogs/dialog/battle-dialog.component';
+import { BattleDialogComponent } from '../../Dialogs/battle-dialog/battle-dialog.component';
 import { BattleService } from '../../shared/services/battle.service';
+import { FieldService } from '../../shared/services/field.service';
 import { CardService } from '../../shared/services/card.service';
 import { v4 as uuidv4 } from 'uuid';
 import { CardComponent } from "../card/card.component";
@@ -26,9 +27,10 @@ import { CommonModule } from '@angular/common';
 
 export class GameBoardComponent {
 
-  readonly dialog = inject(MatDialog);
+  readonly battleDialog = inject(MatDialog);
   private battleService = inject(BattleService);
   private cardService = inject(CardService);
+  private fieldService = inject(FieldService)
 
   // + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)), , // Maybe make this a cool variance based on class or Tribe or something like that with delta configurable
 
@@ -42,7 +44,7 @@ export class GameBoardComponent {
     Field: []
   }
 
-  game : any = {
+  board : any = {
     left: this.leftPlayer,
     right: this.rightPlayer
   }
@@ -60,7 +62,7 @@ export class GameBoardComponent {
 
     let cardCount = (this.leftPlayer.Field.length ?? 0) + (this.rightPlayer.Field.length ?? 0);
 
-    this.cardDiamondArrangement(cardCount, left, right);
+    this.fieldService.cardDiamondArrangement(cardCount, left, right);
   }
 
   getCurrentPlayer() : number {
@@ -84,8 +86,14 @@ export class GameBoardComponent {
     this.leftPlayer.Field = this.getCreatures('Overworld', this.leftPlayer.Id);
     this.rightPlayer.Field = this.getCreatures('Underworld', this.rightPlayer.Id);
 
-    this.game.left = this.leftPlayer;
-    this.game.right = this.rightPlayer;
+    this.board.left = this.leftPlayer;
+    this.board.right = this.rightPlayer;
+
+    this.fieldService.setLeft(this.leftPlayer);
+    this.fieldService.setRight(this.rightPlayer);
+
+    this.fieldService.setField(this.board);
+
 
   }
 
@@ -109,46 +117,6 @@ export class GameBoardComponent {
   }
   getRecyclePile(): any[] {
     return this.cardService.getRecyclePile();
-  }
-
-  cardDiamondArrangement(cardCount: number, leftPlayer: any, rightPlayer : any ) : void{
-
-    const columns = Math.ceil(Math.sqrt(cardCount));
-    const CardAmount = Math.ceil(cardCount / columns);
-    let amount = CardAmount;
-    let cardCounter = CardAmount;  
-    let leftChildren = leftPlayer.children;   
-    let rightChildren = rightPlayer.children;    
- 
-    for (let items of leftChildren){
-      if (cardCounter !== 0){
-        
-            cardCounter--;
-          }
-          else{
-            let colBreakLeft = document.createElement('div');
-            colBreakLeft.className = 'card-column-break'
-            leftPlayer?.insertBefore(colBreakLeft , items)
-            cardCounter = --amount;
-          }    
-        }
-
-      amount = CardAmount;
-      cardCounter = CardAmount;
-
-      for (let items of rightChildren){
-
-        if (cardCounter !== 0){
-              cardCounter--;
-            }
-            else{
-  
-              let colBreakRight = document.createElement('div');
-              colBreakRight.className = 'card-column-break'
-              rightPlayer?.insertBefore(colBreakRight , items)
-              cardCounter = --amount;  
-            }    
-        }
   }
 
   getCreatures(Tribe: string, playerNumber: number) : Creature_Card[] {
@@ -276,16 +244,22 @@ export class GameBoardComponent {
     
   }
 
+  arrangeHand(event: CdkDragDrop<any[]>) {
+    moveItemInArray(
+      this.cardService.getHand(), 
+      event.previousIndex, 
+      event.currentIndex
+    );
+  }
+
   openDialog(event: CdkDragDrop<Creature_Card[]>){
 
     this.battleService.setDefender(<Creature_Card>event.container.data.at(0)); //correct way of setting them?, also is there better way than using at 0?
     this.battleService.setAttacker(<Creature_Card>event.previousContainer.data.at(0));    
 
-    const dialogRef = this.dialog.open(DialogComponent, {
+    const dialogRef = this.battleDialog.open(BattleDialogComponent, {
       maxWidth: '100vw', //review these 4 to see which is actually needed
       maxHeight: '100vh',
-      height: '100%',
-      width: '100%',
       data: { //Maybe don't need this anymore since I'm using service
       },
     });
@@ -320,18 +294,6 @@ export class GameBoardComponent {
       
       this.battleService.setMovingPlayer(); 
 
-    });
-
-    
+    });    
   }
-
-  arrangeHand(event: CdkDragDrop<any[]>) {
-    moveItemInArray(
-      this.cardService.getHand(), 
-      event.previousIndex, 
-      event.currentIndex
-    );
-  }
-
-
 }

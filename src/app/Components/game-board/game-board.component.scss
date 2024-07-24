@@ -1,4 +1,4 @@
-.example-box { 
+.box { 
     align-items: center;
     text-align: center;
     border-radius: 4px;
@@ -12,7 +12,7 @@
                 0 1px 5px 0 rgba(0, 0, 0, 0.12);
   }
   
-  .example-box:active {
+  .box:active {
     box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
                 0 8px 10px 1px rgba(0, 0, 0, 0.14),
                 0 3px 14px 2px rgba(0, 0, 0, 0.12);
@@ -20,11 +20,11 @@
 
   .container {
     display: flex;
-    gap: 2em;
+    gap: 1em;
     justify-content: center;
   }
   
-  .example-boundary {
+  .boundary {
     margin-left: 10%;
     margin-top: 0.5%;
     width: 80%;
@@ -97,11 +97,11 @@
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   }
   
-  .example-box:last-child {
+  .box:last-child {
     border: none;
   }
   
-  .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  .list.cdk-drop-list-dragging .box:not(.cdk-drag-placeholder) {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   }
 
