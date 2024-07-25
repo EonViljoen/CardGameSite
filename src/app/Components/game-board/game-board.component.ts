@@ -102,7 +102,7 @@ export class GameBoardComponent {
     this.cardService.addToDrawPile(this.getStrikes());
     this.cardService.addToHand(this.getMugic('Overworld'));
     
-    this.cardService.drawCard(2);
+    this.cardService.drawCard(7);
   }
 
   getHand(): any[] {

@@ -1,3 +1,5 @@
 <mat-card class="example-box" cdkDrag cdkDragBoundary=".example-boundary" [cdkDragDisabled]="(!Moveable || isImmobile())">
-    <img mat-card-image class="card-image" [src]="Card.Picture" (click)="isImmobile()">
+    <img mat-card-image class="card-image" [src]="Card.Picture" [ngClass]="{
+      'status-effect' : hasStatusEffect()
+    }">
   </mat-card>

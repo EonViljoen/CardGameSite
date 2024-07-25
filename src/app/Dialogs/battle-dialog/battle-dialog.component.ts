@@ -9,7 +9,8 @@ import { MatCardModule } from '@angular/material/card';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { CardService } from '../../shared/services/card.service';
 import { TargetDialogComponent } from '../target-dialog/target-dialog.component';
-import { map, Observable, of } from 'rxjs';
+import { lastValueFrom, map, Observable, of } from 'rxjs';
+import { X } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-battle-dialog',
@@ -93,14 +94,37 @@ export class BattleDialogComponent { //this should probably be change to battle 
       // 0 - sort of check (check, challenge ...) and on what
       // 1 - criteria to meet
       // 2 - operator (AND, OR, XOR ....)
-    CheckCriteria(criteria: string, user: Creature_Card) : boolean {
+    async CheckCriteria(criteria: string, user: Creature_Card) : Promise<boolean> {
       let criteriaMet: boolean = false;
 
       let parameters: string[] = criteria.split('?').map(item => item.trim());
       let criteriaType: string[] = parameters[0].split(':').map(item => item.trim());
 
-      
-      let target = this.getTarget(user, parameters[3]);
+      let target: any;
+
+      console.log('check criteria')
+      console.log('user')
+      console.log(user)
+      console.log('criteria')
+      console.log(criteria)
+      console.log('parameters')
+      console.log(parameters)
+
+      await this.getTarget(user, parameters[3]).then(x => {
+        console.log('in here?')
+        console.log(x)
+        target = x
+      });
+
+      if (target){
+        console.log('defined')
+      }
+      else{
+        console.log('not defined')
+      }
+
+      console.log('after target in criteria')
+      console.log(target)
 
       if (parameters[0] === 'x'){
         return true;
@@ -116,11 +140,9 @@ export class BattleDialogComponent { //this should probably be change to battle 
           qualtifications.forEach(block => {
             let elementCheck: string[] = block.substring(1, block.length-1).split(':').map(item => item.trim());
 
-            target.subscribe(x => { //Is this right? Should I unsubscribe?
-              if (x.Elements[elementCheck[0]] === JSON.parse(elementCheck[1])){ 
-                criteriaMet = true;
-              }
-            })
+            if (target.Elements[elementCheck[0]] === JSON.parse(elementCheck[1])){ 
+              criteriaMet = true;
+            }
 
             // if (target.Elements[elementCheck[0]] === JSON.parse(elementCheck[1])){ //Do this better later
             //   criteriaMet = true;
@@ -156,8 +178,8 @@ export class BattleDialogComponent { //this should probably be change to battle 
 
             let challenge: number;
 
-            target.subscribe(x => { //Is this right? Should I unsubscribe?
-              challenge = user.Stats[statCheck[0]] - x.Stats[statCheck[0]];
+            challenge = user.Stats[statCheck[0]] - target.Stats[statCheck[0]];
+
 
               if(challenge >= parseInt(statCheck[1])){
                 criteriaMet = true;
@@ -184,9 +206,6 @@ export class BattleDialogComponent { //this should probably be change to battle 
 
 
             // let challenge : number = user.Stats[statCheck[0]] - target.Stats[statCheck[0]];
-
-            
-          })
         }
         // else if (check[1] === 'Elements'){ //don't know if this is really gonna happen but keeping it here
           
@@ -201,10 +220,16 @@ export class BattleDialogComponent { //this should probably be change to battle 
       // 0 - Whats affected and how much
       // 1 - who affected --done
       // 2 - operator (AND, OR, XOR ....)
-    doEffect(additionalEffectString: string, user: Creature_Card) : void{
+    async doEffect(additionalEffectString: string, user: Creature_Card){
       
       let parameters: string[] = additionalEffectString.split('?').map(item => item.trim());
-      let affected = this.getTarget(user,parameters[2]);
+      // let affected = this.getTarget(user,parameters[2]);
+
+      let affected: any;
+
+      await this.getTarget(user, parameters[2]).then(x => {
+        affected = x
+      });
       
       if(parameters[1] !== 'x'){ //do like I did with criteria
         // done something later, also maybe recursively go through effects? then don't need if check anymore
@@ -215,16 +240,14 @@ export class BattleDialogComponent { //this should probably be change to battle 
         if (effects[1] !== 'x'){
 
           switch (effects[0]) {
+
             case 'Stats':
-              affected.subscribe(x => {
-                x.Stats[effects[1]] += parseInt(effects[2])
-              })
+              affected.Stats[effects[1]] += parseInt(effects[2])
               break;
 
             case 'Elements':
-            affected.subscribe(x => {
-              x.Elements[effects[1]] = effects[2] === 'x' ? false : true; 
-            })
+              console.log(affected)
+              affected.Elements[effects[1]] = effects[2] === 'x' ? false : true; 
               break;
               
             default:
@@ -235,17 +258,13 @@ export class BattleDialogComponent { //this should probably be change to battle 
 
           switch (effects[0]) {
             case 'HP': //more to add as go along
-            affected.subscribe(x => {
-              x.Energy += parseInt(effects[2]);
-            })
+            affected.Energy += parseInt(effects[2]);
               break;
 
-            case 'Movement':
-              affected.subscribe(x => {
-                x.Statuses.push({
-                  'Movement' : effects[2]
-                });
-              })
+            case 'Stasis':
+              affected.Statuses.push({
+                'Stasis' : effects[2]
+              });
               
               break;
 
@@ -276,24 +295,46 @@ export class BattleDialogComponent { //this should probably be change to battle 
       return this.battleService.currentPlayer;
   }
 
-    getTarget(user : Creature_Card, target: string) : Observable<Creature_Card>{
+    async getTarget(user : Creature_Card, target: string) : Promise<Creature_Card>  {
+
+      console.log('gettting target')
+      console.log('user?')
+      console.log(user)
+      console.log('target?')
+      console.log(target)
 
       switch (target) {
         case "Self":
-          console.log('self');
-          return of (user.Player === this.attacker.Player ? this.attacker : this.defender);
+          console.log(user.Player === this.attacker.Player ? this.attacker : this.defender)
+
+          return (user.Player === this.attacker.Player ? this.attacker : this.defender);
         
         case "Opposing":
-          console.log('opposing');
-          return of (user.Player === this.attacker.Player ? this.defender : this.attacker);
+          console.log('opposing')
+          return (user.Player === this.attacker.Player ? this.defender : this.attacker);
 
-        case "Target" :
-          console.log('target');
-          // return user.Player === this.attacker.Player ? this.defender : this.attacker;
-          return this.chooseTarget();
+        case "Target":
+          console.log('target')
+          return await this.chooseTarget();
+           
+
+        // case "Target" :
+        //   this.chooseTarget().then(x => {
+        //     effectTarget = x
+        //     return x
+        //   })
+        //   // return this.chooseTarget().then(target => {
+        //   //   console.log('ping')
+        //   //   // return target
+        //   // })
+
+        //   console.log('pong')
+        //   return effectTarget;
+
 
         default:
-          return of (user.Player === this.attacker.Player ? this.attacker : this.defender);
+          console.log('default')
+          return (user.Player === this.attacker.Player ? this.attacker : this.defender);
       }
     }
 
@@ -301,33 +342,14 @@ export class BattleDialogComponent { //this should probably be change to battle 
       return player === this.attacker.Player ? this.attacker : this.defender; 
     }
 
-    chooseTarget(): Observable<Creature_Card>{
+    async chooseTarget(): Promise<Creature_Card>{ //maybe try promise? Move to promise, observable is not synchronous as I thought // This may be solved when moved to service
 
-      let target: Creature_Card = {
-        Id: '',
-        Name: '',
-        Picture: '',
-        Card: '',
-        Energy: 0,
-        Max_Energy: 0,
-        Mugic_Counter: 0,
-        Tribe: '',
-        Class: '',
-        Stats: {},
-        Elements: {},
-        Abilities: {},
-        Statuses: [{}],
-        Player: 0
-      }
-
-      const dialogRef = this.targetDialog.open(TargetDialogComponent, {
+      const dialogRef =  this.targetDialog.open(TargetDialogComponent, {
       });
 
-      return dialogRef.afterClosed().pipe(
-        map((result: any) => result.target as Creature_Card)
-      )
+      return await dialogRef.afterClosed().toPromise();
 
-      // return target;
+      // return await lastValueFrom(dialogRef.afterClosed())
     }
 
     useAbility(effect: string, playerNumber: number){
@@ -335,19 +357,35 @@ export class BattleDialogComponent { //this should probably be change to battle 
     }
 
     useCard(card: any, index: any, playerNumber: number){
+      console.log('use card')
       this.useEffect(card.Effect, playerNumber);
       this.cardService.discardCard(card, index);
       this.cardService.drawCard(1);
 
     }
 
-    useEffect(effect: string, playerNumber: number){
+    async useEffect(effect: string, playerNumber: number){
 
       let user = this.getUser(playerNumber);
       let abilityInformation = this.splitToString(effect, '|');
       let metaInformation = this.splitToString(abilityInformation[0], '?');
 
-      let target = this.getTarget(user, metaInformation[1]);
+      let target: any;
+
+      console.log('use effect')
+      console.log(user)
+      console.log(abilityInformation)
+      console.log(metaInformation)
+
+
+      await this.getTarget(user, metaInformation[1]).then(x => {
+        target = x
+      });
+
+      console.log('after target')
+      console.log(target)
+
+      // let target = this.getTarget(user, metaInformation[1]);
 
       if (metaInformation[0] === 'Mugic'){
 
@@ -355,7 +393,7 @@ export class BattleDialogComponent { //this should probably be change to battle 
           
           if (user.Tribe === metaInformation[2] || metaInformation[2] === 'Generic'){ 
             
-            if(this.CheckCriteria(abilityInformation[2], user)){
+            if(await this.CheckCriteria(abilityInformation[2], user)){
 
               user.Mugic_Counter -= parseInt(metaInformation[3])
               this.doEffect(abilityInformation[1], user);
@@ -364,35 +402,29 @@ export class BattleDialogComponent { //this should probably be change to battle 
           }
         }
 
-        target.subscribe(x => {
-          if (user.Energy <= 0 || x.Energy <= 0){
-            this.determineBattleResults(user, x)
-          }
-        })        
+        if (user.Energy <= 0 || target.Energy <= 0){
+          this.determineBattleResults(user, target)
+        }      
       }
       else if (metaInformation[0] === 'Strike'){
 
-        target.subscribe(x => {
-          let elementDamage = this.splitToString(abilityInformation[1], ':');
-          x.Energy -= this.calculateDamage(user, elementDamage);
-        }) 
+        let elementDamage = this.splitToString(abilityInformation[1], ':');
+        target.Energy -= this.calculateDamage(user, elementDamage);
+
 
 
         if (abilityInformation[3] !== 'x'){
 
-          if(this.CheckCriteria(abilityInformation[3], user)){
+          if(await this.CheckCriteria(abilityInformation[3], user)){
 
             this.doEffect(abilityInformation[2], user)
           };
 
         }
         
-
-        target.subscribe(x => {
-          if (user.Energy <= 0 || x.Energy <= 0){
-            this.determineBattleResults(user, x)
-          }
-        }) 
+        if (user.Energy <= 0 || target.Energy <= 0){
+          this.determineBattleResults(user, target)
+        }
       }
 
       this.transferTurn();        

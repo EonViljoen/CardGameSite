@@ -56,7 +56,7 @@
                       "Speed": 50
                     },
                     "Statuses": [{
-                      "Immobile": "x"
+                      "Stasis": "o"
                     }],
                     "Card": "./assets/cards/Creatures/Overworld/Dractyl.png",
                     "Picture": "./assets/pictures/Creatures/Overworld/Dractyl_Picture.png"
@@ -101,7 +101,7 @@
                     "Tribe": "Underworld",
                     "Class": "Conqueror , Warrior",
                     "Abilities": {
-                        "0" : " Mugic ? 3 | [Dispel : x : x] ? x ? Target | Response : Mugic , Ability ? [Mugic : x : Self] , [Ability : x : Self] ? OR ? Target ",
+                        "0" : " Mugic ? 3 | [Dispel : x : x] ? x ? Target | Response : Mugic , Ability ? [Mugic : x : Self] , [Ability : x : Self] ? OR ? Target | comment: need to add check for overworld", 
                         "1" : " Passive ? Self | [Loyal : x : x] ? x ? Self | x",
                         "2" : " Passive ? Self | [Unique : x : x] ? x ? Self | x"
                     },
@@ -188,6 +188,13 @@
                 "Cost": 1,
                 "Effect": " Mugic ? Target ? Generic ? 1 | [HP : x : 15] ? x ? Target | Check : Elements ? [Earth : true] , [Water : true] ? OR ? Target ",
                 "Picture": "./assets/pictures/Mugic/Generic/Geo_Flourish_Picture.png"
+              },
+              {
+                "Name": "Decrescendo",
+                "Tribe": "Generic",
+                "Cost": 1,
+                "Effect": " Mugic ? Target ? Generic ? 1 | [HP : x : -5] ? x ? Target | x ",
+                "Picture": "./assets/pictures/Mugic/Generic/Decrescendo_Picture.png"
               }
           ]  
     },
@@ -199,8 +206,15 @@
                 "Name": "Song of Stasis",
                 "Tribe": "Overworld",
                 "Cost": 1,
-                "Effect": " Mugic ? Target ? Overworld ? 1 | [Movement : x : x] ? x ? Target | x ",
+                "Effect": " Mugic ? Target ? Overworld ? 1 | [Statuses : Stasis : o] ? x ? Target | x ",
                 "Picture": "./assets/pictures/Mugic/Overworld/Song_of_Stasis_Picture.png"
+              },
+              {
+                "Name": "Prelude of Protection",
+                "Tribe": "Overworld",
+                "Cost": 1,
+                "Effect": " Mugic ? Target ? Overworld ? 1 | [Statuses : Fireproof : 10] , [Statuses : Airproof : 10] , [Statuses : Earthproof : 10] , [Statuses : Waterproof : 10] ? AND ? Target | x ",
+                "Picture": "./assets/pictures/Mugic/Overworld/Prelude_of_Protection_Picture.png"
               }
           ]  
     },
@@ -214,12 +228,25 @@
                 "Cost": 1,
                 "Effect": " Mugic ? Target ? Underworld ? 1 | [HP : x : -20] ? x ? Target | x ",
                 "Picture": "./assets/pictures/Mugic/Underworld/Canon_of_Casualty_Picture.png"
+              },
+              {
+                "Name": "Discord of Disarming",
+                "Tribe": "Underworld",
+                "Cost": 1,
+                "Effect": " Mugic ? Target ? Underworld ? 1 | [Destroy : Battlegear : x] ? x ? Target | x ",
+                "Picture": "./assets/pictures/Mugic/Underworld/Discord_of_Disarming_Picture.png"
               }
           ]  
     }
 
   ],
   "Strike": [
+    {
+      "Name": "Coil Crush",
+      "Cost": 0,
+      "Effect": " Strike ? Target | 5 : 0 : 0 : 0 : 0 | [Destroy : Battlegear : x] ? x ? Opposing | Check : Stats ? [Power : 75] ? x ? Opposing ",
+      "Picture": "./assets/pictures/Strikes/Coil_Crush_Picture.png"
+    },
     {
       "Name": "Ember Swarm",
       "Cost": 0,
@@ -229,7 +256,7 @@
     {
       "Name": "Incinerase",
       "Cost": 0,
-      "Effect": " Strike ? Target | 0 : 10 : 0 : 0 : 0 | [Elements : Fire : x] ? x ? Self | Check : Elements ? [Fire : true] ? x ? Self ",
+      "Effect": " Strike ? Opposing | 0 : 10 : 0 : 0 : 0 | [Elements : Fire : x] ? x ? Self | Check : Elements ? [Fire : true] ? x ? Self ",
       "Picture": "./assets/pictures/Strikes/Incinerase_Picture.png"
     },
     {
@@ -239,9 +266,21 @@
       "Picture": "./assets/pictures/Strikes/Pebblestorm_Picture.png"
     },
     {
+      "Name": "Power Punch",
+      "Cost": 0,
+      "Effect": " Strike ? Target | 0 : 0 : 0 : 0 : 0 | [HP : x : -5] , [Stats : Power : -10] ? XOR ? Opposing | Beat : Stats ? [Power : Wisdom] ? XOR ? Opposing ",
+      "Picture": "./assets/pictures/Strikes/Power_Punch_Picture.png"
+    },
+    {
+      "Name": "Rip Tide",
+      "Cost": 0,
+      "Effect": " Strike ? Target | 5 : 0 : 0 : 0 : 5 | [Stats : Courage : -25] ? x ? Opposing | Check : Elements ? [Water : o] ? x ? Self ",
+      "Picture": "./assets/pictures/Strikes/Rip_Tide_Picture.png"
+    },
+    {
       "Name": "Rustoxic",
       "Cost": 0,
-      "Effect": " Strike ? Target | 0 : 0 : 0 : 5 : 5 | [HP : x : -10] ? x ? Opposing | Challenge : Stats ? [courage : 15] ? x ? Self ",
+      "Effect": " Strike ? Target | 0 : 0 : 0 : 5 : 5 | [HP : x : -10] ? x ? Opposing | Challenge : Stats ? [Courage : 15] ? x ? Self ",
       "Picture": "./assets/pictures/Strikes/Rustoxic_Picture.png"
     }
   ]

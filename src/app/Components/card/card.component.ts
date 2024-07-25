@@ -2,11 +2,12 @@ import { Component, Input } from '@angular/core';
 import {MatCardModule} from '@angular/material/card';
 import { CdkDrag } from '@angular/cdk/drag-drop';
 import { Creature_Card } from '../../shared/Interfaces/creature_card';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [MatCardModule, CdkDrag],
+  imports: [MatCardModule, CdkDrag, CommonModule],
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss'
 })
@@ -31,7 +32,7 @@ export class CardComponent {
 
   isImmobile(): boolean {
 
-    const status = this.Card.Statuses.find(x => x["Immobile"]);
+    const status = this.Card.Statuses.find(x => x["Stasis"]);
 
     if (status){
       return true
@@ -39,5 +40,10 @@ export class CardComponent {
     else{
       return false;
     }
+  }
+
+  hasStatusEffect(): boolean {
+    
+    return this.Card.Statuses.length > 0 ? true  : false;
   }
 }
