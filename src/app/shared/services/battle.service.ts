@@ -1,11 +1,19 @@
-import {Injectable, signal} from '@angular/core';
+import {inject, Injectable, signal} from '@angular/core';
 import { Creature_Card } from '../Interfaces/creature_card';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { BattleDialogComponent } from '../../Dialogs/battle-dialog/battle-dialog.component';
+import { TargetDialogComponent } from '../../Dialogs/target-dialog/target-dialog.component';
 
 @Injectable({
   providedIn: 'root',
 })
 
 export class BattleService {
+
+    // readonly battleDialog = inject(MatDialogRef<BattleDialogComponent>);
+    readonly targetDialog = inject(MatDialog);
+    combatFinished: boolean = false;
+
     attacker: Creature_Card = {
         Id: '',
         Name: '',
@@ -127,6 +135,10 @@ export class BattleService {
         return this.successfulAttack();
     }
 
+    getCombateFinished(){
+        return this.combatFinished;
+    }
+
     setWinner(winner: Creature_Card){
         this.winner.set(winner);
     }
@@ -188,4 +200,74 @@ export class BattleService {
             Player: 0
         }); 
     }
+
+    async determineBattleResults(userCard: Creature_Card, battleDialogRef : any){
+
+        let opposingCard: any;
+        
+        await this.getTarget(userCard, 'Opposing').then(x => {
+          opposingCard = x;
+        });
+    
+        if (userCard.Energy <= 0 || opposingCard.Energy <= 0){
+    
+            this.combatFinished = true;
+
+            if (userCard.Energy >  opposingCard.Energy){
+
+            this.setWinner(userCard);
+            this.setLoser(opposingCard);
+            }
+            else if (userCard.Energy < opposingCard.Energy){
+        
+            this.setWinner(opposingCard);
+            this.setLoser(userCard);
+            }
+            else {
+            // this.battleService.draw();
+            }
+    
+            battleDialogRef.close({
+                battleOccurred: true,
+                loser: this.loser(),
+                winner: this.winner()
+                })
+          
+    }            
+}
+
+
+      transferTurn() {
+
+        this.getCurrentPlayer() === this.attacker.Player 
+        ? this.setCurrentPlayer(this.defender.Player) 
+        : this.setCurrentPlayer(this.attacker.Player)
+    }
+
+      async getTarget(user : Creature_Card, target: string) : Promise<Creature_Card>  {
+
+        switch (target) {
+          case "Self":
+            return (user.Player === this.attacker.Player ? this.attacker : this.defender);
+          
+          case "Opposing":
+            return (user.Player === this.attacker.Player ? this.defender : this.attacker);
+  
+          case "Target":
+            return await this.chooseTarget();
+  
+          default:
+            return (user.Player === this.attacker.Player ? this.attacker : this.defender);
+        }
+      }
+  
+      async chooseTarget(): Promise<Creature_Card>{
+  
+        const dialogRef =  this.targetDialog.open(TargetDialogComponent, {
+          disableClose: true
+        });
+  
+        return await dialogRef.afterClosed().toPromise();
+  
+      }
 }

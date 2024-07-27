@@ -3,6 +3,7 @@ import { TargetDialogComponent } from '../../Dialogs/target-dialog/target-dialog
 import { Creature_Card } from '../Interfaces/creature_card';
 import { BattleService } from './battle.service';
 import { CardService } from './card.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,8 @@ export class EffectService {
 
   readonly battleService = inject(BattleService);
   readonly cardService = inject(CardService);
+  readonly targetDialog = inject(MatDialog);
+
 
   attacker : Creature_Card = this.battleService.getAttacker();
   defender : Creature_Card = this.battleService.getDefender();
@@ -54,7 +57,7 @@ export class EffectService {
 
     let opposingCard: any;
 
-    await this.getTarget(userCard, 'Opposing').then(x => {
+    await this.battleService.getTarget(userCard, 'Opposing').then(x => {
       opposingCard = x
     });
 
@@ -90,7 +93,7 @@ export class EffectService {
 
       let target: any;
 
-      await this.getTarget(user, parameters[3]).then(x => {
+      await this.battleService.getTarget(user, parameters[3]).then(x => {
         target = x
       });
 
@@ -187,7 +190,7 @@ export class EffectService {
       let parameters: string[] = additionalEffectString.split('?').map(item => item.trim());
       let affected: any;
 
-      await this.getTarget(user, parameters[2]).then(x => {
+      await this.battleService.getTarget(user, parameters[2]).then(x => {
         affected = x
       });
       
@@ -235,63 +238,27 @@ export class EffectService {
       }
     }
 
-    transferTurn(): void {
-
-        this.battleService.getCurrentPlayer() === this.attacker.Player 
-        ? this.battleService.setCurrentPlayer(this.defender.Player) 
-        : this.battleService.setCurrentPlayer(this.attacker.Player)
-    }
-
     splitToString(value: string, splitOn: string) : string[] {
       return value.split(splitOn).map(item => item.trim());
-    }
-
-
-
-    async getTarget(user : Creature_Card, target: string) : Promise<Creature_Card>  {
-
-      switch (target) {
-        case "Self":
-          return (user.Player === this.attacker.Player ? this.attacker : this.defender);
-        
-        case "Opposing":
-          return (user.Player === this.attacker.Player ? this.defender : this.attacker);
-
-        // case "Target":
-        //   return await this.chooseTarget();
-
-        default:
-          return (user.Player === this.attacker.Player ? this.attacker : this.defender);
-      }
     }
 
     getUser(player: number) : Creature_Card {
       return player === this.attacker.Player ? this.attacker : this.defender; 
     }
 
-    // async chooseTarget(): Promise<Creature_Card>{
+    // useAbility(effect: string, playerNumber: number){
+    //   this.useEffect(effect, playerNumber);
+    // }
 
-    //   const dialogRef =  this.targetDialog.open(TargetDialogComponent, {
-    //     disableClose: true
-    //   });
+    // useCard(card: any, index: any, playerNumber: number){
 
-    //   return await dialogRef.afterClosed().toPromise();
+    //   this.useEffect(card.Effect, playerNumber);
+    //   this.cardService.discardCard(card, index);
+    //   this.cardService.drawCard(1);
 
     // }
 
-    useAbility(effect: string, playerNumber: number){
-      this.useEffect(effect, playerNumber);
-    }
-
-    useCard(card: any, index: any, playerNumber: number){
-
-      this.useEffect(card.Effect, playerNumber);
-      this.cardService.discardCard(card, index);
-      this.cardService.drawCard(1);
-
-    }
-
-    async useEffect(effect: string, playerNumber: number){
+    async useEffect(effect: string, playerNumber: number, battleDialog: any){
 
       let user = this.getUser(playerNumber);
       let abilityInformation = this.splitToString(effect, '|');
@@ -314,7 +281,7 @@ export class EffectService {
           }
         }
 
-        // this.determineBattleResults(user);  
+        this.battleService.determineBattleResults(user, battleDialog);  
       }
       else if (metaInformation[0] === 'Strike'){
 
@@ -332,9 +299,9 @@ export class EffectService {
 
         }
         
-        // this.determineBattleResults(user)
+        this.battleService.determineBattleResults(user, battleDialog)
       }
 
-      this.transferTurn();        
+      this.battleService.transferTurn();        
   }
 }
