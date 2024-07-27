@@ -4,11 +4,13 @@ import { BarComponent } from '../bar/bar.component';
 import { Creature_Card } from '../../shared/Interfaces/creature_card';
 import { CardService } from '../../shared/services/card.service';
 import { BattleService } from '../../shared/services/battle.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 
 @Component({
   selector: 'app-creature-profile',
   standalone: true,
-  imports: [CommonModule, BarComponent],
+  imports: [CommonModule, BarComponent, MatTooltipModule],
   templateUrl: './creature-profile.component.html',
   styleUrl: './creature-profile.component.scss'
 })

@@ -1,16 +1,24 @@
 <div class="container">
     <div class="player-info">
         <div class="element-list">
-            <i class="fa-solid fa-fire" [ngStyle]="{color: creature.Elements['Fire'] ? 'orangered' : 'lightgrey'}"></i>
-            <i class="fa-solid fa-wind" [ngStyle]="{color: creature.Elements['Air'] ? 'lightskyblue' : 'lightgrey'}"></i>
-            <i class="fa-solid fa-mountain" [ngStyle]="{color: creature.Elements['Earth'] ? 'lawngreen' : 'lightgrey'}"></i>
-            <i class="fa-solid fa-droplet" [ngStyle]="{color: creature.Elements['Water'] ? 'blueviolet' : 'lightgrey'}"></i>
+            <i class="fa-solid fa-fire" [ngStyle]="{color: creature.Elements['Fire'] ? 'orangered' : 'lightgrey'}"
+            [matTooltip]="'Fire'" matTooltipPosition="above"></i>
+            <i class="fa-solid fa-wind" [ngStyle]="{color: creature.Elements['Air'] ? 'lightskyblue' : 'lightgrey'}"
+            [matTooltip]="'Air'" matTooltipPosition="above"></i>
+            <i class="fa-solid fa-mountain" [ngStyle]="{color: creature.Elements['Earth'] ? 'lawngreen' : 'lightgrey'}"
+            [matTooltip]="'Earth'" matTooltipPosition="above"></i>
+            <i class="fa-solid fa-droplet" [ngStyle]="{color: creature.Elements['Water'] ? 'blueviolet' : 'lightgrey'}"
+            [matTooltip]="'Water'" matTooltipPosition="above"></i>
         </div>
         <div class="stat-list">
-            <app-bar class="stats" [current]="creature.Stats['Courage']" [max]="100" [icon]="'fa-solid fa-heart'"></app-bar>
-            <app-bar class="stats" [current]="creature.Stats['Power']" [max]="100" [icon]="'fa-solid fa-bolt'"></app-bar>
-            <app-bar class="stats" [current]="creature.Stats['Speed']" [max]="100" [icon]="'fa-solid fa-forward'"></app-bar>
-            <app-bar class="stats" [current]="creature.Stats['Wisdom']" [max]="100" [icon]="'fa-regular fa-eye'"></app-bar>
+            <app-bar class="stats" [current]="creature.Stats['Courage']" [max]="100" [icon]="'fa-solid fa-heart'"
+            [matTooltip]="'Courage : '+ creature.Stats['Courage']" matTooltipPosition="above"></app-bar>
+            <app-bar class="stats" [current]="creature.Stats['Power']" [max]="100" [icon]="'fa-solid fa-bolt'"
+            [matTooltip]="'Power : ' + creature.Stats['Power']" matTooltipPosition="above"></app-bar>
+            <app-bar class="stats" [current]="creature.Stats['Speed']" [max]="100" [icon]="'fa-solid fa-forward'"
+            [matTooltip]="'Speed : ' + creature.Stats['Speed']" matTooltipPosition="above"></app-bar>
+            <app-bar class="stats" [current]="creature.Stats['Wisdom']" [max]="100" [icon]="'fa-regular fa-eye'"
+            [matTooltip]="'Wisdom : ' + creature.Stats['Wisdom']" matTooltipPosition="above"></app-bar>
         </div>
         <div class="mugic-list">
             @for (mugic of [].constructor(creature.Mugic_Counter); track i; let i = $index) {

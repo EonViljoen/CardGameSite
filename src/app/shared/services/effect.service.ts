@@ -1,89 +1,53 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { Battle } from '../../shared/Interfaces/battle';
-import { BattleService } from '../../shared/services/battle.service';
-import { Creature_Card } from '../../shared/Interfaces/creature_card';
-import { CdkDropList } from '@angular/cdk/drag-drop';
-import { MatCardModule } from '@angular/material/card';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { CardService } from '../../shared/services/card.service';
-import { TargetDialogComponent } from '../target-dialog/target-dialog.component';
-import { TurnWindowComponent } from "../../Components/turn-window/turn-window.component";
-import { BarComponent } from "../../Components/bar/bar.component";
-import { CommonModule } from '@angular/common';
-import { CreatureProfileComponent } from "../../Components/creature-profile/creature-profile.component";
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { inject, Injectable } from '@angular/core';
+import { TargetDialogComponent } from '../../Dialogs/target-dialog/target-dialog.component';
+import { Creature_Card } from '../Interfaces/creature_card';
+import { BattleService } from './battle.service';
+import { CardService } from './card.service';
 
-@Component({
-  selector: 'app-battle-dialog',
-  standalone: true,
-  imports: [MatDialogModule, MatButtonModule, CdkDropList,
-    MatCardModule, MatTooltipModule, TurnWindowComponent, BarComponent,
-    CommonModule, CreatureProfileComponent,
-    FontAwesomeModule],
-  templateUrl: './battle-dialog.component.html',
-  styleUrl: './battle-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+@Injectable({
+  providedIn: 'root'
 })
-export class BattleDialogComponent {
-  
-  readonly battleDialog = inject(MatDialogRef<BattleDialogComponent>);
-  gameBoardData = inject<Battle>(MAT_DIALOG_DATA);
+export class EffectService {
 
-  readonly targetDialog = inject(MatDialog);
-  private cardService = inject(CardService);
-  private battleService = inject(BattleService);
+  readonly battleService = inject(BattleService);
+  readonly cardService = inject(CardService);
 
   attacker : Creature_Card = this.battleService.getAttacker();
   defender : Creature_Card = this.battleService.getDefender();
-  
-  hand: any[] = []
 
-  ngOnInit() {
-    // this.battleDialog.updateSize('80%', '80%'); 
+  constructor() { }
 
-    this.battleService.setCurrentPlayer(this.attacker.Player);
-  }
+  // async determineBattleResults(userCard: Creature_Card){
 
-  getHand(): any[]{
-    return this.cardService.getHand();
-  }
-
-  //////////////////////Everything below should probably be moved to own service
-
-
-  async determineBattleResults(userCard: Creature_Card){
-
-    let opposingCard: any;
+  //   let opposingCard: any;
     
-    await this.getTarget(userCard, 'Opposing').then(x => {
-      opposingCard = x;
-    });
+  //   await this.getTarget(userCard, 'Opposing').then(x => {
+  //     opposingCard = x;
+  //   });
 
-    if (userCard.Energy <= 0 || opposingCard.Energy <= 0){
+  //   if (userCard.Energy <= 0 || opposingCard.Energy <= 0){
 
-      if (userCard.Energy >  opposingCard.Energy){
+  //     if (userCard.Energy >  opposingCard.Energy){
 
-        this.battleService.setWinner(userCard);
-        this.battleService.setLoser(opposingCard);
-      }
-      else if (userCard.Energy < opposingCard.Energy){
+  //       this.battleService.setWinner(userCard);
+  //       this.battleService.setLoser(opposingCard);
+  //     }
+  //     else if (userCard.Energy < opposingCard.Energy){
   
-        this.battleService.setWinner(opposingCard);
-        this.battleService.setLoser(userCard);
-      }
-      else {
-        // this.battleService.draw();
-      }
+  //       this.battleService.setWinner(opposingCard);
+  //       this.battleService.setLoser(userCard);
+  //     }
+  //     else {
+  //       // this.battleService.draw();
+  //     }
 
-      this.battleDialog.close({
-        battleOccurred: true,
-        loser: this.battleService.loser(),
-        winner: this.battleService.winner()
-      })
-    }
-  }
+  //     this.battleDialog.close({
+  //       battleOccurred: true,
+  //       loser: this.battleService.loser(),
+  //       winner: this.battleService.winner()
+  //     })
+  //   }
+  // }
 
   //elements : generic fire air earch water
   async doElementalDamage(userCard: Creature_Card, elementDamageArray: string[]) {
@@ -293,8 +257,8 @@ export class BattleDialogComponent {
         case "Opposing":
           return (user.Player === this.attacker.Player ? this.defender : this.attacker);
 
-        case "Target":
-          return await this.chooseTarget();
+        // case "Target":
+        //   return await this.chooseTarget();
 
         default:
           return (user.Player === this.attacker.Player ? this.attacker : this.defender);
@@ -305,15 +269,15 @@ export class BattleDialogComponent {
       return player === this.attacker.Player ? this.attacker : this.defender; 
     }
 
-    async chooseTarget(): Promise<Creature_Card>{
+    // async chooseTarget(): Promise<Creature_Card>{
 
-      const dialogRef =  this.targetDialog.open(TargetDialogComponent, {
-        disableClose: true
-      });
+    //   const dialogRef =  this.targetDialog.open(TargetDialogComponent, {
+    //     disableClose: true
+    //   });
 
-      return await dialogRef.afterClosed().toPromise();
+    //   return await dialogRef.afterClosed().toPromise();
 
-    }
+    // }
 
     useAbility(effect: string, playerNumber: number){
       this.useEffect(effect, playerNumber);
@@ -350,7 +314,7 @@ export class BattleDialogComponent {
           }
         }
 
-        this.determineBattleResults(user);  
+        // this.determineBattleResults(user);  
       }
       else if (metaInformation[0] === 'Strike'){
 
@@ -368,7 +332,7 @@ export class BattleDialogComponent {
 
         }
         
-        this.determineBattleResults(user)
+        // this.determineBattleResults(user)
       }
 
       this.transferTurn();        
