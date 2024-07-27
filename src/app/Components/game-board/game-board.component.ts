@@ -15,6 +15,7 @@ import { Strike_Card } from '../../shared/Interfaces/strike_card';
 import * as jsonData from '../../../assets/cardInformation.json'; //This gotta be fixed
 import { Player } from '../../shared/Interfaces/player';
 import { CommonModule } from '@angular/common';
+import { TurnWindowComponent } from "../turn-window/turn-window.component";
 
 
 @Component({
@@ -22,12 +23,13 @@ import { CommonModule } from '@angular/common';
     standalone: true,
     templateUrl: './game-board.component.html',
     styleUrl: './game-board.component.scss',
-    imports: [CdkDrag, CdkDragPreview, MatCardModule, CdkDropListGroup, CdkDropList, CardComponent, MatTooltipModule, CommonModule ]
+    imports: [CdkDrag, CdkDragPreview, MatCardModule, CdkDropListGroup, CdkDropList, CardComponent, MatTooltipModule, CommonModule, TurnWindowComponent]
 })
 
 export class GameBoardComponent {
 
   readonly battleDialog = inject(MatDialog);
+
   private battleService = inject(BattleService);
   private cardService = inject(CardService);
   private fieldService = inject(FieldService)
@@ -100,9 +102,10 @@ export class GameBoardComponent {
   buildHand() {
 
     this.cardService.addToDrawPile(this.getStrikes());
+    this.cardService.shuffleCards(this.getDrawPile());
     this.cardService.addToHand(this.getMugic('Overworld'));
     
-    this.cardService.drawCard(7);
+    this.cardService.drawCard(3);
   }
 
   getHand(): any[] {
@@ -258,10 +261,12 @@ export class GameBoardComponent {
     this.battleService.setAttacker(<Creature_Card>event.previousContainer.data.at(0));    
 
     const dialogRef = this.battleDialog.open(BattleDialogComponent, {
-      maxWidth: '100vw', //review these 4 to see which is actually needed
-      maxHeight: '100vh',
+      // maxWidth: '100vw', //review these 4 to see which is actually needed
+      // maxHeight: '100vh',
+      // width: '75%',
       data: { //Maybe don't need this anymore since I'm using service
       },
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe(result => { //don't fully understand how this works really, ask Alan

@@ -9,18 +9,24 @@ import { MatCardModule } from '@angular/material/card';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { CardService } from '../../shared/services/card.service';
 import { TargetDialogComponent } from '../target-dialog/target-dialog.component';
-import { lastValueFrom, map, Observable, of } from 'rxjs';
-import { X } from '@angular/cdk/keycodes';
+import { TurnWindowComponent } from "../../Components/turn-window/turn-window.component";
+import { BarComponent } from "../../Components/bar/bar.component";
+import { CommonModule } from '@angular/common';
+import { CreatureProfileComponent } from "../../Components/creature-profile/creature-profile.component";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-battle-dialog',
   standalone: true,
-  imports: [MatDialogModule, MatButtonModule, CdkDropList, MatCardModule, MatTooltipModule],
+  imports: [MatDialogModule, MatButtonModule, CdkDropList,
+    MatCardModule, MatTooltipModule, TurnWindowComponent, BarComponent,
+    CommonModule, CreatureProfileComponent,
+    FontAwesomeModule],
   templateUrl: './battle-dialog.component.html',
   styleUrl: './battle-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BattleDialogComponent { //this should probably be change to battle dialog or somehting like that
+export class BattleDialogComponent {
   
   readonly battleDialog = inject(MatDialogRef<BattleDialogComponent>);
   gameBoardData = inject<Battle>(MAT_DIALOG_DATA);
@@ -35,7 +41,7 @@ export class BattleDialogComponent { //this should probably be change to battle 
   hand: any[] = []
 
   ngOnInit() {
-    this.battleDialog.updateSize('80%', '80%'); 
+    // this.battleDialog.updateSize('80%', '80%'); 
 
     this.battleService.setCurrentPlayer(this.attacker.Player);
   }
@@ -47,48 +53,66 @@ export class BattleDialogComponent { //this should probably be change to battle 
   //////////////////////Everything below should probably be moved to own service
 
 
-  determineBattleResults(userCard: Creature_Card, opposingCard: Creature_Card){
-    if (userCard.Energy >  opposingCard.Energy){
+  async determineBattleResults(userCard: Creature_Card){
 
-      this.battleService.setWinner(userCard);
-      this.battleService.setLoser(opposingCard);
-    }
-    else if (userCard.Energy < opposingCard.Energy){
+    let opposingCard: any;
+    
+    await this.getTarget(userCard, 'Opposing').then(x => {
+      opposingCard = x;
+    });
 
-      this.battleService.setWinner(opposingCard);
-      this.battleService.setLoser(userCard);
-    }
-    else {
-      // this.battleService.draw();
-    }
+    if (userCard.Energy <= 0 || opposingCard.Energy <= 0){
 
-    this.battleDialog.close({
-      battleOccurred: true,
-      loser: this.battleService.loser(),
-      winner: this.battleService.winner()
-    })
+      if (userCard.Energy >  opposingCard.Energy){
+
+        this.battleService.setWinner(userCard);
+        this.battleService.setLoser(opposingCard);
+      }
+      else if (userCard.Energy < opposingCard.Energy){
+  
+        this.battleService.setWinner(opposingCard);
+        this.battleService.setLoser(userCard);
+      }
+      else {
+        // this.battleService.draw();
+      }
+
+      this.battleDialog.close({
+        battleOccurred: true,
+        loser: this.battleService.loser(),
+        winner: this.battleService.winner()
+      })
+    }
   }
 
   //elements : generic fire air earch water
-  calculateDamage(user: Creature_Card, elementDamageArray: string[]) : number {
+  async doElementalDamage(userCard: Creature_Card, elementDamageArray: string[]) {
+
+    let opposingCard: any;
+
+    await this.getTarget(userCard, 'Opposing').then(x => {
+      opposingCard = x
+    });
+
+
     let damage: number = 0;
-      damage += parseInt(elementDamageArray[0]);
+    damage += parseInt(elementDamageArray[0]);
 
-      if (user.Elements['Fire']){
-        damage += parseInt(elementDamageArray[1]);
-      }
-      if (user.Elements['Air']){
-        damage += parseInt(elementDamageArray[2]);
-      }
-      if (user.Elements['Earth']){
-        damage += parseInt(elementDamageArray[3]);
-      }
-      if (user.Elements['Water']){
-        damage += parseInt(elementDamageArray[4]);
-      }
-
-      return damage
+    if (userCard.Elements['Fire']){
+      damage += parseInt(elementDamageArray[1]);
     }
+    if (userCard.Elements['Air']){
+      damage += parseInt(elementDamageArray[2]);
+    }
+    if (userCard.Elements['Earth']){
+      damage += parseInt(elementDamageArray[3]);
+    }
+    if (userCard.Elements['Water']){
+      damage += parseInt(elementDamageArray[4]);
+    }
+
+    opposingCard.Energy -= damage;
+  }
 
     // parameters
       // 0 - sort of check (check, challenge ...) and on what
@@ -109,65 +133,27 @@ export class BattleDialogComponent { //this should probably be change to battle 
       if (parameters[0] === 'x'){
         return true;
       }
+      else{
 
-      if (criteriaType[0] === 'Check'){
+        if (criteriaType[0] === 'Check'){
 
-        if (criteriaType[1] === 'Elements'){
-
-          let qualtifications: string[] = parameters[1].split(',').map(item => item.trim()); //have potentially multiple criteria to meet
-          let overAllCheck: boolean;
-
-          qualtifications.forEach(block => {
-            let elementCheck: string[] = block.substring(1, block.length-1).split(':').map(item => item.trim());
-
-            if (target.Elements[elementCheck[0]] === JSON.parse(elementCheck[1])){ 
-              criteriaMet = true;
-            }
-
-            if (parameters[2] !== 'x'){
-              if (!overAllCheck){
-                overAllCheck = criteriaMet;
-              }
-              else{
-                if (parameters[2] === 'AND'){
-
-                  overAllCheck = overAllCheck && criteriaMet;
-                }
-                else if (parameters[2] === 'OR'){
-
-                  overAllCheck = overAllCheck || criteriaMet;
-                }
-              }
-            }
-          })
-        }
-      }
-      else if (criteriaType[0] === 'Challenge'){ //this should be moved to somewhere
-
-        if (criteriaType[1] === 'Stats'){
-
-          let qualtifications: string[] = parameters[1].split(',').map(item => item.trim()); //have potentially multiple criteria to meet
-          let overAllCheck: boolean;
-
-          qualtifications.forEach(block => {
-            let statCheck: string[] = block.substring(1, block.length-1).split(':').map(item => item.trim());
-
-            let challenge: number;
-
-            challenge = user.Stats[statCheck[0]] - target.Stats[statCheck[0]];
-
-
-              if(challenge >= parseInt(statCheck[1])){
+          if (criteriaType[1] === 'Elements'){
+  
+            let qualtifications: string[] = parameters[1].split(',').map(item => item.trim()); //have potentially multiple criteria to meet
+            let overAllCheck: boolean;
+  
+            qualtifications.forEach(block => {
+              let elementCheck: string[] = block.substring(1, block.length-1).split(':').map(item => item.trim());
+  
+              if (target.Elements[elementCheck[0]] === JSON.parse(elementCheck[1])){ 
                 criteriaMet = true;
               }
   
               if (parameters[2] !== 'x'){
                 if (!overAllCheck){
-                  
                   overAllCheck = criteriaMet;
                 }
                 else{
-  
                   if (parameters[2] === 'AND'){
   
                     overAllCheck = overAllCheck && criteriaMet;
@@ -179,14 +165,53 @@ export class BattleDialogComponent { //this should probably be change to battle 
                 }
               }
             })
+          }
         }
-        // else if (check[1] === 'Elements'){ //don't know if this is really gonna happen but keeping it here
-          
-        // }
-      }
+        else if (criteriaType[0] === 'Challenge'){ //this should be moved to somewhere
+  
+          if (criteriaType[1] === 'Stats'){
+  
+            let qualtifications: string[] = parameters[1].split(',').map(item => item.trim()); //have potentially multiple criteria to meet
+            let overAllCheck: boolean;
+  
+            qualtifications.forEach(block => {
+              let statCheck: string[] = block.substring(1, block.length-1).split(':').map(item => item.trim());
+  
+              let challenge: number;
+  
+              challenge = user.Stats[statCheck[0]] - target.Stats[statCheck[0]];
+  
+  
+                if(challenge >= parseInt(statCheck[1])){
+                  criteriaMet = true;
+                }
+    
+                if (parameters[2] !== 'x'){
+                  if (!overAllCheck){
+                    
+                    overAllCheck = criteriaMet;
+                  }
+                  else{
+    
+                    if (parameters[2] === 'AND'){
+    
+                      overAllCheck = overAllCheck && criteriaMet;
+                    }
+                    else if (parameters[2] === 'OR'){
+    
+                      overAllCheck = overAllCheck || criteriaMet;
+                    }
+                  }
+                }
+              })
+          }
+          // else if (check[1] === 'Elements'){ //don't know if this is really gonna happen but keeping it here
+            
+          // }
+        }
 
-      
-      return criteriaMet;
+        return criteriaMet;
+      }
     }
 
       // parameters
@@ -253,17 +278,11 @@ export class BattleDialogComponent { //this should probably be change to battle 
         : this.battleService.setCurrentPlayer(this.attacker.Player)
     }
 
-    object2Array(obj: Object){
-      return Object.entries(obj).map(([key, value]) => ({key, value}));
-    }
-
     splitToString(value: string, splitOn: string) : string[] {
       return value.split(splitOn).map(item => item.trim());
     }
 
-    getCurrentPlayer() : number {
-      return this.battleService.currentPlayer;
-  }
+
 
     async getTarget(user : Creature_Card, target: string) : Promise<Creature_Card>  {
 
@@ -289,6 +308,7 @@ export class BattleDialogComponent { //this should probably be change to battle 
     async chooseTarget(): Promise<Creature_Card>{
 
       const dialogRef =  this.targetDialog.open(TargetDialogComponent, {
+        disableClose: true
       });
 
       return await dialogRef.afterClosed().toPromise();
@@ -313,35 +333,29 @@ export class BattleDialogComponent { //this should probably be change to battle 
       let abilityInformation = this.splitToString(effect, '|');
       let metaInformation = this.splitToString(abilityInformation[0], '?');
 
-      let target: any;
-
-      await this.getTarget(user, metaInformation[1]).then(x => {
-        target = x
-      });
+      console.log(metaInformation)
 
       if (metaInformation[0] === 'Mugic'){
 
-        if (user.Mugic_Counter > 0 && user.Mugic_Counter >= parseInt(metaInformation[3])){ 
+        if (user.Mugic_Counter > 0 && user.Mugic_Counter >= parseInt(metaInformation[2])){ 
           
-          if (user.Tribe === metaInformation[2] || metaInformation[2] === 'Generic'){ 
+          if (user.Tribe === metaInformation[1] || metaInformation[1] === 'Generic'){ 
             
             if(await this.CheckCriteria(abilityInformation[2], user)){
 
-              user.Mugic_Counter -= parseInt(metaInformation[3])
+              user.Mugic_Counter -= parseInt(metaInformation[2])
               this.doEffect(abilityInformation[1], user);
             }
 
           }
         }
 
-        if (user.Energy <= 0 || target.Energy <= 0){
-          this.determineBattleResults(user, target)
-        }      
+        this.determineBattleResults(user);  
       }
       else if (metaInformation[0] === 'Strike'){
 
         let elementDamage = this.splitToString(abilityInformation[1], ':');
-        target.Energy -= this.calculateDamage(user, elementDamage);
+        this.doElementalDamage(user, elementDamage);
 
 
 
@@ -354,9 +368,7 @@ export class BattleDialogComponent { //this should probably be change to battle 
 
         }
         
-        if (user.Energy <= 0 || target.Energy <= 0){
-          this.determineBattleResults(user, target)
-        }
+        this.determineBattleResults(user)
       }
 
       this.transferTurn();        

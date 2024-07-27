@@ -13,11 +13,6 @@ export class CardService {
   hand: any[] = [];
 
   constructor(){
-    
-    // this.drawPile = [];
-    // this.discardPile = [];
-    // this.recyclePile = [];
-    // this.hand = [];
   }
 
   addToHand(cards:any[]) {
@@ -60,10 +55,26 @@ export class CardService {
     }
   }
 
+  shuffleCards(cardPile: any[]){
+
+    this.drawPile = cardPile.slice().sort(() => Math.random() - 0.5);
+  }
+
   recycleCards() { //Refine a bit to where you only have 3 cards when in battle, not on field
 
-    this.drawPile = this.recyclePile.slice().sort(() => Math.random() - 0.5);
+    this.shuffleCards(this.recyclePile);
     this.drawCard(1);
+  }
+
+  getTribeColour(tribe: string){
+    switch (tribe){
+      case 'Overworld':
+        return '#0000FF';
+      case 'Underworld':
+        return '#FF0000';
+      default:
+        return '808080'
+    }
   }
 
   getDrawPile() : any[] {

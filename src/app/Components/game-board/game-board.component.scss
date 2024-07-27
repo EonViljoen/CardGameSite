@@ -1,3 +1,61 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 3em;  
+}
+
+.board {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 1em;
+  margin-top: 1%;
+  margin-left: 2%;
+}
+
+.field {
+  border: solid whitesmoke 3px;
+  border-radius: 10px;
+  display: flex;
+  flex-grow: 1;
+}
+
+.left-side, .right-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  border-radius: 5px;
+}
+
+.left-side {
+  flex-wrap: wrap-reverse;
+  background-color: #006e6e;
+  border-right: solid 3px whitesmoke;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding-right: 5px;
+}
+
+.active-left-side {
+  background-color: rgb(136, 204, 227);
+}
+
+.right-side {
+  background-color: #9c3030;
+  border-left: solid 3px whitesmoke;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding-left: 5px;
+}
+
+.active-right-side {
+  background-color: lightcoral;
+}
+
+
 .box { 
     align-items: center;
     text-align: center;
@@ -18,21 +76,6 @@
                 0 3px 14px 2px rgba(0, 0, 0, 0.12);
   }
 
-  .container {
-    display: flex;
-    gap: 1em;
-    justify-content: center;
-  }
-  
-  .boundary {
-    margin-left: 10%;
-    margin-top: 0.5%;
-    width: 80%;
-    height: 75%;
-    border: solid #ccc 3px;
-    border-radius: 10px;
-  }
-  
   .cdk-drag-animating {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   }
@@ -44,32 +87,6 @@
     border: solid 1px #FFFFF0;
     border-radius: 4px;
 
-  }
-
-  .left-side, .right-side {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-    flex-grow: 1;
-    border-radius: 5px;
-  }
-
-  .left-side {
-    flex-wrap: wrap-reverse;
-    background-color: #006e6e;
-  }
-
-  .active-left-side {
-    background-color: lightblue;
-  }
-
-  .right-side {
-    background-color: #9c3030;
-  }
-
-  .active-right-side {
-    background-color: lightcoral;
   }
 
   .card-background {
@@ -88,7 +105,7 @@
                 0 8px 10px 1px rgba(0, 0, 0, 0.14),
                 0 3px 14px 2px rgba(0, 0, 0, 0.12);
   }
-  
+
   .cdk-drag-placeholder {
     opacity: 0;
   }
@@ -105,65 +122,54 @@
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   }
 
+
   .bottom-row {
-    margin-left: 5%;
-    // bottom: 0;
-    margin-top: 2%;
-    display: flex
+    display: flex;
+    flex-direction: row;
+    gap: 4em;
+    margin-left: 2%;
   }
 
   .discard {
-    margin-right: 1%;
     width: 150px;
     height: 125px;
-    border: solid #ccc 3px;  
+    border: solid whitesmoke 3px;  
     background: gray;
     border-radius: 4px;
   }
 
   .recycle {
-    margin-right: 1%;
     width: 150px;
     height: 125px;
-    border: solid #ccc 3px;  
+    border: solid whitesmoke 3px;  
     background: gray;
     border-radius: 4px;
   }
 
   .hand {
-    margin-right: 1%;
-    // width: 750px;
-    height: 125px;
-    border: solid #ccc 3px;  
-    border-radius: 4px;
-  }
-  
-  .hand-list {
     display: flex;
-    flex-direction: row;
-    
+    gap: 1em;
+    border: solid whitesmoke 3px;  
+    border-radius: 4px;
   }
 
   .hand-box {
-    display: flex;
-    flex-direction: row;
     cursor: grab;
-    margin-right: 5px;
-    margin-left: 5px;
     border-radius: 4px;
-    // background-color: black;
   }
 
   .draw { //make this always lay on right side maybe
     width: 150px;
     height: 125px;
-    border: solid #ccc 3px;  
+    border: solid whitesmoke 3px;  
     background: gray;
     border-radius: 4px;
+    justify-self: end;
   }
 
   .draw-card {
     background-color: rgb(54, 54, 54);
-    cursor: pointer;
+    // cursor: pointer;
     border-radius: 4px;
+    justify-self: end;
   }

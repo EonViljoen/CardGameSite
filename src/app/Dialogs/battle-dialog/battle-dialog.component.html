@@ -1,76 +1,42 @@
-<div mat-dialog-title class="body">
-  <p>Battle</p>
-  <p>Player {{getCurrentPlayer()}}'s' Turn</p>
-</div>
-<mat-dialog-content class="mat-typography">
-  <div class="cardzone">
-    <div class="player1">
-      <p>
-        Mugic
-        <br>
-        {{attacker.Mugic_Counter}}
-      </p>
+<div class="background">
+  <mat-dialog-content class="mat-typography">
+    <div class="container">
+      <div class="header">
+        <h4>
+          Combat
+        </h4>
+      </div>
+      <div class="card-zone">
+        <app-creature-profile [creature]="attacker"></app-creature-profile>
+        <app-turn-window></app-turn-window>
+        <app-creature-profile class="right" [creature]="defender"></app-creature-profile>
+      </div>
     </div>
-    <div class="player1">
-      <p>
-        Attacker {{attacker.Player}}
-        <br>
-        {{attacker.Name}}
-        <br>
-        HP : {{attacker.Energy}}
-      </p>
-      <img class="card-image" [src]="attacker.Picture">
-      <p>
-        @for (stat of object2Array(attacker.Stats); track stat.key) {
-        | {{stat.key}} : {{stat.value}} |
+  <mat-dialog-actions align="center">
+    <div class="hand hand-list" cdkDropList
+      [cdkDropListData]="hand"
+      cdkDropListOrientation="horizontal"
+      >
+        @for (card of getHand(); track i; let i = $index) {
+          <mat-card class="hand-box">
+            <img mat-card-image class="card-image" [src]="card.Picture"
+            [matTooltip]="card.Name" matTooltipPosition="above"
+            (click)="useCard(card, i, 1)"  
+            >
+          </mat-card>
         }
-      </p>
-      <p>
-        @for (element of object2Array(attacker.Elements); track element.key) {
-        | {{element.key}} : {{element.value ? 'o' : 'x'}} |
-        }
-      </p>
-      @for (ability of object2Array(attacker.Abilities); track ability.key) {
-        <button mat-button (click)="useAbility(ability.value, attacker.Player)" [disabled]="!(attacker.Player === getCurrentPlayer())">
-        {{ability.key}}
-        </button>
-      } 
-    </div>
-    <div class="player2">
-      <p>
-        Defender {{defender.Player}}
-        <br>
-        {{defender.Name}}
-        <br>
-        HP : {{defender.Energy}}
-      </p>
-      <img class="card-image" [src]="defender.Picture">
-      <p>
-        @for (stat of object2Array(defender.Stats); track stat.key) {
-        | {{stat.key}} : {{stat.value}} |
-        }
-      </p>
-      <p>
-        @for (element of object2Array(defender.Elements); track element.key) {
-        | {{element.key}} : {{element.value ? 'o' : 'x'}} |
-        }
-      </p>
-      @for (ability of object2Array(defender.Abilities); track ability.key) {
-        <button mat-button (click)="useAbility(ability.value, defender.Player)" [disabled]="!(defender.Player === getCurrentPlayer())">
-        {{ability.key}}
-        </button>
-      } 
-    </div>
-    <div class="player2">
-      <p>
-        Mugic
-        <br>
-        {{defender.Mugic_Counter}}
-      </p>
-    </div>
-  </div>
+      </div>
+  </mat-dialog-actions> 
 </mat-dialog-content>
-<mat-dialog-actions align="center" class="actions">
+ 
+</div>
+
+
+<!-- 
+<mat-dialog-content class="mat-typography">
+  
+</mat-dialog-content> -->
+<!-- <mat-dialog-actions align="center" class="actions">
   <div class="hand hand-list" cdkDropList
     [cdkDropListData]="hand"
     cdkDropListOrientation="horizontal"
@@ -84,4 +50,4 @@
         </mat-card>
       }
     </div>
-</mat-dialog-actions>
+</mat-dialog-actions> -->

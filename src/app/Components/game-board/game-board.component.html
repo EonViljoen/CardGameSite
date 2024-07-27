@@ -1,82 +1,91 @@
-<div class="boundary container" cdkDropListGroup>
-  <div class="left-side" [ngClass]="{
-    'active-left-side': isMovingPlayer(board.left.Id) 
-  }">
-    @for (card of board.left.Field; track card) {
-      <div 
-        cdkDropList
-        class="card-background"
-        [cdkDropListData]="card"
-        (cdkDropListDropped)="drop($event)"
-        >
-        @for (leftItem of card; track leftItem.Id) {
-          <app-card [Card]="leftItem"
-          [Moveable]="isMovingPlayer(board.left.Id) "
-          [matTooltip]="leftItem.Name" matTooltipPosition="above"></app-card>
-        }
+<div class="container">
+  <div class="board">
+    <div class="field" cdkDropListGroup>
+      <div class="left-side" [ngClass]="{
+        'active-left-side': isMovingPlayer(board.left.Id) 
+      }">
+        @for (card of board.left.Field; track card) {
+          <div 
+            cdkDropList
+            class="card-background"
+            [cdkDropListData]="card"
+            (cdkDropListDropped)="drop($event)"
+            cdkDragBoundary=".field"
+            >
+            @for (leftItem of card; track leftItem.Id) {
+              <app-card [Card]="leftItem"
+              [Moveable]="isMovingPlayer(board.left.Id) "
+              [matTooltip]="leftItem.Name" matTooltipPosition="above"></app-card>
+            }
+          </div>
+         }
       </div>
-     }
-  </div>
-  <div class="right-side" [ngClass]="{
-    'active-right-side': isMovingPlayer(board.right.Id) 
-  }">
-    @for (card of board.right.Field; track card) {
-      <div 
-        cdkDropList
-        class="card-background"
-        [cdkDropListData]="card"
-        (cdkDropListDropped)="drop($event)"
-        >
-        @for (rightItem of card; track rightItem.Id) {
-          <app-card [Card]="rightItem"
-          [Moveable]="isMovingPlayer(board.right.Id) "
-          [matTooltip]="rightItem.Name" matTooltipPosition="above"></app-card>
-        }
+      <div class="right-side" [ngClass]="{
+        'active-right-side': isMovingPlayer(board.right.Id) 
+      }">
+        @for (card of board.right.Field; track card) {
+          <div 
+            cdkDropList
+            class="card-background"
+            [cdkDropListData]="card"
+            (cdkDropListDropped)="drop($event)"
+            >
+            @for (rightItem of card; track rightItem.Id) {
+              <app-card [Card]="rightItem"
+              [Moveable]="isMovingPlayer(board.right.Id) "
+              [matTooltip]="rightItem.Name" matTooltipPosition="above"></app-card>
+            }
+          </div>
+         }
       </div>
-     }
+    </div>
+    <app-turn-window class="turn-window"></app-turn-window>
   </div>
-</div>
-<div class="bottom-row">
-    <div class="discard" cdkDropList
-      [cdkDropListData]="getDiscardPile()"
-    >
-    @for (item of getDiscardPile(); track i; let i = $index) {
-      <mat-card class="box" >
-        <img mat-card-image class="card-image" [src]="item.Picture">
-      </mat-card>
-    }
-    </div>
-
-    <div class="recycle" cdkDropList
-      [cdkDropListData]="getRecyclePile()"
-    >
-    @for (item of getRecyclePile(); track i; let i = $index) {
-      <mat-card class="box">
-        <img mat-card-image class="card-image" [src]="item.Picture">
-      </mat-card>
-    }
-    </div>
-
-    <div class="hand hand-list" cdkDropList
-    [cdkDropListData]="getHand()"
-    cdkDropListOrientation="horizontal"
-    (cdkDropListDropped)="arrangeHand($event)"
-    >
-      @for (card of getHand(); track i; let i = $index) {
-        <mat-card class="hand-box" cdkDrag>
-          <img mat-card-image class="card-image" [src]="card.Picture"
-          [matTooltip]="card.Name" matTooltipPosition="above">
+  <div class="bottom-row">
+      <div class="discard" cdkDropList
+        [cdkDropListData]="getDiscardPile()"
+      >
+      @for (item of getDiscardPile(); track i; let i = $index) {
+        <mat-card class="box" >
+          <img mat-card-image class="card-image" [src]="item.Picture">
         </mat-card>
       }
-    </div>
-
-    <div class="draw" cdkDropList
-    [cdkDropListData]="getDrawPile()"
-    >
-    @for (item of getDrawPile(); track i; let i = $index) {
-      <mat-card class="box">
-        <img mat-card-image class="card-image draw-card" src="./assets/cardBack.png">
-      </mat-card>
-    }
-    </div>
+      </div>
+  
+      <div class="recycle" cdkDropList
+        [cdkDropListData]="getRecyclePile()"
+      >
+      @for (item of getRecyclePile(); track i; let i = $index) {
+        <mat-card class="box">
+          <img mat-card-image class="card-image" [src]="item.Picture">
+        </mat-card>
+      }
+      </div>
+  
+      <div class="hand" cdkDropList
+      [cdkDropListData]="getHand()"
+      cdkDropListOrientation="horizontal"
+      (cdkDropListDropped)="arrangeHand($event)"
+      >
+        @for (card of getHand(); track i; let i = $index) {
+          <mat-card class="hand-box" cdkDrag>
+            <img mat-card-image class="card-image" [src]="card.Picture"
+            [matTooltip]="card.Name" matTooltipPosition="above">
+          </mat-card>
+        }
+      </div>
+  
+      <div class="draw" cdkDropList
+      [cdkDropListData]="getDrawPile()"
+      >
+      @for (item of getDrawPile(); track i; let i = $index) {
+        <mat-card class="box">
+          <img mat-card-image class="card-image draw-card" src="./assets/cardBack.png">
+        </mat-card>
+      }
+      </div>
+  </div>
 </div>
+
+
+

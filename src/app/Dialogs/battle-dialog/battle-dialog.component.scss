@@ -1,82 +1,58 @@
-.title {
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.background {
+    background-color: #353535;
+    border: 2px whitesmoke solid;
+    border-radius: 8px;
+}
+
+.header {
+    color: whitesmoke;
+}
+
+.card-zone {
+    display: flex;
+    flex-direction: row;
+    // gap: 1em;
     text-align: center;
+    align-items: baseline;
+    justify-content: center;
+
 }
 
-.body {
-    text-align: center;
-   
+.player-creature {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+
 }
 
-.cardzone {
-    text-align: center;
-    display: inline-flex;
+.left {
+
 }
 
-.player1 { //attacker mugic counter
-    // display: inline-flex;
-    float: left;
-    margin-right: 2%;
-    margin-left: 2%;
-    // margin-top: 25%;
-    // background-color: pink;
-    
+.right {
+    direction: rtl;
 }
-
-.player1:nth-child(2) { //attacker card
-    // float: left;
-    margin-right: 40%;
-    // background-color: blue
-    // margin-left: 2%;
-    // margin-top: 25%;
-}
-
-.player2:nth-child(3) { // defender card
-    // display: inline-flex;
-    float: right;
-    margin-left: 40%;
-    margin-right: 2%;
-    // background-color: red;
-    // margin-top: 25%;
-}
-
-.player2:nth-child(4) {
-    // display: inline-flex;
-    float: right;
-    margin-left: 2%;
-    margin-right: 2%;
-    // background-color: black;
-    // margin-top: 25%;
-    
-}
-
-
 
 .card-image {
-    width: 150px;
-    height: 125px;
+    width: 100px;
+    height: 75px;
     opacity: 100%;
     border-radius: 4px;
-  }
-
-.actions {
-    text-align: center;
-    // display: inline;
-}
-
-.hand {
-    margin-right: 1%;
-    // width: 750px;
-    height: 125px;
+    border: 2px whitesmoke solid;
   }
   
-  .hand-list {
-    display: flex;
-    flex-direction: row;
-  }
+.hand-list {
+display: flex;
+flex-direction: row;
+}
 
-  .hand-box {
-    padding: 2px;
-    display: flex;
-    flex-direction: row;
-    cursor: grab;
-  }
+.hand-box {
+cursor: pointer;
+}

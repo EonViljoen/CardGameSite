@@ -1,0 +1,51 @@
+// .container {
+//   position: relative;
+//   height: 20px;
+//   width: 10px;
+//   overflow: hidden;
+// }
+
+// .progress-bar {
+//   height: 25px;
+//   background-color: skyblue; /* Green color for the filled part */
+//   transition: width 0.3s ease;
+// }
+
+// .progress-icon {
+//   position: absolute;
+//   font-size: 15px; /* Adjust as needed */
+// }
+
+.container {
+  display: flex;
+  height: 25px; /* Adjust height as needed */
+  width: 100%;
+}
+
+.background {
+  display: flex;
+  // justify-content: center;
+  // align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: lightgray; /* Background color of the container */
+  position: relative;
+  overflow: hidden; /* Ensures the progress bar stays within bounds */
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: skyblue; /* Color of the progress bar */
+  transition: width 0.3s ease; /* Smooth transition for width changes */
+}
+
+.progress-icon {
+  position: absolute; /* Relative positioning for better control */
+  color: black; /* Icon color */
+  font-size: 15px; /* Adjust size as needed */
+  z-index: 1; /* Ensure icon is on top of the progress bar */
+  align-self: center;
+  align-items: center;
+  margin-left: 20%;
+  margin-right: 20%;
+}
