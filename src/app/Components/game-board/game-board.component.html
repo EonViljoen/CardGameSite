@@ -4,7 +4,7 @@
       <div class="left-side" [ngClass]="{
         'active-left-side': isMovingPlayer(board.left.Id) 
       }">
-        @for (card of board.left.Field; track card) {
+        @for (card of board.left.Field; track card; let i=$index) {
           <div 
             cdkDropList
             class="card-background"
@@ -15,7 +15,12 @@
             @for (leftItem of card; track leftItem.Id) {
               <app-card [Card]="leftItem"
               [Moveable]="isMovingPlayer(board.left.Id) "
-              [matTooltip]="leftItem.Name" matTooltipPosition="above"></app-card>
+              (mouseover)="showFullCard(cardsDisplayed, i, 0)"
+              (mouseleave)="hideFullCard(cardsDisplayed, i, 0)">
+            </app-card>
+              @if (cardsDisplayed[i]) {
+                <app-tool-tip [card]="leftItem.Card"></app-tool-tip>
+              }
             }
           </div>
          }
@@ -23,7 +28,7 @@
       <div class="right-side" [ngClass]="{
         'active-right-side': isMovingPlayer(board.right.Id) 
       }">
-        @for (card of board.right.Field; track card) {
+        @for (card of board.right.Field; track card; let i = $index) {
           <div 
             cdkDropList
             class="card-background"
@@ -33,7 +38,12 @@
             @for (rightItem of card; track rightItem.Id) {
               <app-card [Card]="rightItem"
               [Moveable]="isMovingPlayer(board.right.Id) "
-              [matTooltip]="rightItem.Name" matTooltipPosition="above"></app-card>
+              (mouseover)="showFullCard(cardsDisplayed, i, leftPlayer.Field.length)"
+              (mouseleave)="hideFullCard(cardsDisplayed,i, leftPlayer.Field.length)"
+              ></app-card>
+              @if (cardsDisplayed[i + leftPlayer.Field.length]) {
+                <app-tool-tip [card]="rightItem.Card"></app-tool-tip>
+              }
             }
           </div>
          }
@@ -70,8 +80,12 @@
         @for (card of getHand(); track i; let i = $index) {
           <mat-card class="hand-box" cdkDrag>
             <img mat-card-image class="card-image" [src]="card.Picture"
-            [matTooltip]="card.Name" matTooltipPosition="above">
+              (mouseover)="showFullCard(handDisplayer, i, 0)"
+              (mouseleave)="hideFullCard(handDisplayer, i, 0)">
           </mat-card>
+          @if (true) {
+            <app-tool-tip [card]="card.Card" style=""></app-tool-tip>
+          }
         }
       </div>
   
@@ -86,6 +100,15 @@
       </div>
   </div>
 </div>
-
+<!-- <ng-template #tooltipTemplate let-Card="imageUrl">
+  <div class="tooltip-content">
+    <img [src]="Card">
+  </div>
+</ng-template> -->
+<ng-template #tooltipTemplate let-Card="Card">
+  <div class="tooltip-content">
+    <img [src]="Card">
+  </div>
+</ng-template>
 
 

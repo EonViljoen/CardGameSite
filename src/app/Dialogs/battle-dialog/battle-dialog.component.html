@@ -24,7 +24,7 @@
           <mat-card class="hand-box">
             <img mat-card-image class="card-image" [src]="card.Picture"
             [matTooltip]="card.Name" matTooltipPosition="above"
-            (click)="useCard(card, i, 1)"  
+            (click)="useCard(card, i, getCurrentPlayer())"  
             >
           </mat-card>
         }

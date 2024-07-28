@@ -44,11 +44,15 @@ export class BattleDialogComponent {
   ngOnInit() {
     // this.battleDialog.updateSize('80%', '80%'); 
 
-    this.battleService.setCurrentPlayer(this.attacker.Player);
+    // this.battleService.setCurrentPlayer(this.attacker.Player);
   }
 
   getHand(): any[]{
     return this.cardService.getHand();
+  }
+
+  getCurrentPlayer(){
+    return this.battleService.getCurrentPlayer();
   }
 
   useCard(card: any, index: any, playerNumber: number){

@@ -16,6 +16,7 @@ import * as jsonData from '../../../assets/cardInformation.json'; //This gotta b
 import { Player } from '../../shared/Interfaces/player';
 import { CommonModule } from '@angular/common';
 import { TurnWindowComponent } from "../turn-window/turn-window.component";
+import { ToolTipComponent } from "../tool-tip/tool-tip.component";
 
 
 @Component({
@@ -23,7 +24,9 @@ import { TurnWindowComponent } from "../turn-window/turn-window.component";
     standalone: true,
     templateUrl: './game-board.component.html',
     styleUrl: './game-board.component.scss',
-    imports: [CdkDrag, CdkDragPreview, MatCardModule, CdkDropListGroup, CdkDropList, CardComponent, MatTooltipModule, CommonModule, TurnWindowComponent]
+    imports: [CdkDrag, CdkDragPreview, MatCardModule,
+    CdkDropListGroup, CdkDropList, CardComponent, MatTooltipModule,
+    CommonModule, TurnWindowComponent, ToolTipComponent]
 })
 
 export class GameBoardComponent {
@@ -33,6 +36,8 @@ export class GameBoardComponent {
   private battleService = inject(BattleService);
   private cardService = inject(CardService);
   private fieldService = inject(FieldService)
+
+  showCard: boolean = false;
 
   // + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)), , // Maybe make this a cool variance based on class or Tribe or something like that with delta configurable
 
@@ -51,6 +56,9 @@ export class GameBoardComponent {
     right: this.rightPlayer
   }
 
+  cardsDisplayed: boolean[] = new Array(this.leftPlayer.Field.length + this.rightPlayer.Field.length).fill(false);
+  handDisplayer: boolean[] = new Array(this.cardService.getHand().length);
+
   ngOnInit(){
 
     this.buildGame();
@@ -65,6 +73,16 @@ export class GameBoardComponent {
     let cardCount = (this.leftPlayer.Field.length ?? 0) + (this.rightPlayer.Field.length ?? 0);
 
     this.fieldService.cardDiamondArrangement(cardCount, left, right);
+  }
+
+  showFullCard(arr: boolean[], i: number, base: number){
+
+    arr[base + i] = true;
+  }
+
+  hideFullCard(arr: boolean[], i: number, base: number){
+
+    arr[base + i] = false;
   }
 
   getCurrentPlayer() : number {
@@ -82,8 +100,8 @@ export class GameBoardComponent {
 
   buildGame(){
 
-    let movingPlayer = this.battleService.setMovingPlayer();  //needs to be observable because it no works dat good
-    this.battleService.setCurrentPlayer(movingPlayer);
+    this.battleService.setMovingPlayer();  //needs to be observable because it no works dat good
+    this.battleService.setCurrentPlayer();
 
     this.leftPlayer.Field = this.getCreatures('Overworld', this.leftPlayer.Id);
     this.rightPlayer.Field = this.getCreatures('Underworld', this.rightPlayer.Id);
@@ -185,7 +203,8 @@ export class GameBoardComponent {
       Cost: info.Cost,
       Type: 'Mugic',
       Effect: info.Effect,
-      Picture: info.Picture
+      Picture: info.Picture,
+      Card: info.Card
       };
 
       return card
@@ -209,25 +228,12 @@ export class GameBoardComponent {
         Cost: info.Cost,
         Type: 'Strike',
         Effect: info.Effect,
-        Picture: info.Picture
+        Picture: info.Picture,
+        Card: info.Card
         };
   
         return card
     }
-
-  setBattleAfterMath(winner: Creature_Card): Creature_Card {
-    winner.Abilities = this.battleService.getWinner().Abilities;
-    winner.Elements = this.battleService.getWinner().Elements;
-    winner.Energy = this.battleService.getWinner().Energy;
-    winner.Max_Energy = this.battleService.getWinner().Max_Energy;
-    winner.Mugic_Counter = this.battleService.getWinner().Mugic_Counter;
-    winner.Player = this.battleService.getWinner().Player;
-    winner.Stats = this.battleService.getWinner().Stats;
-    winner.Statuses = this.battleService.getWinner().Statuses;
-    // can change
-
-    return winner;
-  }
 
   drop(event: CdkDragDrop<Creature_Card[]>) {
     if (event.container.data.length){// they fight, loser moves to discard pile and winner takes that spot
@@ -273,6 +279,7 @@ export class GameBoardComponent {
 
       
       if (result.battleOccurred){ // Good place for observer if battle happened maybe?
+
         transferArrayItem( //transfer loser
           result.loser.id === event.container.data.at(0)?.Id ? event.previousContainer.data : event.container.data ,
           this.cardService.getDiscardPile(),
@@ -286,15 +293,16 @@ export class GameBoardComponent {
           event.previousIndex,
           event.currentIndex
         );
+        
+
 
           
         // need better way of doing this, need to use result.winner somehow
-        let newState = this.setBattleAfterMath(result.winner);
+        let newState = result.winner;
         event.container.data.pop();
         event.container.data.push(newState);
 
-        this.battleService.resetWinner();
-        this.battleService.resetLoser();
+        this.battleService.reset();
       } 
       
       this.battleService.setMovingPlayer(); 

@@ -5,4 +5,5 @@ export interface Strike_Card {
     Type: string;
     Effect: string;
     Picture: string;
+    Card: string;
 }

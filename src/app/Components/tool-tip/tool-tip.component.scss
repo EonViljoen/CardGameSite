@@ -1,0 +1,10 @@
+.tooltip-content {
+    border-radius: 8px;
+    position: absolute;
+    right: 2%;
+    z-index: 1000; /* Ensure the tooltip appears on top */
+  }
+
+  .tooltip-image {
+    width: 100%;
+  }

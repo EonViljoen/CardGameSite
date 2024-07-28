@@ -15,8 +15,6 @@ export class BattleService {
 
     readonly notificationService = inject(NotificationService)
 
-    combatFinished: boolean = false;
-
     attacker: Creature_Card = {
         Id: '',
         Name: '',
@@ -33,7 +31,42 @@ export class BattleService {
         Statuses: [{}],
         Player: 0
     };
+
     defender: Creature_Card = {
+        Id: '',
+        Name: '',
+        Picture: '',
+        Card: '',
+        Energy: 0,
+        Max_Energy: 0,
+        Mugic_Counter: 0,
+        Tribe: '',
+        Class: '',
+        Stats: {},
+        Elements: {},
+        Abilities: {},
+        Statuses: [{}],
+        Player: 0
+    };
+
+    combatWinner: Creature_Card = {
+        Id: '',
+        Name: '',
+        Picture: '',
+        Card: '',
+        Energy: 0,
+        Max_Energy: 0,
+        Mugic_Counter: 0,
+        Tribe: '',
+        Class: '',
+        Stats: {},
+        Elements: {},
+        Abilities: {},
+        Statuses: [{}],
+        Player: 0
+    };
+
+    combatLoser: Creature_Card = {
         Id: '',
         Name: '',
         Picture: '',
@@ -53,46 +86,18 @@ export class BattleService {
     currentPlayer: number = 0;
     movingPlayer: number = 0;
 
-    successfulAttack = signal<boolean>(false);
+    successfulAttack: boolean = false;
+    combatFinished: boolean = false;
 
-    winner = signal<Creature_Card>({
-        Id: '',
-        Name: '',
-        Picture: '',
-        Card: '',
-        Energy: 0,
-        Max_Energy: 0,
-        Mugic_Counter: 0,
-        Tribe: '',
-        Class: '',
-        Stats: {},
-        Elements: {},
-        Abilities: {},
-        Statuses: [{}],
-        Player: 0
-    });
-    // look at using behavior subjects for observers
-    // also lok at using this for health points
-
-    loser = signal<Creature_Card>({
-        Id: '',
-        Name: '',
-        Picture: '',
-        Card: '',
-        Energy: 0,
-        Max_Energy: 0,
-        Mugic_Counter: 0,
-        Tribe: '',
-        Class: '',
-        Stats: {},
-        Elements: {},
-        Abilities: {},
-        Statuses: [{}],
-        Player: 0
-    });
-
-    setCurrentPlayer(player: number) {
-        this.currentPlayer=player;
+    setCurrentPlayer() {
+        if (this.currentPlayer === 0){
+            this.currentPlayer = 1;
+            return this.currentPlayer;
+        }
+        else{
+            this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
+            return this.currentPlayer;
+        }  
     }
 
     getCurrentPlayer() : number {
@@ -130,44 +135,35 @@ export class BattleService {
         return this.defender;
     }
 
-    getWinner(){
-        return this.winner();
-    }
-
-    getBattleResult(){
-        return this.successfulAttack();
-    }
-
     getCombateFinished(){
         return this.combatFinished;
     }
 
-    setWinner(winner: Creature_Card){
-        this.winner.set(winner);
+    setSuccessfulAttack(){
+        this.successfulAttack = true;
+        this.combatFinished = true;
     }
 
-    setLoser(loser: Creature_Card){
-        this.loser.set(loser);
+    setUnsuccessfulAttack(){
+        this.successfulAttack = false;
+        this.combatFinished = true;
     }
 
-    setSuccessfulAttack(value: boolean){
-        this.successfulAttack.set(value);
-    }
+    // setBattleAfterMath(previousState: Creature_Card[] | any): Creature_Card[] {
+    //     previousState.at(0).Abilities = this.winner().Abilities;
+    //     previousState.at(0).Elements = this.winner().Elements;
+    //     previousState.at(0).Energy = this.winner().Energy;
+    //     previousState.at(0).Max_Energy = this.winner().Max_Energy;
+    //     previousState.at(0).Mugic_Counter = this.winner().Mugic_Counter;
+    //     previousState.at(0).Player = this.winner().Player;
+    //     previousState.at(0).Stats = this.winner().Stats;
 
-    setBattleAfterMath(previousState: Creature_Card[] | any): Creature_Card[] {
-        previousState.at(0).Abilities = this.winner().Abilities;
-        previousState.at(0).Elements = this.winner().Elements;
-        previousState.at(0).Energy = this.winner().Energy;
-        previousState.at(0).Max_Energy = this.winner().Max_Energy;
-        previousState.at(0).Mugic_Counter = this.winner().Mugic_Counter;
-        previousState.at(0).Player = this.winner().Player;
-        previousState.at(0).Stats = this.winner().Stats;
+    //     return previousState.at(0);
+    // }
 
-        return previousState.at(0);
-    }
+    reset(){
 
-    resetWinner(){
-        this.winner.set({
+        this.attacker ={
             Id: '',
             Name: '',
             Picture: '',
@@ -182,11 +178,9 @@ export class BattleService {
             Abilities: {},
             Statuses: [{}],
             Player: 0
-        }); 
-    }
+        };
 
-    resetLoser(){
-        this.loser.set({
+        this.defender ={
             Id: '',
             Name: '',
             Picture: '',
@@ -201,7 +195,41 @@ export class BattleService {
             Abilities: {},
             Statuses: [{}],
             Player: 0
-        }); 
+        };
+
+        this.combatWinner = {
+            Id: '',
+            Name: '',
+            Picture: '',
+            Card: '',
+            Energy: 0,
+            Max_Energy: 0,
+            Mugic_Counter: 0,
+            Tribe: '',
+            Class: '',
+            Stats: {},
+            Elements: {},
+            Abilities: {},
+            Statuses: [{}],
+            Player: 0
+        }; 
+
+        this.combatLoser ={
+            Id: '',
+            Name: '',
+            Picture: '',
+            Card: '',
+            Energy: 0,
+            Max_Energy: 0,
+            Mugic_Counter: 0,
+            Tribe: '',
+            Class: '',
+            Stats: {},
+            Elements: {},
+            Abilities: {},
+            Statuses: [{}],
+            Player: 0
+        };
     }
 
     async determineBattleResults(userCard: Creature_Card, battleDialogRef : any){
@@ -218,8 +246,10 @@ export class BattleService {
 
             if (userCard.Energy >  opposingCard.Energy){
 
-            this.setWinner(userCard);
-            this.setLoser(opposingCard);
+            this.combatWinner = userCard;
+            this.combatLoser = opposingCard;
+            // this.setWinner(userCard);
+            // this.setLoser(opposingCard);
 
             this.notificationService.showNotification(
                 userCard.Name + ' defeated ' + opposingCard.Name,
@@ -229,8 +259,10 @@ export class BattleService {
             }
             else if (userCard.Energy < opposingCard.Energy){
         
-            this.setWinner(opposingCard);
-            this.setLoser(userCard);
+            this.combatWinner = opposingCard;
+            this.combatLoser = userCard;
+            // this.setWinner(opposingCard);
+            // this.setLoser(userCard);
 
             this.notificationService.showNotification(
                 opposingCard.Name + ' defeated ' + userCard.Name,
@@ -249,50 +281,50 @@ export class BattleService {
     
             battleDialogRef.close({
                 battleOccurred: true,
-                loser: this.loser(),
-                winner: this.winner()
+                loser: this.combatLoser,
+                winner: this.combatWinner
                 })
           
     }            
 }
 
 
-      transferTurn() {
+    transferTurn() {
 
-        this.getCurrentPlayer() === this.attacker.Player 
-        ? this.setCurrentPlayer(this.defender.Player) 
-        : this.setCurrentPlayer(this.attacker.Player)
+    this.getCurrentPlayer() === this.attacker.Player 
+    ? this.setCurrentPlayer() 
+    : this.setCurrentPlayer()
 
-        this.notificationService.showNotification(
-            'Player ' + this.getCurrentPlayer() + "'s Turn",
-            true
+    this.notificationService.showNotification(
+        'Player ' + this.getCurrentPlayer() + "'s Turn",
+        true
         );
     }
 
-      async getTarget(user : Creature_Card, target: string) : Promise<Creature_Card>  {
+    async getTarget(user : Creature_Card, target: string) : Promise<Creature_Card>  {
 
-        switch (target) {
-          case "Self":
-            return (user.Player === this.attacker.Player ? this.attacker : this.defender);
-          
-          case "Opposing":
-            return (user.Player === this.attacker.Player ? this.defender : this.attacker);
-  
-          case "Target":
-            return await this.chooseTarget();
-  
-          default:
-            return (user.Player === this.attacker.Player ? this.attacker : this.defender);
+    switch (target) {
+        case "Self":
+        return (user.Player === this.attacker.Player ? this.attacker : this.defender);
+        
+        case "Opposing":
+        return (user.Player === this.attacker.Player ? this.defender : this.attacker);
+
+        case "Target":
+        return await this.chooseTarget();
+
+        default:
+        return (user.Player === this.attacker.Player ? this.attacker : this.defender);
         }
-      }
-  
-      async chooseTarget(): Promise<Creature_Card>{
-  
-        const dialogRef =  this.targetDialog.open(TargetDialogComponent, {
-          disableClose: true,
-        });
-  
-        return await dialogRef.afterClosed().toPromise();
-  
-      }
+    }
+
+    async chooseTarget(): Promise<Creature_Card>{
+
+    const dialogRef =  this.targetDialog.open(TargetDialogComponent, {
+        disableClose: true,
+    });
+
+    return await dialogRef.afterClosed().toPromise();
+
+    }
 }

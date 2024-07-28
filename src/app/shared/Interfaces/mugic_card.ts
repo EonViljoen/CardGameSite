@@ -5,4 +5,5 @@ export interface Mugic_Card {
     Cost: number;
     Effect: string;
     Picture: string;
+    Card: string;
 }

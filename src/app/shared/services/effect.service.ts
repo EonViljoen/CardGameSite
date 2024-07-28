@@ -14,44 +14,10 @@ export class EffectService {
   readonly notificationService = inject(NotificationService)
 
 
-  attacker : Creature_Card = this.battleService.getAttacker();
-  defender : Creature_Card = this.battleService.getDefender();
+  // attacker : Creature_Card = this.battleService.getAttacker();
+  // defender : Creature_Card = this.battleService.getDefender();
 
   constructor() { }
-
-  // async determineBattleResults(userCard: Creature_Card){
-
-  //   let opposingCard: any;
-    
-  //   await this.getTarget(userCard, 'Opposing').then(x => {
-  //     opposingCard = x;
-  //   });
-
-  //   if (userCard.Energy <= 0 || opposingCard.Energy <= 0){
-
-  //     if (userCard.Energy >  opposingCard.Energy){
-
-  //       this.battleService.setWinner(userCard);
-  //       this.battleService.setLoser(opposingCard);
-  //     }
-  //     else if (userCard.Energy < opposingCard.Energy){
-  
-  //       this.battleService.setWinner(opposingCard);
-  //       this.battleService.setLoser(userCard);
-  //     }
-  //     else {
-  //       // this.battleService.draw();
-  //     }
-
-  //     this.battleDialog.close({
-  //       battleOccurred: true,
-  //       loser: this.battleService.loser(),
-  //       winner: this.battleService.winner()
-  //     })
-  //   }
-  // }
-
-
 
   //elements : generic fire air earch water
   async doElementalDamage(userCard: Creature_Card, elementDamageArray: string[]) {
@@ -245,7 +211,11 @@ export class EffectService {
     }
 
     getUser(player: number) : Creature_Card {
-      return player === this.attacker.Player ? this.attacker : this.defender; 
+
+      let attacker = this.battleService.getAttacker();
+      let defender = this.battleService.getDefender();
+
+      return player === attacker.Player ? attacker : defender; 
     }
 
     async useEffect(effect: string, playerNumber: number, battleDialog: any){
@@ -293,6 +263,6 @@ export class EffectService {
         await this.battleService.determineBattleResults(user, battleDialog)
       }
 
-      await this.battleService.transferTurn();        
+      this.battleService.transferTurn();        
   }
 }
