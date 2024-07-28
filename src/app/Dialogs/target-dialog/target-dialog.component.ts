@@ -21,7 +21,7 @@ export class TargetDialogComponent {
   private fieldService = inject(FieldService);
 
   ngOnInit(){
-    this.targetDialog.updateSize('80%', '80%');
+    // this.targetDialog.updateSize('80%', '80%');
   }
 
   ngAfterViewInit() {

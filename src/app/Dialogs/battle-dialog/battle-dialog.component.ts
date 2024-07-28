@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Battle } from '../../shared/Interfaces/battle';
 import { BattleService } from '../../shared/services/battle.service';
 import { Creature_Card } from '../../shared/Interfaces/creature_card';
@@ -8,7 +8,6 @@ import { CdkDropList } from '@angular/cdk/drag-drop';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CardService } from '../../shared/services/card.service';
-import { TargetDialogComponent } from '../target-dialog/target-dialog.component';
 import { TurnWindowComponent } from "../../Components/turn-window/turn-window.component";
 import { BarComponent } from "../../Components/bar/bar.component";
 import { CommonModule } from '@angular/common';
@@ -61,6 +60,11 @@ export class BattleDialogComponent {
 
   useAbility(effect: string, playerNumber: number){
     this.effectService.useEffect(effect, playerNumber, this.battleDialog);
+  }
+
+  retreat(attacker: Creature_Card, defender: Creature_Card){
+    this.battleDialog.close()
+    this.battleService.transferTurn();
   }
 
   // combatFinished(){

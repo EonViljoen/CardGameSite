@@ -3,6 +3,7 @@ import { Creature_Card } from '../Interfaces/creature_card';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BattleDialogComponent } from '../../Dialogs/battle-dialog/battle-dialog.component';
 import { TargetDialogComponent } from '../../Dialogs/target-dialog/target-dialog.component';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,8 +11,10 @@ import { TargetDialogComponent } from '../../Dialogs/target-dialog/target-dialog
 
 export class BattleService {
 
-    // readonly battleDialog = inject(MatDialogRef<BattleDialogComponent>);
     readonly targetDialog = inject(MatDialog);
+
+    readonly notificationService = inject(NotificationService)
+
     combatFinished: boolean = false;
 
     attacker: Creature_Card = {
@@ -217,14 +220,31 @@ export class BattleService {
 
             this.setWinner(userCard);
             this.setLoser(opposingCard);
+
+            this.notificationService.showNotification(
+                userCard.Name + ' defeated ' + opposingCard.Name,
+                true
+            );
+
             }
             else if (userCard.Energy < opposingCard.Energy){
         
             this.setWinner(opposingCard);
             this.setLoser(userCard);
+
+            this.notificationService.showNotification(
+                opposingCard.Name + ' defeated ' + userCard.Name,
+                true
+            );
             }
             else {
             // this.battleService.draw();
+
+            this.notificationService.showNotification(
+                'Draw',
+                true
+            )
+
             }
     
             battleDialogRef.close({
@@ -242,6 +262,11 @@ export class BattleService {
         this.getCurrentPlayer() === this.attacker.Player 
         ? this.setCurrentPlayer(this.defender.Player) 
         : this.setCurrentPlayer(this.attacker.Player)
+
+        this.notificationService.showNotification(
+            'Player ' + this.getCurrentPlayer() + "'s Turn",
+            true
+        );
     }
 
       async getTarget(user : Creature_Card, target: string) : Promise<Creature_Card>  {
@@ -264,7 +289,7 @@ export class BattleService {
       async chooseTarget(): Promise<Creature_Card>{
   
         const dialogRef =  this.targetDialog.open(TargetDialogComponent, {
-          disableClose: true
+          disableClose: true,
         });
   
         return await dialogRef.afterClosed().toPromise();

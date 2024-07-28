@@ -12,9 +12,9 @@
                     "Tribe": "Overworld",
                     "Class": "Hero",
                     "Abilities": {
-                        "0" : " Mugic ? 1 | [HP : x : 10] ? x ? Target | x ",
-                        "1" : " Passive | [Loyal : x : x] ? x ? Self | x",
-                        "2" : " Passive | [Unique : x : x] ? x ? Self | x"
+                        "0" : " Mugic ? 1 | x | [HP : x : 10] ? x ? Target ",
+                        "1" : " Passive | x | [Loyal : x : x] ? x ? Self ",
+                        "2" : " Passive | x | [Unique : x : x] ? x ? Self "
                     },
                     "Elements": {
                       "Fire": true,
@@ -40,8 +40,8 @@
                     "Tribe": "Overworld",
                     "Class": "Scout",
                     "Abilities": {
-                        "0" : " Passive | [Range : x : x] ? x ? Self | x ",
-                        "1" : " Passive | [Swift : x : 1] ? x ? Self | x "
+                        "0" : " Passive | x | [Range : x : x] ? x ? Self ",
+                        "1" : " Passive | x | [Swift : x : 1] ? x ? Self "
                     },
                     "Elements": {
                       "Fire": false,
@@ -67,7 +67,7 @@
                     "Tribe": "Overworld",
                     "Class": "Strategist",
                     "Abilities": {
-                        "0" : " Mugic ? 1 | [HP : x : 15] ? x ? Target | x "
+                        "0" : " Mugic ? 1 | x | [HP : x : 15] ? x ? Target "
                     },
                     "Elements": {
                       "Fire": false,
@@ -99,9 +99,9 @@
                     "Tribe": "Underworld",
                     "Class": "Conqueror , Warrior",
                     "Abilities": {
-                        "0" : " Mugic ? 3 | [Dispel : x : x] ? x ? Target | Response : Mugic , Ability ? [Mugic : x : Self] , [Ability : x : Self] ? OR ? Target | comment: need to add check for overworld", 
-                        "1" : " Passive  | [Loyal : x : x] ? x ? Self | x",
-                        "2" : " Passive  | [Unique : x : x] ? x ? Self | x"
+                        "0" : " Mugic ? 3 | Response : Mugic , Ability ? [Mugic : x : Self] , [Ability : x : Self] ? OR ? Target | [Dispel : x : x] ? x ? Target | check for overworlder needed ", 
+                        "1" : " Passive  | x | [Loyal : x : x] ? x ? Self ",
+                        "2" : " Passive  | x | [Unique : x : x] ? x ? Self "
                     },
                     "Elements": {
                       "Fire": true,
@@ -127,7 +127,7 @@
                     "Tribe": "Underworld",
                     "Class": "Scout",
                     "Abilities": {
-                        "0" : " Mugic ? 1 | [Location : Look : 3] , [Location : Order : 3] ? AND ? Self | x "
+                        "0" : " Mugic ? 1 | x | [Location : Look : 3] , [Location : Order : 3] ? AND ? Self "
                     },
                     "Elements": {
                       "Fire": false,
@@ -153,8 +153,8 @@
                     "Tribe": "Underworld",
                     "Class": "Commander",
                     "Abilities": {
-                        "0" : " Passive | [Stats : Courage : -10] ? x ? Self | Intimidate : Stats ? [Courage : 10] ? x ? Self'",
-                        "1" : " Passive | [Stats : Wisdom : -10] ? x ? Self | Intimidate : Stats ? [Wisdom : 10] ? x ? Self'"
+                        "0" : " Passive | Intimidate : Stats ? [Courage : 10] ? x ? Self | [Stats : Courage : -10] ? x ? Self ",
+                        "1" : " Passive | Intimidate : Stats ? [Wisdom : 10] ? x ? Self | [Stats : Wisdom : -10] ? x ? Self "
                     },
                     "Elements": {
                       "Fire": true,
@@ -184,14 +184,14 @@
                 "Name": "Geo Flourish",
                 "Tribe": "Generic",
                 "Cost": 1,
-                "Effect": " Mugic ? Generic ? 1 | [HP : x : 15] ? x ? Target | Check : Elements ? [Earth : true] , [Water : true] ? OR ? Target ",
+                "Effect": " Mugic ? Generic ? 1 | Check : Elements ? [Earth : true] , [Water : true] ? OR ? Target | [HP : x : 15] ? x ? Target ",
                 "Picture": "./assets/pictures/Mugic/Generic/Geo_Flourish_Picture.png"
               },
               {
                 "Name": "Decrescendo",
                 "Tribe": "Generic",
                 "Cost": 1,
-                "Effect": " Mugic ? Generic ? 1 | [HP : x : -5] ? x ? Target | x ",
+                "Effect": " Mugic ? Generic ? 1 | x | [HP : x : -5] ? x ? Target ",
                 "Picture": "./assets/pictures/Mugic/Generic/Decrescendo_Picture.png"
               }
           ]  
@@ -204,14 +204,14 @@
                 "Name": "Song of Stasis",
                 "Tribe": "Overworld",
                 "Cost": 1,
-                "Effect": " Mugic ? Overworld ? 1 | [Statuses : Stasis : o] ? x ? Target | x ",
+                "Effect": " Mugic ? Overworld ? 1 | x | [Statuses : Stasis : o] ? x ? Target ",
                 "Picture": "./assets/pictures/Mugic/Overworld/Song_of_Stasis_Picture.png"
               },
               {
                 "Name": "Prelude of Protection",
                 "Tribe": "Overworld",
                 "Cost": 1,
-                "Effect": " Mugic ? Overworld ? 1 | [Statuses : Fireproof : 10] , [Statuses : Airproof : 10] , [Statuses : Earthproof : 10] , [Statuses : Waterproof : 10] ? AND ? Target | x ",
+                "Effect": " Mugic ? Overworld ? 1 | x | [Statuses : Fireproof : 10] , [Statuses : Airproof : 10] , [Statuses : Earthproof : 10] , [Statuses : Waterproof : 10] ? AND ? Target ",
                 "Picture": "./assets/pictures/Mugic/Overworld/Prelude_of_Protection_Picture.png"
               }
           ]  
@@ -224,14 +224,14 @@
                 "Name": "Canon of Casualy",
                 "Tribe": "Underworld",
                 "Cost": 1,
-                "Effect": " Mugic  ? Underworld ? 1 | [HP : x : -20] ? x ? Target | x ",
+                "Effect": " Mugic  ? Underworld ? 1 | x | [HP : x : -20] ? x ? Target ",
                 "Picture": "./assets/pictures/Mugic/Underworld/Canon_of_Casualty_Picture.png"
               },
               {
                 "Name": "Discord of Disarming",
                 "Tribe": "Underworld",
                 "Cost": 1,
-                "Effect": " Mugic  ? Underworld ? 1 | [Destroy : Battlegear : x] ? x ? Target | x ",
+                "Effect": " Mugic  ? Underworld ? 1 | x | [Destroy : Battlegear : x] ? x ? Target ",
                 "Picture": "./assets/pictures/Mugic/Underworld/Discord_of_Disarming_Picture.png"
               }
           ]  
@@ -242,19 +242,19 @@
     {
       "Name": "Coil Crush",
       "Cost": 0,
-      "Effect": " Strike ? Opposing | 5 : 0 : 0 : 0 : 0 | [Destroy : Battlegear : x] ? x ? Opposing | Check : Stats ? [Power : 75] ? x ? Opposing ",
+      "Effect": " Strike ? Opposing | 5 : 0 : 0 : 0 : 0 | Check : Stats ? [Power : 75] ? x ? Opposing | [Destroy : Battlegear : x] ? x ? Opposing ",
       "Picture": "./assets/pictures/Strikes/Coil_Crush_Picture.png"
     },
     {
       "Name": "Ember Swarm",
       "Cost": 0,
-      "Effect": " Strike ? Opposing | 5 : 5 : 0 : 0 : 0 | [Stats : wisdom : -25] ? x ? Opposing | Check : Elements ? [Fire : true] ? x ? Self ",
+      "Effect": " Strike ? Opposing | 5 : 5 : 0 : 0 : 0 | Check : Elements ? [Fire : true] ? x ? Self | [Stats : wisdom : -25] ? x ? Opposing ",
       "Picture": "./assets/pictures/Strikes/Ember_Swarm_Picture.png"
     },
     {
       "Name": "Incinerase",
       "Cost": 0,
-      "Effect": " Strike ? Opposing | 0 : 10 : 0 : 0 : 0 | [Elements : Fire : x] ? x ? Self | Check : Elements ? [Fire : true] ? x ? Self ",
+      "Effect": " Strike ? Opposing | 0 : 10 : 0 : 0 : 0 | Check : Elements ? [Fire : true] ? x ? Self | [Elements : Fire : x] ? x ? Self ",
       "Picture": "./assets/pictures/Strikes/Incinerase_Picture.png"
     },
     {
@@ -266,19 +266,19 @@
     {
       "Name": "Power Punch",
       "Cost": 0,
-      "Effect": " Strike ? Opposing | 0 : 0 : 0 : 0 : 0 | [HP : x : -5] , [Stats : Power : -10] ? XOR ? Opposing | Beat : Stats ? [Power : Wisdom] ? XOR ? Opposing ",
+      "Effect": " Strike ? Opposing | 0 : 0 : 0 : 0 : 0 | Beat : Stats ? [Power : Wisdom] ? XOR ? Opposing | [HP : x : -5] , [Stats : Power : -10] ? XOR ? Opposing ",
       "Picture": "./assets/pictures/Strikes/Power_Punch_Picture.png"
     },
     {
       "Name": "Rip Tide",
       "Cost": 0,
-      "Effect": " Strike ? Opposing | 5 : 0 : 0 : 0 : 5 | [Stats : Courage : -25] ? x ? Opposing | Check : Elements ? [Water : o] ? x ? Self ",
+      "Effect": " Strike ? Opposing | 5 : 0 : 0 : 0 : 5 | Check : Elements ? [Water : o] ? x ? Self | [Stats : Courage : -25] ? x ? Opposing ",
       "Picture": "./assets/pictures/Strikes/Rip_Tide_Picture.png"
     },
     {
       "Name": "Rustoxic",
       "Cost": 0,
-      "Effect": " Strike ? Opposing | 0 : 0 : 0 : 5 : 5 | [HP : x : -10] ? x ? Opposing | Challenge : Stats ? [Courage : 15] ? x ? Self ",
+      "Effect": " Strike ? Opposing | 0 : 0 : 0 : 5 : 5 | Challenge : Stats ? [Courage : 15] ? x ? Self | [HP : x : -10] ? x ? Opposing ",
       "Picture": "./assets/pictures/Strikes/Rustoxic_Picture.png"
     }
   ]

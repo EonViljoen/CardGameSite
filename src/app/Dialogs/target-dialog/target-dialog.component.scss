@@ -1,10 +1,7 @@
 .target-field {
   display: flex;
   gap: 1em;
-
-  // justify-content: center;
-    
-
+  background-color: #353535;
   }
 
 .left-targets, .right-targets {
@@ -14,16 +11,30 @@
   flex-wrap: wrap;
   flex-grow: 1;
   border-radius: 5px;
+  gap: 0.5em;
 }
 
 .left-targets {
   flex-wrap: wrap-reverse;
 }
 
+.left-cards {
+  box-shadow: 0 0 10px lightskyblue; /* Light border glow */
+}
+
+.right-cards{
+  box-shadow: 0 0 10px lightcoral; /* Light border glow */
+}
+
 .card {
     align-items: center;
     text-align: center;
     border-radius: 4px;
+}
+
+.card:hover{
+  box-shadow: 0 0 15px rgb(106, 0, 0); /* Green glow on hover */
+
 }
 
 .card-image {

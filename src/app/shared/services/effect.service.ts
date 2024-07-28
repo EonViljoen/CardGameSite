@@ -1,9 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import { TargetDialogComponent } from '../../Dialogs/target-dialog/target-dialog.component';
 import { Creature_Card } from '../Interfaces/creature_card';
 import { BattleService } from './battle.service';
 import { CardService } from './card.service';
-import { MatDialog } from '@angular/material/dialog';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +11,7 @@ export class EffectService {
 
   readonly battleService = inject(BattleService);
   readonly cardService = inject(CardService);
-  readonly targetDialog = inject(MatDialog);
+  readonly notificationService = inject(NotificationService)
 
 
   attacker : Creature_Card = this.battleService.getAttacker();
@@ -51,6 +50,8 @@ export class EffectService {
   //     })
   //   }
   // }
+
+
 
   //elements : generic fire air earch water
   async doElementalDamage(userCard: Creature_Card, elementDamageArray: string[]) {
@@ -98,6 +99,7 @@ export class EffectService {
       });
 
       if (parameters[0] === 'x'){
+
         return true;
       }
       else{
@@ -246,18 +248,6 @@ export class EffectService {
       return player === this.attacker.Player ? this.attacker : this.defender; 
     }
 
-    // useAbility(effect: string, playerNumber: number){
-    //   this.useEffect(effect, playerNumber);
-    // }
-
-    // useCard(card: any, index: any, playerNumber: number){
-
-    //   this.useEffect(card.Effect, playerNumber);
-    //   this.cardService.discardCard(card, index);
-    //   this.cardService.drawCard(1);
-
-    // }
-
     async useEffect(effect: string, playerNumber: number, battleDialog: any){
 
       let user = this.getUser(playerNumber);
@@ -272,36 +262,37 @@ export class EffectService {
           
           if (user.Tribe === metaInformation[1] || metaInformation[1] === 'Generic'){ 
             
-            if(await this.CheckCriteria(abilityInformation[2], user)){
+            if(await this.CheckCriteria(abilityInformation[1], user)){
+
+              this.notificationService.showNotification('Criteria Met', true)
 
               user.Mugic_Counter -= parseInt(metaInformation[2])
-              this.doEffect(abilityInformation[1], user);
+              this.doEffect(abilityInformation[2], user);
             }
 
           }
         }
 
-        this.battleService.determineBattleResults(user, battleDialog);  
+        await this.battleService.determineBattleResults(user, battleDialog);  
       }
       else if (metaInformation[0] === 'Strike'){
 
         let elementDamage = this.splitToString(abilityInformation[1], ':');
         this.doElementalDamage(user, elementDamage);
 
+        if (abilityInformation[2] !== 'x'){
 
+          if(await this.CheckCriteria(abilityInformation[2], user)){
 
-        if (abilityInformation[3] !== 'x'){
+            this.notificationService.showNotification('Criteria Met', true)
 
-          if(await this.CheckCriteria(abilityInformation[3], user)){
-
-            this.doEffect(abilityInformation[2], user)
+            this.doEffect(abilityInformation[3], user)
           };
-
         }
         
-        this.battleService.determineBattleResults(user, battleDialog)
+        await this.battleService.determineBattleResults(user, battleDialog)
       }
 
-      this.battleService.transferTurn();        
+      await this.battleService.transferTurn();        
   }
 }

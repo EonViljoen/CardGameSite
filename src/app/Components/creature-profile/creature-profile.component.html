@@ -32,7 +32,8 @@
       <p class="header">
         {{creature.Name}}
       </p>
-      <app-bar [current]="creature.Energy" [max]="creature.Max_Energy"></app-bar>
+      <app-bar [current]="creature.Energy" [max]="creature.Max_Energy" 
+      [matTooltip]="creature.Energy + ' / ' + creature.Max_Energy" matTooltipPosition="above"></app-bar>
       <!-- @for (ability of object2Array(creature.Abilities); track ability.key) {
         <button mat-button 
         (click)="useAbility(ability.value, creature.Player)" 

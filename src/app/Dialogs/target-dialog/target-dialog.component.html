@@ -1,14 +1,14 @@
 <div class="target-field">
     <div class="left-targets">
         @for (item of getLeftField(); track i; let i = $index) {
-            <mat-card class="card">
+            <mat-card class="card left-cards">
                 <img mat-card-image class="card-image" [src]="item.Picture" (click)="selectTarget(item)">
             </mat-card>
         }
     </div>
     <div class="right-targets">
         @for (item of getRightField(); track i; let i = $index) {
-            <mat-card class="card">
+            <mat-card class="card right-cards">
                 <img mat-card-image class="card-image" [src]="item.Picture" (click)="selectTarget(item)">
             </mat-card>
         }
