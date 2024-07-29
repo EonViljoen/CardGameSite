@@ -234,7 +234,7 @@ export class EffectService {
             
             if(await this.CheckCriteria(abilityInformation[1], user)){
 
-              this.notificationService.showNotification('Criteria Met', true)
+              // this.notificationService.showNotification('Criteria Met', true, 'Criteria')
 
               user.Mugic_Counter -= parseInt(metaInformation[2])
               this.doEffect(abilityInformation[2], user);
@@ -254,7 +254,7 @@ export class EffectService {
 
           if(await this.CheckCriteria(abilityInformation[2], user)){
 
-            this.notificationService.showNotification('Criteria Met', true)
+            // this.notificationService.showNotification('Criteria Met', true, 'Criteria')
 
             this.doEffect(abilityInformation[3], user)
           };
@@ -263,6 +263,6 @@ export class EffectService {
         await this.battleService.determineBattleResults(user, battleDialog)
       }
 
-      this.battleService.transferTurn();        
+      // this.battleService.transferTurn();        
   }
 }

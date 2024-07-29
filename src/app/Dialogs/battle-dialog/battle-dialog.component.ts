@@ -55,12 +55,24 @@ export class BattleDialogComponent {
     return this.battleService.getCurrentPlayer();
   }
 
-  useCard(card: any, index: any, playerNumber: number){
+  async useCard(card: any, index: any, playerNumber: number){
 
-  this.effectService.useEffect(card.Effect, playerNumber, this.battleDialog);
-  this.cardService.discardCard(card, index);
-  this.cardService.drawCard(1);
-  }
+    this.effectService.useEffect(card.Effect, playerNumber, this.battleDialog);
+    this.cardService.discardCard(card, index);
+    this.cardService.drawCard(1);
+
+    let combatFinished;
+
+    await this.battleService.getCombatFinished().then(x => {
+      console.log('caught')
+      combatFinished = x;
+    })
+
+    if (!combatFinished) {
+      console.log('that')
+      this.battleService.setCurrentPlayer()
+    }
+}
 
   useAbility(effect: string, playerNumber: number){
     this.effectService.useEffect(effect, playerNumber, this.battleDialog);
@@ -68,7 +80,7 @@ export class BattleDialogComponent {
 
   retreat(attacker: Creature_Card, defender: Creature_Card){
     this.battleDialog.close()
-    this.battleService.transferTurn();
+    this.battleService.setCurrentPlayer();
   }
 
   // combatFinished(){

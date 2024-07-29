@@ -1,5 +1,15 @@
-<div>
-    <p>
+<div class="container">
+    @if (title !== '') {
+    <div class="title">
+        {{title}}
+    </div>
+    }
+    <div class="text">
         {{message}}
-    </p>
+    </div>
+    @if (!timer) {
+        <button mat-button class="button" (click)="closeNotification()">
+            <i class="fa-regular fa-circle-xmark"></i>
+        </button>
+    }
 </div>

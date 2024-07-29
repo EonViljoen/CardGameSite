@@ -92,12 +92,18 @@ export class BattleService {
     setCurrentPlayer() {
         if (this.currentPlayer === 0){
             this.currentPlayer = 1;
-            return this.currentPlayer;
         }
         else{
             this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
-            return this.currentPlayer;
+
+            this.notificationService.showNotification(
+                'Player ' + this.currentPlayer + "'s Turn",
+                true,
+                ''
+            );
         }  
+
+        return this.currentPlayer;
     }
 
     getCurrentPlayer() : number {
@@ -107,10 +113,14 @@ export class BattleService {
     setMovingPlayer(): number { //this and one below should be moved to own service and done better somehow
         if (this.movingPlayer === 0){
             this.movingPlayer = 1;
+            console.log('moving player')
+            console.log(this.movingPlayer)
             return this.movingPlayer;
         }
         else{
             this.movingPlayer = this.movingPlayer === 1 ? 2 : 1;
+            console.log('moving player')
+            console.log(this.movingPlayer)
             return this.movingPlayer;
         }   
     }
@@ -135,8 +145,10 @@ export class BattleService {
         return this.defender;
     }
 
-    getCombateFinished(){
-        return this.combatFinished;
+    getCombatFinished(): Promise<Boolean>{
+        return new Promise<Boolean>((value) => {
+            value(this.combatFinished)
+        });
     }
 
     setSuccessfulAttack(){
@@ -148,18 +160,6 @@ export class BattleService {
         this.successfulAttack = false;
         this.combatFinished = true;
     }
-
-    // setBattleAfterMath(previousState: Creature_Card[] | any): Creature_Card[] {
-    //     previousState.at(0).Abilities = this.winner().Abilities;
-    //     previousState.at(0).Elements = this.winner().Elements;
-    //     previousState.at(0).Energy = this.winner().Energy;
-    //     previousState.at(0).Max_Energy = this.winner().Max_Energy;
-    //     previousState.at(0).Mugic_Counter = this.winner().Mugic_Counter;
-    //     previousState.at(0).Player = this.winner().Player;
-    //     previousState.at(0).Stats = this.winner().Stats;
-
-    //     return previousState.at(0);
-    // }
 
     reset(){
 
@@ -240,41 +240,48 @@ export class BattleService {
           opposingCard = x;
         });
     
+        console.log('woooo')
+
         if (userCard.Energy <= 0 || opposingCard.Energy <= 0){
     
-            this.combatFinished = true;
+            // this.combatFinished = true;
 
             if (userCard.Energy >  opposingCard.Energy){
 
-            this.combatWinner = userCard;
-            this.combatLoser = opposingCard;
-            // this.setWinner(userCard);
-            // this.setLoser(opposingCard);
+                this.setSuccessfulAttack();
+                this.combatWinner = userCard;
+                this.combatLoser = opposingCard;
+                // this.setWinner(userCard);
+                // this.setLoser(opposingCard);
 
-            this.notificationService.showNotification(
-                userCard.Name + ' defeated ' + opposingCard.Name,
-                true
-            );
+                this.notificationService.showNotification(
+                    userCard.Name + ' defeated ' + opposingCard.Name,
+                    true,
+                    'Results'
+                );
 
             }
             else if (userCard.Energy < opposingCard.Energy){
         
-            this.combatWinner = opposingCard;
-            this.combatLoser = userCard;
-            // this.setWinner(opposingCard);
-            // this.setLoser(userCard);
+                this.setUnsuccessfulAttack();
+                this.combatWinner = opposingCard;
+                this.combatLoser = userCard;
+                // this.setWinner(opposingCard);
+                // this.setLoser(userCard);
 
-            this.notificationService.showNotification(
-                opposingCard.Name + ' defeated ' + userCard.Name,
-                true
-            );
+                this.notificationService.showNotification(
+                    opposingCard.Name + ' defeated ' + userCard.Name,
+                    true,
+                    'Results'
+                );
             }
             else {
             // this.battleService.draw();
 
             this.notificationService.showNotification(
                 'Draw',
-                true
+                true,
+                'Results'
             )
 
             }
@@ -287,19 +294,6 @@ export class BattleService {
           
     }            
 }
-
-
-    transferTurn() {
-
-    this.getCurrentPlayer() === this.attacker.Player 
-    ? this.setCurrentPlayer() 
-    : this.setCurrentPlayer()
-
-    this.notificationService.showNotification(
-        'Player ' + this.getCurrentPlayer() + "'s Turn",
-        true
-        );
-    }
 
     async getTarget(user : Creature_Card, target: string) : Promise<Creature_Card>  {
 

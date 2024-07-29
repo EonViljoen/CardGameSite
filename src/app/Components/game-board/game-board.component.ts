@@ -17,6 +17,7 @@ import { Player } from '../../shared/Interfaces/player';
 import { CommonModule } from '@angular/common';
 import { TurnWindowComponent } from "../turn-window/turn-window.component";
 import { ToolTipComponent } from "../tool-tip/tool-tip.component";
+import { NotificationService } from '../../shared/services/notification.service';
 
 
 @Component({
@@ -36,11 +37,9 @@ export class GameBoardComponent {
   private battleService = inject(BattleService);
   private cardService = inject(CardService);
   private fieldService = inject(FieldService)
+  private notificationService = inject(NotificationService)
 
   showCard: boolean = false;
-
-  // + (Math.floor(Math.random() * (25 - (-25) + 1)) + (-25)), , // Maybe make this a cool variance based on class or Tribe or something like that with delta configurable
-
 
   leftPlayer : Player = {
     Id: 1,
@@ -59,10 +58,15 @@ export class GameBoardComponent {
   cardsDisplayed: boolean[] = new Array(this.leftPlayer.Field.length + this.rightPlayer.Field.length).fill(false);
   handDisplayer: boolean[] = new Array(this.cardService.getHand().length);
 
+  // movingPlayer: number = 0;
+
   ngOnInit(){
 
     this.buildGame();
     this.buildHand();
+    // this.movingPlayer = this.battleService.getMovingPlayer();
+    // let testText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse egestas fermentum maximus. Quisque non vestibulum sapien. Sed venenatis lobortis semper. Quisque posuere sem est, vitae congue massa lobortis vel. Praesent dapibus mauris massa, vel ultricies justo hendrerit ac. Vestibulum augue purus, semper non egestas at, ornare vel neque. Sed suscipit lacus augue.'
+    // this.notificationService.showNotification(testText, false, 'Game Rules');
   }
 
   ngAfterViewInit(){

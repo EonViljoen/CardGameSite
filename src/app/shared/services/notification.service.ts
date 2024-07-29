@@ -11,9 +11,10 @@ export class NotificationService {
 
   constructor() { }
 
-  showNotification(message: string, timer: boolean){
+  showNotification(message: string, timer: boolean, title: string){
     this.notificationDialog.open(NotificationDialogComponent, {
       data: {
+        title: title,
         message: message,
         timer: timer
       }
