@@ -19,7 +19,7 @@
               (mouseleave)="hideFullCard(cardsDisplayed, i, 0)">
             </app-card>
               @if (cardsDisplayed[i]) {
-                <app-tool-tip [card]="leftItem.Card"></app-tool-tip>
+                <app-tool-tip [card]="leftItem.Card" [type]="'field'"></app-tool-tip>
               }
             }
           </div>
@@ -42,7 +42,7 @@
               (mouseleave)="hideFullCard(cardsDisplayed,i, leftPlayer.Field.length)"
               ></app-card>
               @if (cardsDisplayed[i + leftPlayer.Field.length]) {
-                <app-tool-tip [card]="rightItem.Card"></app-tool-tip>
+                <app-tool-tip [card]="rightItem.Card" [type]="'field'"></app-tool-tip>
               }
             }
           </div>
@@ -83,8 +83,8 @@
               (mouseover)="showFullCard(handDisplayer, i, 0)"
               (mouseleave)="hideFullCard(handDisplayer, i, 0)">
           </mat-card>
-          @if (true) {
-            <app-tool-tip [card]="card.Card" style=""></app-tool-tip>
+          @if (handDisplayer[i]) {
+            <app-tool-tip [card]="card.Card" [type]="'hand'"></app-tool-tip>
           }
         }
       </div>
