@@ -7,7 +7,7 @@
                 {
                     "Name": "Maxxor",
                     "Energy": 20,
-                    "Max_Energy": 50,
+                    "Max_Energy": 30,
                     "Mugic_Counters": 3,
                     "Tribe": "Overworld",
                     "Class": "Hero",
@@ -23,10 +23,10 @@
                       "Water" : false
                     },
                     "Stats": {
-                      "Courage": 100,
-                      "Power": 100,
-                      "Wisdom": 80,
-                      "Speed": 60
+                      "Courage": 30,
+                      "Power": 30,
+                      "Wisdom": 30,
+                      "Speed": 30
                     },
                     "Statuses": [],
                     "Card": "./assets/cards/Creatures/Overworld/Maxxor.png",
@@ -50,10 +50,10 @@
                       "Water" : false
                     },
                     "Stats": {
-                      "Courage": 100,
-                      "Power": 100,
-                      "Wisdom": 80,
-                      "Speed": 50
+                      "Courage": 30,
+                      "Power": 30,
+                      "Wisdom": 30,
+                      "Speed": 30
                     },
                     "Statuses": [],
                     "Card": "./assets/cards/Creatures/Overworld/Dractyl.png",
@@ -76,10 +76,10 @@
                       "Water" : false
                     },
                     "Stats": {
-                      "Courage": 100,
-                      "Power": 100,
-                      "Wisdom": 80,
-                      "Speed": 50
+                      "Courage": 30,
+                      "Power": 30,
+                      "Wisdom": 30,
+                      "Speed": 30
                     },
                     "Statuses": [],
                     "Card": "./assets/cards/Creatures/Overworld/Vidav.png",
@@ -110,10 +110,10 @@
                       "Water" : false
                     },
                     "Stats": {
-                      "Courage": 100,
-                      "Power": 100,
-                      "Wisdom": 80,
-                      "Speed": 50
+                      "Courage": 30,
+                      "Power": 30,
+                      "Wisdom": 30,
+                      "Speed": 30
                     },
                     "Statuses": [],
                     "Card": "./assets/cards/Creatures/Underworld/Chaor.png",
@@ -136,10 +136,10 @@
                       "Water" : false
                     },
                     "Stats": {
-                      "Courage": 100,
-                      "Power": 100,
-                      "Wisdom": 80,
-                      "Speed": 50
+                      "Courage": 30,
+                      "Power": 30,
+                      "Wisdom": 30,
+                      "Speed": 30
                     },
                     "Statuses": [],
                     "Card": "./assets/cards/Creatures/Underworld/H'earring.png",
@@ -163,10 +163,10 @@
                       "Water" : false
                     },
                     "Stats": {
-                      "Courage": 100,
-                      "Power": 100,
-                      "Wisdom": 80,
-                      "Speed": 50
+                      "Courage": 30,
+                      "Power": 30,
+                      "Wisdom": 30,
+                      "Speed": 30
                     },
                     "Statuses": [],
                     "Card": "./assets/cards/Creatures/Underworld/Pyrithion.png",
