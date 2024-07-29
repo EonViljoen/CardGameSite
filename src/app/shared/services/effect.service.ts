@@ -80,6 +80,9 @@ export class EffectService {
             qualtifications.forEach(block => {
               let elementCheck: string[] = block.substring(1, block.length-1).split(':').map(item => item.trim());
   
+              console.log(elementCheck);
+              // console.log()
+
               if (target.Elements[elementCheck[0]] === JSON.parse(elementCheck[1])){ 
                 criteriaMet = true;
               }
@@ -262,7 +265,5 @@ export class EffectService {
         
         await this.battleService.determineBattleResults(user, battleDialog)
       }
-
-      // this.battleService.transferTurn();        
   }
 }

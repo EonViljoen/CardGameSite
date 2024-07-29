@@ -64,12 +64,12 @@ export class BattleDialogComponent {
     let combatFinished;
 
     await this.battleService.getCombatFinished().then(x => {
-      console.log('caught')
+
       combatFinished = x;
     })
 
     if (!combatFinished) {
-      console.log('that')
+      
       this.battleService.setCurrentPlayer()
     }
 }

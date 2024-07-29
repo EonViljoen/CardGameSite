@@ -240,8 +240,6 @@ export class BattleService {
           opposingCard = x;
         });
     
-        console.log('woooo')
-
         if (userCard.Energy <= 0 || opposingCard.Energy <= 0){
     
             // this.combatFinished = true;
