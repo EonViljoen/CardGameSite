@@ -173,6 +173,8 @@ export class GameBoardComponent {
       Picture: info.Picture,
       Player: player
       };
+
+    card = this.ajdustStats(card)
     
     let singleCardList: Creature_Card[] = [];
     singleCardList.push(card);
@@ -234,6 +236,129 @@ export class GameBoardComponent {
   
         return card
     }
+
+  ajdustStats(card: any){
+
+    let statArr = this.object2Array(card.Stats)
+
+    statArr.forEach(stat => {
+      card.Stats[stat.key] =  this.generateRandomStat(card, stat.key, 0.5, 30)
+    });   
+
+    card = this.adjustSpecificStats(card);
+    card  = this.adjustElements(card);
+
+    return card;
+  }
+
+  adjustSpecificStats(card: any){
+
+    if(card.Class.includes('Scout')){
+      card.Stats['Speed'] = this.generateRandomStat(card, 'Speed', 0.25, 30);
+    }
+
+    if(card.Class.includes('Strategist')){
+      card.Stats['Wisdom'] = this.generateRandomStat(card, 'Wisdom', 0.25, 30);
+    }
+
+    if(card.Class.includes('Warrior')){
+      card.Stats['Power'] = this.generateRandomStat(card, 'Wisdom', 0.25, 30);
+    }
+
+    if(card.Class.includes('Commander')){
+      card.Stats['Power'] = this.generateRandomStat(card, 'Power', 0.25, 10);
+      card.Stats['Wisdom'] = this.generateRandomStat(card, 'Power', 0.25, 20);
+    }
+
+    switch (card.Tribe){
+      case "Overworld":
+
+        if(card.Class.includes('Hero')){
+          card.Stats['Courage'] = this.generateRandomStat(card, 'Courage', 0.5, 20);
+          card.Stats['Speed'] = this.generateRandomStat(card, 'Courage', 0.25, 10);
+          card.Stats['Wisdom'] = this.generateRandomStat(card, 'Courage', 0.25, 10);
+        }
+
+        break;
+
+      case "Underworld":
+
+        if(card.Class.includes('Conqueror')){
+          card.Stats['Courage'] = this.generateRandomStat(card, 'Courage', 0.25, 10);
+          card.Stats['Speed'] = this.generateRandomStat(card, 'Courage', 0.25, 10);
+          card.Stats['Power'] = this.generateRandomStat(card, 'Courage', 0.5, 20);
+        }
+        
+        break;
+  }; 
+
+    return card;
+  }
+
+  adjustElements(card: any){
+    
+    let elementArr = this.object2Array(card.Elements);
+
+    elementArr.forEach(element => {
+      let prob = this.generateElementProbability(card, element)
+
+      card.Elements[element.key] = prob
+    });
+
+    return card;
+  }
+
+  generateRandomStat(card: any, stat: any, bias: number, max: number){
+    let min = 1;
+    let genNum = Math.pow(Math.random(), bias);
+    const range = max-min;
+
+    let newStat = card.Stats[stat] + Math.floor(min + genNum * range)
+
+    if(card.Stats[stat] <= 0){
+      card.Stats[stat] = 5
+    }
+    if(card.Stats[stat] >= 100){
+      card.Stats[stat] = 95
+    }
+
+    return newStat;  
+  }
+
+  generateElementProbability(card: any, element: any){
+
+    let min = 1;
+    let max = 100
+    const range = max-min;
+
+    if (card.Elements[element.key]){
+      let genNum = Math.pow(Math.random(), 0.1);
+      let prob = Math.floor(min + genNum * range)
+      
+      if (prob > 49){
+        return true;     
+      }
+      else {
+        return false;
+
+      }
+    }
+    else{
+      let genNum = Math.pow(Math.random(), 1.8);
+      let prob = Math.floor(min + genNum * range)
+
+      if (prob > 49){
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+  }
+
+  object2Array(obj: Object){
+    return Object.entries(obj).map(([key, value]) => ({key, value}));
+  }
 
   drop(event: CdkDragDrop<Creature_Card[]>) {
     if (event.container.data.length){// they fight, loser moves to discard pile and winner takes that spot
