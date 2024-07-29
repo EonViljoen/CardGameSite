@@ -206,7 +206,7 @@
                 "Name": "Song of Stasis",
                 "Tribe": "Overworld",
                 "Cost": 1,
-                "Effect": " Mugic ? Overworld ? 1 | x | [Statuses : Stasis : o] ? x ? Target ",
+                "Effect": " Mugic ? Overworld ? 1 | x | [Statuses : Stasis : true] ? x ? Target ",
                 "Picture": "./assets/pictures/Mugic/Overworld/Song_of_Stasis_Picture.png",
                 "Card": "./assets/cards/Mugic/Overworld/Song_of_Stasis.png"
               },
@@ -283,7 +283,7 @@
     {
       "Name": "Rip Tide",
       "Cost": 0,
-      "Effect": " Strike ? Opposing | 5 : 0 : 0 : 0 : 5 | Check : Elements ? [Water : o] ? x ? Self | [Stats : Courage : -25] ? x ? Opposing ",
+      "Effect": " Strike ? Opposing | 5 : 0 : 0 : 0 : 5 | Check : Elements ? [Water : true] ? x ? Self | [Stats : Courage : -25] ? x ? Opposing ",
       "Picture": "./assets/pictures/Strikes/Rip_Tide_Picture.png",
       "Card": "./assets/cards/Strikes/Rip_Tide.png"
     },
