@@ -33,7 +33,8 @@ export class CreatureProfileComponent {
     Elements: {},
     Abilities: {},
     Statuses: [{}],
-    Player: 0
+    Player: 0,
+    has_Moved: false
   }
 
   getTribeColour(tribe: string){

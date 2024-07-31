@@ -31,7 +31,7 @@ export class TargetDialogComponent {
 
     
     this.fieldService.cardDiamondArrangement(
-      (this.fieldService.leftField.length + this.fieldService.rightField.length),
+      (this.fieldService.leftPlayer.Field.length + this.fieldService.rightPlayer.Field.length),
       left,
       right
     );
@@ -42,11 +42,11 @@ export class TargetDialogComponent {
   }
 
   getLeftField(): any {
-    return this.fieldService.leftField;
+    return this.fieldService.leftPlayer.Field;
   }
 
   getRightField(): any {
-    return this.fieldService.rightField;
+    return this.fieldService.rightPlayer.Field;
   }
 
   selectTarget(card: Creature_Card){

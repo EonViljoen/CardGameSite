@@ -26,7 +26,8 @@ export class CardComponent {
     Elements: {},
     Abilities: {},
     Statuses: [{}],
-    Player: 0
+    Player: 0,
+    has_Moved: false
   };
   @Input() Moveable: boolean= false;
 

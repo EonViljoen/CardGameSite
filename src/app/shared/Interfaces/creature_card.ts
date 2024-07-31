@@ -13,4 +13,5 @@ export interface Creature_Card {
     Abilities: { [key: string]: string };
     Statuses: [ {[key: string]: string}]
     Player: number;
+    has_Moved: boolean;
 }

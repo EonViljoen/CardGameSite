@@ -80,9 +80,6 @@ export class EffectService {
             qualtifications.forEach(block => {
               let elementCheck: string[] = block.substring(1, block.length-1).split(':').map(item => item.trim());
   
-              console.log(elementCheck);
-              // console.log()
-
               if (target.Elements[elementCheck[0]] === JSON.parse(elementCheck[1])){ 
                 criteriaMet = true;
               }
@@ -226,8 +223,6 @@ export class EffectService {
       let user = this.getUser(playerNumber);
       let abilityInformation = this.splitToString(effect, '|');
       let metaInformation = this.splitToString(abilityInformation[0], '?');
-
-      console.log(metaInformation)
 
       if (metaInformation[0] === 'Mugic'){
 

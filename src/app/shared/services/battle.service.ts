@@ -4,6 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BattleDialogComponent } from '../../Dialogs/battle-dialog/battle-dialog.component';
 import { TargetDialogComponent } from '../../Dialogs/target-dialog/target-dialog.component';
 import { NotificationService } from './notification.service';
+import { FieldService } from './field.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,8 @@ export class BattleService {
 
     readonly targetDialog = inject(MatDialog);
 
-    readonly notificationService = inject(NotificationService)
+    readonly notificationService = inject(NotificationService);
+    readonly fieldService = inject(FieldService);
 
     attacker: Creature_Card = {
         Id: '',
@@ -29,7 +31,8 @@ export class BattleService {
         Elements: {},
         Abilities: {},
         Statuses: [{}],
-        Player: 0
+        Player: 0,
+        has_Moved: false
     };
 
     defender: Creature_Card = {
@@ -46,7 +49,8 @@ export class BattleService {
         Elements: {},
         Abilities: {},
         Statuses: [{}],
-        Player: 0
+        Player: 0,
+        has_Moved: false
     };
 
     combatWinner: Creature_Card = {
@@ -63,7 +67,8 @@ export class BattleService {
         Elements: {},
         Abilities: {},
         Statuses: [{}],
-        Player: 0
+        Player: 0,
+        has_Moved: false
     };
 
     combatLoser: Creature_Card = {
@@ -80,7 +85,8 @@ export class BattleService {
         Elements: {},
         Abilities: {},
         Statuses: [{}],
-        Player: 0
+        Player: 0,
+        has_Moved: false
     };
 
     currentPlayer: number = 0;
@@ -101,7 +107,7 @@ export class BattleService {
                 true,
                 ''
             );
-        }  
+        }
 
         return this.currentPlayer;
     }
@@ -110,19 +116,38 @@ export class BattleService {
         return this.currentPlayer;
     }
 
-    setMovingPlayer(): number { //this and one below should be moved to own service and done better somehow
-        if (this.movingPlayer === 0){
-            this.movingPlayer = 1;
-            console.log('moving player')
-            console.log(this.movingPlayer)
-            return this.movingPlayer;
-        }
-        else{
-            this.movingPlayer = this.movingPlayer === 1 ? 2 : 1;
-            console.log('moving player')
-            console.log(this.movingPlayer)
-            return this.movingPlayer;
-        }   
+    async setMovingPlayer(field: any): Promise<number>{ //this and one below should be moved to own service and done better somehow
+        return new Promise((resolve, reject) => {
+            try {
+
+                if (this.movingPlayer === 0) {
+
+                    this.movingPlayer = 1;
+                    resolve(this.movingPlayer);
+                } else {
+
+                    this.fieldService.hasAllFinishedMoving(this.movingPlayer).then(result => {
+                        if (result){
+                            this.fieldService.resetCreatureMovement(this.movingPlayer, field);
+                            this.movingPlayer = this.movingPlayer === 1 ? 2 : 1;
+
+                            console.log('moving player')
+                            console.log(this.movingPlayer)
+        
+                            resolve(this.movingPlayer);
+                        }
+                        else{
+
+                            resolve(this.movingPlayer)
+                        }
+                    })
+
+                    
+                }
+            } catch (error) {
+                reject(error);
+            }
+        });
     }
     
     getMovingPlayer(): number{
@@ -177,7 +202,8 @@ export class BattleService {
             Elements: {},
             Abilities: {},
             Statuses: [{}],
-            Player: 0
+            Player: 0,
+            has_Moved: false
         };
 
         this.defender ={
@@ -194,7 +220,8 @@ export class BattleService {
             Elements: {},
             Abilities: {},
             Statuses: [{}],
-            Player: 0
+            Player: 0,
+            has_Moved: false
         };
 
         this.combatWinner = {
@@ -211,7 +238,8 @@ export class BattleService {
             Elements: {},
             Abilities: {},
             Statuses: [{}],
-            Player: 0
+            Player: 0,
+            has_Moved: false
         }; 
 
         this.combatLoser ={
@@ -228,7 +256,8 @@ export class BattleService {
             Elements: {},
             Abilities: {},
             Statuses: [{}],
-            Player: 0
+            Player: 0,
+            has_Moved: false
         };
     }
 

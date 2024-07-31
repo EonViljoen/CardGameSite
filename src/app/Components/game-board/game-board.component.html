@@ -16,7 +16,7 @@
             >
             @for (leftItem of card; track leftItem.Id) {
               <app-card [Card]="leftItem"
-              [Moveable]="isMovingPlayer(board.left.Id) "
+              [Moveable]="isMovingPlayer(board.left.Id) && !hasCreatureMoved(leftItem)"
               >
             </app-card>
               @if (cardsDisplayed[i]) {
@@ -40,7 +40,7 @@
             >
             @for (rightItem of card; track rightItem.Id) {
               <app-card [Card]="rightItem"
-              [Moveable]="isMovingPlayer(board.right.Id) "
+              [Moveable]="isMovingPlayer(board.right.Id) && !rightItem.has_Moved "
               
               ></app-card>
               @if (cardsDisplayed[i + leftPlayer.Field.length]) {

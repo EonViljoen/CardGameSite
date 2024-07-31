@@ -17,7 +17,6 @@ import { Player } from '../../shared/Interfaces/player';
 import { CommonModule } from '@angular/common';
 import { TurnWindowComponent } from "../turn-window/turn-window.component";
 import { ToolTipComponent } from "../tool-tip/tool-tip.component";
-import { NotificationService } from '../../shared/services/notification.service';
 
 
 @Component({
@@ -37,7 +36,6 @@ export class GameBoardComponent {
   private battleService = inject(BattleService);
   private cardService = inject(CardService);
   private fieldService = inject(FieldService)
-  private notificationService = inject(NotificationService)
 
   showCard: boolean = false;
 
@@ -104,7 +102,7 @@ export class GameBoardComponent {
 
   buildGame(){
 
-    this.battleService.setMovingPlayer();  //needs to be observable because it no works dat good
+    this.battleService.setMovingPlayer(this.board);  //needs to be observable because it no works dat good
     this.battleService.setCurrentPlayer();
 
     this.leftPlayer.Field = this.getCreatures('Overworld', this.leftPlayer.Id);
@@ -113,8 +111,8 @@ export class GameBoardComponent {
     this.board.left = this.leftPlayer;
     this.board.right = this.rightPlayer;
 
-    this.fieldService.setLeft(this.leftPlayer);
-    this.fieldService.setRight(this.rightPlayer);
+    this.fieldService.setLeftPlayer(this.leftPlayer);
+    this.fieldService.setRightPlayer(this.rightPlayer);
 
     this.fieldService.setField(this.board);
 
@@ -142,6 +140,10 @@ export class GameBoardComponent {
   }
   getRecyclePile(): any[] {
     return this.cardService.getRecyclePile();
+  }
+
+  hasCreatureMoved(card: any): boolean {
+    return this.fieldService.hasCreatureMoved(card);
   }
 
   getCreatures(Tribe: string, playerNumber: number) : Creature_Card[] {
@@ -175,7 +177,8 @@ export class GameBoardComponent {
       Statuses: info.Statuses,
       Card: info.Card,
       Picture: info.Picture,
-      Player: player
+      Player: player,
+      has_Moved: false
       };
 
     card = this.ajdustStats(card)
@@ -364,10 +367,13 @@ export class GameBoardComponent {
     return Object.entries(obj).map(([key, value]) => ({key, value}));
   }
 
-  drop(event: CdkDragDrop<Creature_Card[]>) {
+  async drop(event: CdkDragDrop<Creature_Card[]>) {
+
     if (event.container.data.length){// they fight, loser moves to discard pile and winner takes that spot
+
       if (event.container.data.at(0)?.Id !== event.item.dropContainer.data.at(0).Id && //check that it's not the same spot
       event.container.data.at(0)?.Player !== event.item.dropContainer.data.at(0).Player){ //check that it's not the same team
+        
         this.openDialog(event);
       }
     }
@@ -378,8 +384,16 @@ export class GameBoardComponent {
           event.previousIndex,
           event.currentIndex,
         );
+      
+      await this.fieldService.creatureHasMoved(event.container.data[0]);
+      await this.battleService.setMovingPlayer(this.board);
+
+      console.log('check board')
+      console.log(this.board)
     }
-    
+
+    // event.container.data[0] = this.fieldService.creatureHasMoved(event.container.data[0]);
+    // this.battleService.setMovingPlayer(); 
   }
 
   arrangeHand(event: CdkDragDrop<any[]>) {
@@ -422,19 +436,22 @@ export class GameBoardComponent {
           event.previousIndex,
           event.currentIndex
         );
-        
-
-
-          
+                
         // need better way of doing this, need to use result.winner somehow
         let newState = result.winner;
+        this.fieldService.removeFromPlayer(result.loser)
         event.container.data.pop();
         event.container.data.push(newState);
 
         this.battleService.reset();
+        this.fieldService.creatureHasMoved(event.container.data[0]);
+        this.battleService.setMovingPlayer(this.board);
+
+        console.log('check board')
+        console.log(this.board)
+
       } 
       
-      this.battleService.setMovingPlayer(); 
 
     });    
   }
